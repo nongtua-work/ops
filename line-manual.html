@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>คู่มือระบบ LINE — แก้ไขได้</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1C1C1E;--ink2:#3C3C43;--ink3:#6B6B73;
+  --line:#E5E5EA;--line2:#F2F2F7;--fill:#fff;--bg:#F5F5F7;
+  --blue:#007AFF;--green:#34C759;--orange:#FF9500;--red:#FF3B30;
+  --line-green:#06C755;--purple:#AF52DE;
+  --cc:#1A1A2E;--bg-dark:#1B4332;--bg-gold:#C9A227;--tr:#E91E8C;
+  --edit-highlight:rgba(0,122,255,0.06);
+  --edit-border:rgba(0,122,255,0.3);
+}
+body{font-family:'Sarabun',sans-serif;font-size:15px;color:var(--ink);background:var(--bg);line-height:1.6}
+
+@media print{
+  body{background:#fff;font-size:12px}
+  .no-print,.edit-toolbar,.edit-hint{display:none!important}
+  [contenteditable]{outline:none!important;background:transparent!important;border:none!important}
+  .chapter{padding:32px 40px}
+  .page-break{page-break-before:always}
+}
+
+.wrap{max-width:860px;margin:0 auto}
+
+/* ── EDIT TOOLBAR (sticky) ── */
+.edit-toolbar{
+  position:sticky;top:0;z-index:200;
+  background:rgba(28,28,30,.95);
+  backdrop-filter:blur(12px);
+  padding:10px 20px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.edit-mode-toggle{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.1);
+  border-radius:20px;padding:6px 14px;
+  cursor:pointer;user-select:none;
+}
+.toggle-dot{
+  width:28px;height:16px;border-radius:8px;
+  background:#3A3A3C;position:relative;transition:background .2s;
+}
+.toggle-dot::after{
+  content:'';position:absolute;
+  width:12px;height:12px;border-radius:50%;
+  background:#fff;top:2px;left:2px;transition:transform .2s;
+}
+.toggle-dot.on{background:var(--green)}
+.toggle-dot.on::after{transform:translateX(12px)}
+.toggle-label{font-size:13px;font-weight:600;color:#fff}
+.toolbar-sep{width:1px;height:24px;background:rgba(255,255,255,.15)}
+.tb-btn{
+  padding:6px 14px;border-radius:10px;border:none;cursor:pointer;
+  font-family:'Sarabun',sans-serif;font-size:13px;font-weight:600;
+  transition:all .15s;
+}
+.tb-btn.save{background:var(--green);color:#fff}
+.tb-btn.save:active{opacity:.8}
+.tb-btn.clear{background:rgba(255,59,48,.2);color:#FF6B6B}
+
+.tb-btn:hover{opacity:.85}
+.edit-status{font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(255,255,255,.4);margin-left:auto}
+.change-count{
+  background:var(--orange);color:#fff;
+  border-radius:10px;padding:2px 8px;
+  font-size:11px;font-weight:700;
+  display:none;
+}
+.change-count.show{display:inline-block}
+
+/* ── EDIT HINT ── */
+.edit-hint{
+  background:linear-gradient(135deg,#EBF3FF,#F0FAFF);
+  border:1px solid rgba(0,122,255,.2);
+  border-radius:0;padding:10px 24px;
+  display:none;align-items:center;gap:10px;
+  font-size:13px;color:var(--blue);
+}
+.edit-hint.show{display:flex}
+.edit-hint-icon{font-size:18px;flex-shrink:0}
+
+/* ── EDITABLE REGIONS ── */
+[contenteditable]{
+  outline:none;
+  border-radius:6px;
+  transition:background .15s,box-shadow .15s;
+  min-height:1em;
+  position:relative;
+}
+[contenteditable].editing-on:hover{
+  background:var(--edit-highlight);
+  box-shadow:0 0 0 2px var(--edit-border);
+  cursor:text;
+}
+[contenteditable].editing-on:focus{
+  background:rgba(0,122,255,.08);
+  box-shadow:0 0 0 2px var(--blue);
+}
+[contenteditable].modified{
+  background:rgba(255,214,0,.12)!important;
+}
+[contenteditable].modified.editing-on:hover{
+  background:rgba(255,214,0,.2)!important;
+  box-shadow:0 0 0 2px rgba(255,149,0,.4)!important;
+}
+
+/* ── SECTION LABELS ── */
+.sec-label-wrap{display:flex;align-items:center;gap:8px;margin:22px 0 10px}
+.sec-lbl{font-size:12px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;padding-bottom:5px;border-bottom:1px solid var(--line);flex:1}
+.locked-badge{
+  font-size:10px;font-weight:600;color:var(--ink3);
+  background:var(--line2);border-radius:6px;padding:2px 8px;
+  display:none;align-items:center;gap:3px;
+}
+
+/* ── COVER ── */
+.cover{background:var(--ink);color:#fff;padding:52px 48px 44px;position:relative;overflow:hidden}
+.cover::before{content:'';position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:var(--line-green);opacity:.08}
+.cover-line-badge{display:inline-flex;align-items:center;gap:8px;background:var(--line-green);color:#fff;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;margin-bottom:20px}
+.cover-title{font-size:30px;font-weight:700;line-height:1.25;margin-bottom:8px}
+.cover-sub{font-size:15px;color:rgba(255,255,255,.6);margin-bottom:28px}
+.cover-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.chip{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600}
+.chip-lead{background:rgba(255,255,255,.15);color:#fff}
+.chip-team{background:var(--line-green);color:#fff}
+.chip-liff{background:var(--blue);color:#fff}
+.chip-flex{background:var(--orange);color:#fff}
+.cover-meta{padding-top:18px;border-top:1px solid rgba(255,255,255,.12);font-size:12px;color:rgba(255,255,255,.4);font-family:'IBM Plex Mono',monospace}
+
+/* ── CHAPTER ── */
+.chapter{background:#fff;padding:40px 48px 36px;border-bottom:2px solid var(--line)}
+.chapter-hdr{margin-bottom:28px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.chapter-n{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.chapter-title{font-size:22px;font-weight:700}
+.chapter-desc{font-size:14px;color:var(--ink2);margin-top:4px}
+
+h3{font-size:16px;font-weight:700;margin:22px 0 10px}
+h4{font-size:14px;font-weight:700;margin:16px 0 8px;color:var(--ink2)}
+p{margin-bottom:10px;color:var(--ink2);font-size:14px;line-height:1.7}
+ul,ol{padding-left:20px;margin-bottom:10px}
+li{margin-bottom:5px;font-size:14px;color:var(--ink2);line-height:1.6}
+strong{font-weight:700}
+
+/* ── DIAGRAM ── */
+.diagram{background:var(--ink);color:#fff;border-radius:12px;padding:22px 24px;margin:16px 0;font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:2}
+.diagram .comment{color:rgba(255,255,255,.35)}
+.diagram .hl{color:#30D158;font-weight:500}
+.diagram .bl{color:#64D2FF}
+.diagram .or{color:#FFD60A}
+.diagram .pk{color:#FF6AD0}
+
+/* ── FLOW ── */
+.flow{display:flex;flex-direction:column;gap:0;margin:16px 0}
+.flow-step{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.flow-step:last-child{border-bottom:none}
+.flow-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;background:var(--ink);color:#fff}
+.flow-num.green{background:var(--green)}
+.flow-num.blue{background:var(--blue)}
+.flow-num.orange{background:var(--orange)}
+.flow-num.lg{background:var(--line-green)}
+.flow-body{flex:1}
+.flow-title{font-size:14px;font-weight:700;margin-bottom:3px}
+.flow-desc{font-size:13px;color:var(--ink2);line-height:1.6}
+.flow-tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;margin-top:5px}
+
+/* ── PHONE MOCKUPS ── */
+.phones-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;margin:16px 0}
+.phone-wrap{display:flex;justify-content:center;margin:8px 0}
+.phone{width:240px;background:#BECFE8;border-radius:18px;padding:16px 12px;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.msg-time{text-align:center;font-size:10px;color:rgba(0,0,0,.45);margin-bottom:8px}
+.msg-row{display:flex;align-items:flex-end;gap:6px;margin-bottom:8px}
+.msg-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.bubble-wrap{flex:1}
+.bot-name{font-size:9px;color:rgba(0,0,0,.45);margin-bottom:2px}
+.flex-card{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.fc-hdr{padding:10px 12px;font-size:12px;font-weight:700}
+.fc-body{padding:8px 12px;border-top:1px solid #F0F0F0}
+.fc-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:11px}
+.fc-l{color:#8E8E93}.fc-v{font-weight:600;color:#1C1C1E;text-align:right;max-width:120px;font-size:10px}
+.fc-v.red{color:#FF3B30}.fc-v.green{color:#34C759}.fc-v.orange{color:#FF9500}
+.fc-btns{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:7px 10px 9px}
+.fc-btn{padding:7px;border-radius:7px;text-align:center;font-size:11px;font-weight:700}
+.fc-btn.g{background:#34C759;color:#fff}
+.fc-btn.o{background:#F2F2F7;color:#1C1C1E}
+.fc-btn.lg{background:#06C755;color:#fff}
+.fc-btn-full{margin:7px 10px 9px;padding:9px;border-radius:7px;text-align:center;font-size:11px;font-weight:700}
+
+/* ── COMPARE TABLE ── */
+.compare-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px}
+.compare-table th{padding:10px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;text-align:left;border-bottom:2px solid var(--line)}
+.compare-table td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table tr:hover td{background:var(--line2)}
+
+/* ── INFO BOX ── */
+.info-box{border-radius:10px;padding:14px 16px;margin:14px 0;display:flex;gap:10px;align-items:flex-start}
+.info-box.blue{background:#EBF3FF;border-left:3px solid var(--blue)}
+.info-box.green{background:#EDFAF0;border-left:3px solid var(--green)}
+.info-box.orange{background:#FFF4E6;border-left:3px solid var(--orange)}
+.info-box.red{background:#FFF0EF;border-left:3px solid var(--red)}
+.info-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.info-title{font-size:13px;font-weight:700;margin-bottom:3px}
+.info-text{font-size:13px;color:var(--ink2);line-height:1.6}
+
+/* ── CODE ── */
+.code-box{background:#1C1C1E;color:#E5E5EA;border-radius:10px;padding:16px 18px;margin:12px 0;font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.9;overflow-x:auto;white-space:pre-wrap}
+
+/* ── DO DONT ── */
+.do-dont{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.do-box{border-radius:10px;padding:14px;background:#EDFAF0;border:1px solid var(--green)}
+.dont-box{border-radius:10px;padding:14px;background:#FFF0EF;border:1px solid var(--red)}
+.dd-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.dd-item{font-size:12px;line-height:1.9}
+
+/* ── LIFF DIAGRAM ── */
+.liff-diagram{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;margin:16px 0;display:grid;gap:10px}
+.liff-box{border-radius:10px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px}
+.liff-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.liff-name{font-size:14px;font-weight:700;margin-bottom:3px}
+.liff-desc{font-size:12px;color:var(--ink3);line-height:1.5}
+.arrow-down{text-align:center;color:var(--ink3);font-size:18px;line-height:1}
+
+/* ── RICH MENU PREVIEW ── */
+.rm-card{background:#fff;border-radius:14px;overflow:hidden;border:2px solid var(--ink);margin:12px 0}
+.rm-hdr{padding:12px 16px;font-size:13px;font-weight:700;color:#fff}
+.rm-grid{display:grid;gap:1px;background:#E0E0E0}
+.rm-btn{background:#fff;padding:16px 8px;text-align:center}
+.rm-icon{font-size:22px;margin-bottom:4px}
+.rm-label{font-size:12px;font-weight:700}
+.rm-sub{font-size:10px;color:#8E8E93;margin-top:2px}
+
+/* ── ROLE BADGE ── */
+.role-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:14px}
+.rb-lead{background:var(--cc);color:#fff}
+.rb-team{background:var(--line-green);color:#fff}
+
+/* ── FOOTER ── */
+.footer-bar{background:var(--ink);color:rgba(255,255,255,.4);padding:22px 48px;font-size:11px;font-family:'IBM Plex Mono',monospace;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+/* ── CHANGED INDICATOR ── */
+.changed-dot{
+  display:none;width:6px;height:6px;border-radius:50%;
+  background:var(--orange);margin-left:6px;flex-shrink:0;
+}
+.changed-dot.show{display:inline-block}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ── TOOLBAR ── -->
+<div class="edit-toolbar no-print">
+  <div class="edit-mode-toggle" onclick="toggleEditMode()">
+    <div class="toggle-dot" id="toggle-dot"></div>
+    <div class="toggle-label" id="toggle-label">โหมดแก้ไข: ปิด</div>
+  </div>
+  <div class="toolbar-sep"></div>
+  <button class="tb-btn save" onclick="saveChanges()" id="save-btn" style="display:none">💾 บันทึก</button>
+  <button class="tb-btn clear" onclick="clearChanges()" id="clear-btn" style="display:none">↺ ยกเลิกทั้งหมด</button>
+  <div class="change-count" id="change-count">0 จุดที่แก้</div>
+  <div class="edit-status" id="edit-status">กดเปิดโหมดแก้ไขเพื่อแก้ข้อความ</div>
+</div>
+
+<!-- ── EDIT HINT ── -->
+<div class="edit-hint" id="edit-hint">
+  <div class="edit-hint-icon">✏️</div>
+  <div>โหมดแก้ไขเปิดอยู่ — คลิกที่ข้อความใดก็ได้เพื่อแก้ไข · กด <strong>บันทึก</strong> เพื่อเก็บไว้ · ข้อความที่แก้จะมีพื้นหลังสีเหลืองอ่อน</div>
+</div>
+
+<!-- ══════ COVER ══════ -->
+<div class="cover">
+  <div class="cover-line-badge">💬 LINE System</div>
+  <div class="cover-title" contenteditable="false" data-key="cover-title">คู่มือระบบ LINE<br>สำหรับทีม OPS</div>
+  <div class="cover-sub" contenteditable="false" data-key="cover-sub">LINE LIFF · Flex Message · Bot Notification · Rich Menu</div>
+  <div class="cover-chips">
+    <div class="chip chip-lead">👩‍💼 Operate Lead (ถั่ว)</div>
+    <div class="chip chip-team">👥 ทีมงาน</div>
+    <div class="chip chip-liff">LIFF App</div>
+    <div class="chip chip-flex">Flex Message</div>
+  </div>
+  <div class="cover-meta" contenteditable="false" data-key="cover-meta">v1.0 · May 2026 · Chardchakaj · Boonta Gallery · Truly</div>
+</div>
+
+<!-- ══════ CHAPTER 01 ══════ -->
+<div class="chapter">
+  <div class="chapter-hdr">
+    <div class="chapter-n">CHAPTER 01</div>
+    <div class="chapter-title" contenteditable="false" data-key="c1-title">ภาพรวมระบบ LINE ทั้งหมด</div>
+    <div class="chapter-desc" contenteditable="false" data-key="c1-desc">ทำงานยังไง เชื่อมกันยังไง ใครใช้อะไร</div>
+  </div>
+
+  <p contenteditable="false" data-key="c1-p1">ระบบ LINE ของทีม OPS ประกอบด้วย 3 ส่วนหลักที่ทำงานร่วมกัน</p>
+
+  <div class="diagram">
+<span class="comment">┌──────────────────────────────────────────┐</span>
+<span class="comment">│           ระบบ LINE ทีม OPS              │</span>
+<span class="comment">└──────────────────────────────────────────┘</span>
+
+<span class="hl">Google Sheet</span> ← database กลาง ข้อมูลงานทั้งหมด
+      │
+      ▼
+<span class="bl">Apps Script</span>  ← API กลาง เชื่อม Sheet ↔ LINE
+      │
+   ┌──┴──────────────┐
+   │                  │
+   ▼                  ▼
+<span class="or">LINE LIFF App</span>      <span class="hl">LINE Bot</span>
+ถั่วดู Dashboard    แจ้งเตือนทีมอัตโนมัติ
+approve proof       ส่ง Flex Message รายบุคคล
+                    รับ reply → อัพเดท Sheet
+  </div>
+
+  <div class="sec-label-wrap"><div class="sec-lbl">3 ส่วนหลัก</div></div>
+  <div class="flow">
+    <div class="flow-step">
+      <div class="flow-num blue">1</div>
+      <div class="flow-body">
+        <div class="flow-title" contenteditable="false" data-key="c1-f1-title">Google Sheet — ฐานข้อมูลกลาง</div>
+        <div class="flow-desc" contenteditable="false" data-key="c1-f1-desc">เก็บข้อมูลโปรเจค งาน collections ทุกอย่าง ถั่วอัพเดทที่นี่ ทีมไม่ต้องแตะ</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num lg">2</div>
+      <div class="flow-body">
+        <div class="flow-title" contenteditable="false" data-key="c1-f2-title">LINE Bot — แจ้งเตือนอัตโนมัติ</div>
+        <div class="flow-desc" contenteditable="false" data-key="c1-f2-desc">Bot ส่ง Flex Message หาทีมรายบุคคล ทีม reply ใน LINE → Bot จดแล้วอัพเดท Sheet กลับ ทีมไม่ต้องเปิดแอพอื่น</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num blue">3</div>
+      <div class="flow-body">
+        <div class="flow-title" contenteditable="false" data-key="c1-f3-title">LINE LIFF — Dashboard / Proof Tool</div>
+        <div class="flow-desc" contenteditable="false" data-key="c1-f3-desc">Web app เปิดใน LINE โดยตรง ถั่วใช้ดู overview เพิ่มงาน approve proof ทีมเปิดดูสถานะงานตัวเองได้</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ CHAPTER 02 ══════ -->
+<div class="chapter">
+  <div class="chapter-hdr">
+    <div class="chapter-n">CHAPTER 02</div>
+    <div class="chapter-title" contenteditable="false" data-key="c2-title">LINE LIFF คืออะไร</div>
+    <div class="chapter-desc" contenteditable="false" data-key="c2-desc">และถั่วกับทีมเห็นหน้าตาต่างกันได้ยังไง</div>
+  </div>
+
+  <h3>LIFF = LINE Front-end Framework</h3>
+  <p contenteditable="false" data-key="c2-p1">คือ <strong>web app ที่เปิดอยู่ใน LINE</strong> โดยตรง ไม่ต้องออกจาก LINE ไปเปิด browser อื่น กดปุ่มใน Rich Menu แล้วหน้าต่างเล็กขึ้นมาข้างใน LINE เลย</p>
+
+  <div class="liff-diagram">
+    <div class="liff-box" style="background:#F0F8FF">
+      <div class="liff-icon" style="background:#E1EFFF">📱</div>
+      <div>
+        <div class="liff-name" style="color:var(--blue)" contenteditable="false" data-key="c2-step1-title">ทีมงานกดปุ่มใน Rich Menu LINE</div>
+        <div class="liff-desc" contenteditable="false" data-key="c2-step1-desc">กด "📋 งานของฉัน" ใน LINE app</div>
+      </div>
+    </div>
+    <div class="arrow-down">↓</div>
+    <div class="liff-box" style="background:#F0FBF2">
+      <div class="liff-icon" style="background:#D8F8E4">🔑</div>
+      <div>
+        <div class="liff-name" style="color:var(--green)" contenteditable="false" data-key="c2-step2-title">LINE รู้ว่าใครกด</div>
+        <div class="liff-desc" contenteditable="false" data-key="c2-step2-desc">LINE ส่ง userId ของคนกดปุ่มไปให้ LIFF App โดยอัตโนมัติ เช่น userId ของพี่เฟียน vs พี่พีท</div>
+      </div>
+    </div>
+    <div class="arrow-down">↓</div>
+    <div class="liff-box" style="background:#FFF4E6">
+      <div class="liff-icon" style="background:#FFE8C4">🗄</div>
+      <div>
+        <div class="liff-name" style="color:var(--orange)" contenteditable="false" data-key="c2-step3-title">App ดึงข้อมูลจาก Google Sheet</div>
+        <div class="liff-desc" contenteditable="false" data-key="c2-step3-desc">ส่ง userId ไปถาม Sheet ว่า userId นี้เป็นใคร มีงานอะไรบ้าง role คืออะไร</div>
+      </div>
+    </div>
+    <div class="arrow-down">↓</div>
+    <div class="liff-box" style="background:#F5EEFF">
+      <div class="liff-icon" style="background:#EAD8FF">✨</div>
+      <div>
+        <div class="liff-name" style="color:var(--purple)" contenteditable="false" data-key="c2-step4-title">แสดงหน้าตาตาม role</div>
+        <div class="liff-desc" contenteditable="false" data-key="c2-step4-desc">ถั่ว → เห็น Admin Dashboard ครบทุกฟีเจอร์ · ทีม → เห็นแค่งานของตัวเอง</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-label-wrap"><div class="sec-lbl">ถั่ว vs ทีม — เห็นอะไรต่างกัน</div></div>
+  <table class="compare-table">
+    <tr>
+      <th style="background:#F5F5F5;color:var(--ink3)">Feature</th>
+      <th style="background:#E8E8F0;color:var(--cc)">👩‍💼 ถั่ว (Admin)</th>
+      <th style="background:#E8F8EE;color:var(--green)">👥 ทีมงาน</th>
+    </tr>
+    <tr><td><strong>หน้าแรก</strong></td>
+      <td contenteditable="false" data-key="tbl-r1-lead">Boss Summary + Stats ทั้งบริษัท</td>
+      <td contenteditable="false" data-key="tbl-r1-team">งานของฉัน (เฉพาะที่ assign ให้ตัวเอง)</td></tr>
+    <tr><td><strong>Projects</strong></td>
+      <td contenteditable="false" data-key="tbl-r2-lead">เห็นทุก project ทั้ง CC/BG/TR</td>
+      <td contenteditable="false" data-key="tbl-r2-team">เห็นเฉพาะ project ที่ตัวเองอยู่ด้วย</td></tr>
+    <tr><td><strong>Proof/Approve</strong></td>
+      <td contenteditable="false" data-key="tbl-r3-lead">กด Approve / Request Revision ได้</td>
+      <td contenteditable="false" data-key="tbl-r3-team">ดูสถานะได้ กด approve ไม่ได้</td></tr>
+    <tr><td><strong>เพิ่มงาน</strong></td>
+      <td contenteditable="false" data-key="tbl-r4-lead">✅ มีปุ่ม + เพิ่มงานใหม่</td>
+      <td contenteditable="false" data-key="tbl-r4-team">❌ ไม่มี</td></tr>
+    <tr><td><strong>อัพเดท status</strong></td>
+      <td contenteditable="false" data-key="tbl-r5-lead">อัพเดทได้ทุก task</td>
+      <td contenteditable="false" data-key="tbl-r5-team">อัพเดทได้แค่ task ตัวเอง ผ่าน Bot reply</td></tr>
+  </table>
+
+  <div class="info-box blue">
+    <div class="info-icon">💡</div>
+    <div>
+      <div class="info-title" contenteditable="false" data-key="c2-tip-title">วิธีหา LINE userId ของทีม</div>
+      <div class="info-text" contenteditable="false" data-key="c2-tip-text">ให้ทุกคนส่งข้อความหา Bot ก่อนครั้งแรก Bot จะบันทึก userId อัตโนมัติ แล้วถั่วไปกรอก role ใน Sheet</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ CHAPTER 03 ══════ -->
+<div class="chapter">
+  <div class="chapter-hdr">
+    <div class="chapter-n">CHAPTER 03</div>
+    <div class="chapter-title" contenteditable="false" data-key="c3-title">Flex Message คืออะไร</div>
+    <div class="chapter-desc" contenteditable="false" data-key="c3-desc">การแจ้งเตือนรายบุคคล แบบ card สวยงามที่กดปุ่มได้เลย</div>
+  </div>
+
+  <p contenteditable="false" data-key="c3-p1">Flex Message คือ <strong>card สวยงามที่ Bot ส่งใน LINE</strong> — เหมือนที่ KBank ส่งรายการธุรกรรมมาให้ กดปุ่มได้เลย ไม่ต้องพิมพ์</p>
+
+  <div class="do-dont">
+    <div class="do-box">
+      <div class="dd-label" style="color:var(--green)">✅ Flex Message</div>
+      <div class="dd-item" contenteditable="false" data-key="c3-do">เห็นข้อมูลครบในที<br>กดปุ่มตอบได้เลย<br>ดูสวย อ่านง่าย<br>ไม่ต้องพิมพ์ reply</div>
+    </div>
+    <div class="dont-box">
+      <div class="dd-label" style="color:var(--red)">❌ ข้อความธรรมดา</div>
+      <div class="dd-item" contenteditable="false" data-key="c3-dont">อ่านยาก ข้อมูลกระจัดกระจาย<br>ต้องพิมพ์ reply เอง<br>เจ้านายรำคาญ (เคยโดนมา)<br>ไม่มีปุ่มกด</div>
+    </div>
+  </div>
+
+  <div class="info-box green">
+    <div class="info-icon">✅</div>
+    <div>
+      <div class="info-title" contenteditable="false" data-key="c3-tip-title">Bot ส่งตรงถึงแต่ละคน (Direct Message)</div>
+      <div class="info-text" contenteditable="false" data-key="c3-tip-text">พี่เฟียนได้รับแจ้งเตือนเฉพาะงานของพี่เฟียน · พี่พีทได้รับเฉพาะงานของพี่พีท · ไม่มีใคร spam ทั้งกลุ่ม</div>
+    </div>
+  </div>
+
+  <div class="sec-label-wrap"><div class="sec-lbl">ตัวอย่าง Flex Message ที่จะส่ง</div></div>
+  <div class="phones-row">
+    <div>
+      <h4 contenteditable="false" data-key="c3-ex1-title">📌 แจ้งเตือนงาน (รายบุคคล)</h4>
+      <p style="font-size:12px" contenteditable="false" data-key="c3-ex1-desc">Bot ส่งตรงหาพี่เฟียน ก่อน deadline 1 วัน</p>
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="msg-time">10:00</div>
+          <div class="msg-row">
+            <div class="msg-av" style="background:#06C755">B</div>
+            <div class="bubble-wrap">
+              <div class="bot-name">OPS Bot</div>
+              <div class="flex-card">
+                <div class="fc-hdr" style="background:#FFF4E6;color:#FF9500">⏰ งานใกล้ครบกำหนด</div>
+                <div class="fc-body">
+                  <div class="fc-row"><div class="fc-l">งาน</div><div class="fc-v">Rough cut Collection A</div></div>
+                  <div class="fc-row"><div class="fc-l">โปรเจค</div><div class="fc-v">Truly · TR</div></div>
+                  <div class="fc-row"><div class="fc-l">Deadline</div><div class="fc-v red">พรุ่งนี้ 18:00</div></div>
+                </div>
+                <div class="fc-btns">
+                  <div class="fc-btn g">✅ เสร็จแล้ว</div>
+                  <div class="fc-btn o">🟠 ยังไม่เสร็จ</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h4 contenteditable="false" data-key="c3-ex2-title">📋 สรุปวันจันทร์ (ถั่วคนเดียว)</h4>
+      <p style="font-size:12px" contenteditable="false" data-key="c3-ex2-desc">Bot ส่งให้ถั่วทุกจันทร์ 9:00 ก่อนรายงานเจ้านาย</p>
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="msg-time">09:00</div>
+          <div class="msg-row">
+            <div class="msg-av" style="background:#06C755">B</div>
+            <div class="bubble-wrap">
+              <div class="bot-name">OPS Bot → ถั่ว</div>
+              <div class="flex-card">
+                <div class="fc-hdr" style="background:#1A1A2E;color:#fff">📋 สรุปสัปดาห์นี้</div>
+                <div class="fc-body">
+                  <div class="fc-row"><div class="fc-l">✅ เสร็จ</div><div class="fc-v green">2 งาน</div></div>
+                  <div class="fc-row"><div class="fc-l">🟡 กำลังทำ</div><div class="fc-v orange">4 งาน</div></div>
+                  <div class="fc-row"><div class="fc-l">🔴 ติดปัญหา</div><div class="fc-v red">1 งาน</div></div>
+                </div>
+                <div class="fc-btn-full lg">📱 เปิด Dashboard</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-label-wrap"><div class="sec-lbl">ทีมตอบ Bot ยังไง</div></div>
+  <div class="flow">
+    <div class="flow-step">
+      <div class="flow-num lg">1</div>
+      <div class="flow-body">
+        <div class="flow-title" contenteditable="false" data-key="c3-flow1">Bot ส่ง Flex Message พร้อมปุ่ม</div>
+        <div class="flow-desc" contenteditable="false" data-key="c3-flow1d">แต่ละคนได้รับ card งานของตัวเอง มีปุ่ม "✅ เสร็จแล้ว" และ "🟠 ยังไม่เสร็จ"</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num lg">2</div>
+      <div class="flow-body">
+        <div class="flow-title" contenteditable="false" data-key="c3-flow2">ทีมกดปุ่มหรือพิมพ์ reply</div>
+        <div class="flow-desc" contenteditable="false" data-key="c3-flow2d">กดปุ่มได้เลย หรือพิมพ์ "เสร็จ" / "ยัง" / "ติดปัญหา" Bot รับทั้งสองแบบ</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num lg">3</div>
+      <div class="flow-body">
+        <div class="flow-title" contenteditable="false" data-key="c3-flow3">Bot อัพเดท Google Sheet อัตโนมัติ</div>
+        <div class="flow-desc" contenteditable="false" data-key="c3-flow3d">status งานใน Sheet เปลี่ยนทันที ถั่วเห็นใน Dashboard โดยที่ทีมไม่ต้องเปิดแอพอื่น</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ CHAPTER 04 ══════ -->
+<div class="chapter">
+  <div class="chapter-hdr">
+    <div class="chapter-n">CHAPTER 04</div>
+    <div class="chapter-title" contenteditable="false" data-key="c4-title">คู่มือถั่ว — Operate Lead</div>
+    <div class="chapter-desc" contenteditable="false" data-key="c4-desc">สิ่งที่ถั่วต้องทำและสามารถทำได้ในระบบ LINE</div>
+  </div>
+  <div class="role-badge rb-lead">👩‍💼 Operate Lead (Admin)</div>
+
+  <div class="sec-label-wrap"><div class="sec-lbl">งานประจำสัปดาห์</div></div>
+  <div class="flow">
+    <div class="flow-step">
+      <div class="flow-num" style="background:#1A1A2E;font-size:11px">จ</div>
+      <div class="flow-body">
+        <div class="flow-title" contenteditable="false" data-key="c4-f1">วันจันทร์ 9:00 — รับ Flex สรุปจาก Bot</div>
+        <div class="flow-desc" contenteditable="false" data-key="c4-f1d">Bot ส่งสรุปสัปดาห์มาให้ถั่วคนเดียว · กด "เปิด Dashboard" เพื่อดูรายละเอียด · ใช้รายงานเจ้านายก่อน 10:00</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num" style="background:#1A1A2E;font-size:11px">จ</div>
+      <div class="flow-body">
+        <div class="flow-title" contenteditable="false" data-key="c4-f2">หลังคุยเจ้านาย — อัพเดท Brief ใน Sheet</div>
+        <div class="flow-desc" contenteditable="false" data-key="c4-f2d">เปิด LIFF Dashboard → กด "เพิ่มงาน" หรือแก้ไข task · Bot จะ auto แจ้งทีมที่ได้รับ assign งานใหม่</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num" style="background:#1A1A2E;font-size:11px">ทุก</div>
+      <div class="flow-body">
+        <div class="flow-title" contenteditable="false" data-key="c4-f3">เมื่อ Bot รายงาน task ติดปัญหา</div>
+        <div class="flow-desc" contenteditable="false" data-key="c4-f3d">Bot แจ้งถั่วทันทีเมื่อมีใคร reply "ติดปัญหา" · ติดต่อคนนั้นแบบ 1-1 ใน LINE เพื่อแก้ไข</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num" style="background:var(--tr);font-size:11px">ศ</div>
+      <div class="flow-body">
+        <div class="flow-title" contenteditable="false" data-key="c4-f4">วันศุกร์ — Proof &amp; Approve Collection</div>
+        <div class="flow-desc" contenteditable="false" data-key="c4-f4d">เปิด LIFF → Collections → กด Approve หรือ Request Revision · Bot แจ้งทีมที่เกี่ยวข้องอัตโนมัติ</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-label-wrap"><div class="sec-lbl">Rich Menu ของถั่ว — 6 ปุ่ม</div></div>
+  <div class="rm-card" style="max-width:420px">
+    <div class="rm-hdr" style="background:#1A1A2E">Rich Menu — ถั่ว (Admin)</div>
+    <div class="rm-grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="rm-btn"><div class="rm-icon">📋</div><div class="rm-label" contenteditable="false" data-key="rm-a1">สรุปงาน</div><div class="rm-sub">Boss Summary</div></div>
+      <div class="rm-btn"><div class="rm-icon">🗂</div><div class="rm-label" contenteditable="false" data-key="rm-a2">Projects</div><div class="rm-sub">ทุก CC/BG/TR</div></div>
+      <div class="rm-btn"><div class="rm-icon">✅</div><div class="rm-label" contenteditable="false" data-key="rm-a3">Tasks</div><div class="rm-sub">อัพเดทล่าสุด</div></div>
+      <div class="rm-btn" style="border-top:1px solid #E0E0E0"><div class="rm-icon">🗄</div><div class="rm-label" contenteditable="false" data-key="rm-a4">File Gen</div><div class="rm-sub">ตั้งชื่อไฟล์</div></div>
+      <div class="rm-btn" style="border-top:1px solid #E0E0E0"><div class="rm-icon">📦</div><div class="rm-label" contenteditable="false" data-key="rm-a5">Archives</div><div class="rm-sub">งานที่เสร็จแล้ว</div></div>
+      <div class="rm-btn" style="border-top:1px solid #E0E0E0;background:#1A1A2E"><div class="rm-icon">➕</div><div class="rm-label" style="color:#fff" contenteditable="false" data-key="rm-a6">เพิ่มงาน</div><div class="rm-sub" style="color:rgba(255,255,255,.5)">Admin only</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ CHAPTER 05 ══════ -->
+<div class="chapter">
+  <div class="chapter-hdr">
+    <div class="chapter-n">CHAPTER 05</div>
+    <div class="chapter-title" contenteditable="false" data-key="c5-title">คู่มือทีมงาน</div>
+    <div class="chapter-desc" contenteditable="false" data-key="c5-desc">ทีมทำอะไรใน LINE บ้าง — ทำได้ง่ายมาก</div>
+  </div>
+  <div class="role-badge rb-team">👥 ทีมงาน (Read-only + Bot Reply)</div>
+
+  <div class="info-box green">
+    <div class="info-icon">✅</div>
+    <div>
+      <div class="info-title" contenteditable="false" data-key="c5-tip1-title">ทีมไม่ต้องเรียนรู้เครื่องมือใหม่</div>
+      <div class="info-text" contenteditable="false" data-key="c5-tip1-text">ทุกอย่างทำใน LINE ที่ใช้อยู่แล้ว · Bot ถาม → reply ใน chat เดิม · ไม่ต้องเปิดแอพอื่น</div>
+    </div>
+  </div>
+
+  <div class="sec-label-wrap"><div class="sec-lbl">วิธี reply Bot ที่ถูกต้อง</div></div>
+  <div class="code-box" contenteditable="false" data-key="c5-code">คำที่ Bot เข้าใจ:
+
+✅ "เสร็จ" หรือ "เสร็จแล้ว" หรือ "done"
+→ Bot อัพเดท status = done
+
+🟡 "ยัง" หรือ "ยังไม่เสร็จ" หรือ "inprogress"
+→ Bot บันทึกว่ายังทำอยู่
+
+🔴 "ติดปัญหา" หรือ "blocked" หรือ "ติด"
+→ Bot แจ้งถั่วทันที
+
+✅ "รับทราบ" หรือ "ok" หรือ "โอเค"
+→ Bot บันทึกว่ารับทราบแล้ว
+
+💡 กดปุ่มใน Flex Message → Bot รับอัตโนมัติ ไม่ต้องพิมพ์</div>
+
+  <div class="info-box orange">
+    <div class="info-icon">⚠️</div>
+    <div>
+      <div class="info-title" contenteditable="false" data-key="c5-tip2-title">ถ้าติดปัญหาจริงๆ</div>
+      <div class="info-text" contenteditable="false" data-key="c5-tip2-text">พิมพ์ "ติดปัญหา" แล้วอธิบายสั้นๆ ว่าติดอะไร Bot จะส่งให้ถั่วพร้อม context ทันที ไม่ต้องกลัวว่าจะกวนใจ — ถั่วอยากรู้เร็วกว่าค้างงาน</div>
+    </div>
+  </div>
+
+  <div class="sec-label-wrap"><div class="sec-lbl">Rich Menu ของทีม — 3 ปุ่ม</div></div>
+  <div class="rm-card" style="max-width:320px;border-color:var(--line-green)">
+    <div class="rm-hdr" style="background:var(--line-green)">Rich Menu — ทีมงาน</div>
+    <div class="rm-grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="rm-btn"><div class="rm-icon">📋</div><div class="rm-label" contenteditable="false" data-key="rm-t1">งานของฉัน</div><div class="rm-sub">Tasks ตัวเอง</div></div>
+      <div class="rm-btn"><div class="rm-icon">📁</div><div class="rm-label" contenteditable="false" data-key="rm-t2">ไฟล์งาน</div><div class="rm-sub">iCloud · NAS</div></div>
+      <div class="rm-btn" style="background:var(--line-green)"><div class="rm-icon">💬</div><div class="rm-label" style="color:#fff" contenteditable="false" data-key="rm-t3">ติดต่อถั่ว</div><div class="rm-sub" style="color:rgba(255,255,255,.7)">ถามงาน</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ FOOTER ══════ -->
+<div class="footer-bar no-print">
+  <div contenteditable="false" data-key="footer-left">LINE System Manual · OPS Dashboard · v1.0 · May 2026</div>
+  <div contenteditable="false" data-key="footer-mid">Chardchakaj · Boonta Gallery · Truly</div>
+  <div contenteditable="false" data-key="footer-right">จัดทำโดย Nongtua.work</div>
+</div>
+
+</div><!-- /wrap -->
+
+<style>
+/* ── PASSWORD MODAL ── */
+.pw-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.55);
+  z-index:999;display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(6px);
+}
+.pw-overlay.show{display:flex}
+.pw-box{
+  background:#1C1C1E;border-radius:18px;padding:28px 24px;
+  width:300px;max-width:90vw;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+  animation:popIn .2s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popIn{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
+.pw-icon{font-size:36px;text-align:center;margin-bottom:12px}
+.pw-title{font-family:'Sarabun',sans-serif;font-size:17px;font-weight:700;color:#fff;text-align:center;margin-bottom:4px}
+.pw-sub{font-size:13px;color:rgba(255,255,255,.45);text-align:center;margin-bottom:18px}
+.pw-input{
+  width:100%;padding:12px 14px;border-radius:10px;
+  background:#2C2C2E;border:1.5px solid #3A3A3C;
+  color:#fff;font-family:'Sarabun',sans-serif;font-size:16px;
+  outline:none;text-align:center;letter-spacing:.1em;
+  transition:border-color .15s;
+}
+.pw-input:focus{border-color:#007AFF}
+.pw-input.shake{animation:shake .3s ease}
+.pw-input.error{border-color:#FF3B30}
+@keyframes shake{0%,100%{transform:none}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.pw-error{font-size:12px;color:#FF6B6B;text-align:center;margin-top:8px;height:16px;transition:opacity .2s}
+.pw-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.pw-btn{
+  padding:11px;border-radius:10px;border:none;cursor:pointer;
+  font-family:'Sarabun',sans-serif;font-size:14px;font-weight:700;
+  transition:opacity .15s;
+}
+.pw-btn:active{opacity:.8}
+.pw-btn.confirm{background:#007AFF;color:#fff}
+.pw-btn.cancel{background:#2C2C2E;color:rgba(255,255,255,.6);border:1px solid #3A3A3C}
+</style>
+
+<!-- PASSWORD MODAL -->
+<div class="pw-overlay" id="pw-overlay">
+  <div class="pw-box">
+    <div class="pw-icon">🔒</div>
+    <div class="pw-title">ใส่รหัสผ่าน</div>
+    <div class="pw-sub">สำหรับ Operate Lead เท่านั้น</div>
+    <input class="pw-input" id="pw-input" type="password" placeholder="••••••" maxlength="20"
+      onkeydown="if(event.key==='Enter')confirmPW()">
+    <div class="pw-error" id="pw-error"></div>
+    <div class="pw-btns">
+      <button class="pw-btn cancel" onclick="closePW()">ยกเลิก</button>
+      <button class="pw-btn confirm" onclick="confirmPW()">เข้าสู่ระบบ</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────
+const PW = 'admin';
+let editMode = false;
+let originalContent = {};
+let changedKeys = new Set();
+const STORAGE_KEY = 'line-manual-v1';
+const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+
+// Init editable elements
+document.querySelectorAll('[data-key]').forEach(el => {
+  const key = el.dataset.key;
+  if (saved[key]) el.innerHTML = saved[key];
+  originalContent[key] = el.innerHTML;
+  el.addEventListener('input', () => {
+    if (!editMode) return;
+    const diff = el.innerHTML !== originalContent[key];
+    el.classList.toggle('modified', diff);
+    diff ? changedKeys.add(key) : changedKeys.delete(key);
+    updateChangeCount();
+  });
+  el.addEventListener('keydown', e => {
+    if (e.key==='Enter' && !e.shiftKey && !el.classList.contains('code-box')) e.preventDefault();
+  });
+});
+
+// Mark already-modified on load
+document.querySelectorAll('[data-key]').forEach(el => {
+  const key = el.dataset.key;
+  if (saved[key] && saved[key] !== originalContent[key]) {
+    el.classList.add('modified');
+    changedKeys.add(key);
+  }
+});
+updateChangeCount();
+
+// ── PASSWORD MODAL ─────────────────────────────────────
+function showPasswordModal() {
+  document.getElementById('pw-overlay').classList.add('show');
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-error').textContent = '';
+  setTimeout(() => document.getElementById('pw-input').focus(), 100);
+}
+
+function closePW() {
+  document.getElementById('pw-overlay').classList.remove('show');
+}
+
+function confirmPW() {
+  const input = document.getElementById('pw-input');
+  const errorEl = document.getElementById('pw-error');
+  if (input.value === PW) {
+    closePW();
+    activateEditMode();
+  } else {
+    input.classList.add('shake','error');
+    errorEl.textContent = 'รหัสไม่ถูกต้อง ลองอีกครั้ง 🔒';
+    input.value = '';
+    setTimeout(() => {
+      input.classList.remove('shake','error');
+      input.focus();
+    }, 400);
+  }
+}
+
+// ── TOGGLE EDIT ──────────────────────────────────────
+function toggleEditMode() {
+  if (!editMode) {
+    showPasswordModal();
+    return;
+  }
+  // Close edit mode
+  editMode = false;
+  applyEditState();
+}
+
+function activateEditMode() {
+  editMode = true;
+  applyEditState();
+}
+
+function applyEditState() {
+  const dot = document.getElementById('toggle-dot');
+  const label = document.getElementById('toggle-label');
+  const hint = document.getElementById('edit-hint');
+  const saveBtn = document.getElementById('save-btn');
+  const clearBtn = document.getElementById('clear-btn');
+
+  dot.classList.toggle('on', editMode);
+  label.textContent = editMode ? 'โหมดแก้ไข: เปิด ✏️' : 'โหมดแก้ไข: ปิด';
+  hint.classList.toggle('show', editMode);
+  saveBtn.style.display = editMode ? 'inline-flex' : 'none';
+  clearBtn.style.display = editMode ? 'inline-flex' : 'none';
+
+  document.querySelectorAll('[data-key]').forEach(el => {
+    el.contentEditable = editMode ? 'true' : 'false';
+    el.classList.toggle('editing-on', editMode);
+  });
+
+  document.getElementById('edit-status').textContent = editMode
+    ? 'คลิกที่ข้อความเพื่อแก้ไข'
+    : 'กดเปิดโหมดแก้ไขเพื่อแก้ข้อความ';
+}
+
+// ── SAVE ──────────────────────────────────────────────
+function saveChanges() {
+  const toSave = {};
+  document.querySelectorAll('[data-key]').forEach(el => {
+    toSave[el.dataset.key] = el.innerHTML;
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+  document.querySelectorAll('[data-key]').forEach(el => {
+    originalContent[el.dataset.key] = el.innerHTML;
+    el.classList.remove('modified');
+  });
+  changedKeys.clear();
+  updateChangeCount();
+  showToast('💾 บันทึกแล้ว!');
+}
+
+// ── CLEAR ─────────────────────────────────────────────
+function clearChanges() {
+  const overlay = document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:998;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)';
+  overlay.innerHTML=`<div style="background:#1C1C1E;border-radius:16px;padding:24px;width:280px;text-align:center;font-family:Sarabun,sans-serif">
+    <div style="font-size:28px;margin-bottom:10px">⚠️</div>
+    <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:6px">ยกเลิกการแก้ไขทั้งหมด?</div>
+    <div style="font-size:13px;color:rgba(255,255,255,.5);margin-bottom:18px">จะกลับไปเนื้อหาเดิม</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <button onclick="this.closest('div[style]').remove()" style="padding:10px;border-radius:8px;background:#2C2C2E;border:1px solid #3A3A3C;color:rgba(255,255,255,.7);font-family:Sarabun,sans-serif;font-size:14px;font-weight:600;cursor:pointer">ไม่</button>
+      <button id="confirm-clear" style="padding:10px;border-radius:8px;background:#FF3B30;border:none;color:#fff;font-family:Sarabun,sans-serif;font-size:14px;font-weight:700;cursor:pointer">ยืนยัน</button>
+    </div>
+  </div>`;
+  document.body.appendChild(overlay);
+  overlay.querySelector('#confirm-clear').addEventListener('click', () => {
+    localStorage.removeItem(STORAGE_KEY);
+    document.querySelectorAll('[data-key]').forEach(el => {
+      el.innerHTML = originalContent[el.dataset.key];
+      el.classList.remove('modified');
+    });
+    changedKeys.clear();
+    updateChangeCount();
+    overlay.remove();
+    showToast('↺ ยกเลิกการแก้ไขทั้งหมดแล้ว');
+  });
+}
+
+// ── CHANGE COUNT ─────────────────────────────────────
+function updateChangeCount() {
+  const el = document.getElementById('change-count');
+  el.textContent = `${changedKeys.size} จุดที่แก้`;
+  el.classList.toggle('show', changedKeys.size > 0);
+}
+
+// ── TOAST ─────────────────────────────────────────────
+function showToast(msg) {
+  let t = document.getElementById('toast-msg');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast-msg';
+    t.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.8);color:#fff;padding:10px 22px;border-radius:20px;font-size:14px;font-weight:600;z-index:9999;font-family:Sarabun,sans-serif;backdrop-filter:blur(10px);pointer-events:none;opacity:0;transition:opacity .2s';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.opacity = '0'; }, 2500);
+}
+
+// ── CLOSE MODAL ON OUTSIDE CLICK ─────────────────────
+document.getElementById('pw-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('pw-overlay')) closePW();
+});
+
+// ── WARN UNSAVED ──────────────────────────────────────
+window.addEventListener('beforeunload', e => {
+  if (changedKeys.size > 0) { e.preventDefault(); e.returnValue = ''; }
+});
+</script>
+</body>
+</html>

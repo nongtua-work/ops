@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>File Name Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:#F5F5F5}
+body{font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;color:#1C1C1E;-webkit-font-smoothing:antialiased}
+
+:root{
+  /* CC — Chardchakaj : monochrome */
+  --cc-dark:#0A0A0A;
+  --cc-mid:#3A3A3A;
+  --cc-light:#E8E8E8;
+  --cc-soft:#F5F5F5;
+  --cc-accent:#1C1C1C;
+
+  /* BG — Boonta Gallery : green + gold */
+  --bg-dark:#1B4332;
+  --bg-mid:#2D6A4F;
+  --bg-light:#D8F3DC;
+  --bg-soft:#F0FBF2;
+  --bg-gold:#C9A227;
+  --bg-gold2:#F4D03F;
+  --bg-gold-soft:#FEF9E7;
+
+  /* TR — Truly : pink + yellow */
+  --tr-pink:#E91E8C;
+  --tr-pink2:#F48FB1;
+  --tr-pink-soft:#FDF0F7;
+  --tr-yellow:#FFD600;
+  --tr-yellow2:#FFF176;
+  --tr-yellow-soft:#FFFDE7;
+  --tr-dark:#880E4F;
+
+  /* System */
+  --bg-page:#F5F5F5;
+  --fill:#FFFFFF;
+  --sep:rgba(0,0,0,.1);
+  --sep2:rgba(0,0,0,.05);
+  --label:#1C1C1E;
+  --label2:#3C3C43;
+  --label3:rgba(60,60,67,.55);
+  --gray:#8E8E93;
+  --gray2:#C7C7CC;
+  --gray6:#F2F2F7;
+  --blue:#007AFF;
+  --green:#34C759;
+}
+
+.app{max-width:600px;margin:0 auto;padding-bottom:60px}
+
+/* ── HEADER ── */
+.header{
+  background:rgba(245,245,245,.94);
+  backdrop-filter:saturate(180%) blur(20px);
+  padding:env(safe-area-inset-top,16px) 16px 12px;
+  position:sticky;top:0;z-index:100;
+  border-bottom:1px solid var(--sep);
+}
+.header-inner{padding-top:6px;display:flex;align-items:flex-end;justify-content:space-between}
+.header-left{}
+.header-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--gray);letter-spacing:.14em;text-transform:uppercase;margin-bottom:3px}
+.header-title{font-size:22px;font-weight:700;letter-spacing:-.4px;color:var(--label)}
+.header-badge{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;
+  padding:4px 10px;border-radius:8px;letter-spacing:.05em;
+  transition:all .2s;
+}
+.badge-cc{background:var(--cc-dark);color:#fff}
+.badge-bg{background:var(--bg-dark);color:var(--bg-gold)}
+.badge-tr{background:var(--tr-pink);color:var(--tr-yellow)}
+
+/* ── SECTION ── */
+.section{padding:16px 16px 0}
+.sec-label{
+  font-size:12px;font-weight:700;color:var(--label3);
+  text-transform:uppercase;letter-spacing:.5px;
+  margin-bottom:8px;padding:0 2px;display:flex;align-items:center;gap:8px;
+}
+.sec-num{
+  width:20px;height:20px;border-radius:50%;
+  background:var(--label);color:#fff;
+  font-size:11px;font-weight:700;
+  display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.card{background:var(--fill);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+
+/* ── ENTITY SELECTOR ── */
+.entity-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+
+.entity-btn{
+  padding:16px 8px 14px;border-radius:14px;
+  border:2px solid transparent;cursor:pointer;
+  text-align:center;transition:all .18s;
+  background:var(--fill);
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+  position:relative;overflow:hidden;
+}
+.entity-btn:active{transform:scale(.96)}
+
+/* CC inactive */
+.entity-btn[data-entity="CC"]{border-color:var(--cc-light)}
+.entity-btn[data-entity="CC"] .entity-code{color:var(--cc-dark)}
+.entity-btn[data-entity="CC"] .entity-name{color:var(--cc-mid)}
+/* CC active */
+.entity-btn[data-entity="CC"].active{
+  background:var(--cc-dark);border-color:var(--cc-dark);
+}
+.entity-btn[data-entity="CC"].active .entity-code{color:#fff}
+.entity-btn[data-entity="CC"].active .entity-name{color:rgba(255,255,255,.65)}
+
+/* BG inactive */
+.entity-btn[data-entity="BG"]{border-color:var(--bg-light)}
+.entity-btn[data-entity="BG"] .entity-code{color:var(--bg-mid)}
+.entity-btn[data-entity="BG"] .entity-name{color:var(--bg-dark)}
+/* BG active */
+.entity-btn[data-entity="BG"].active{
+  background:var(--bg-dark);border-color:var(--bg-gold);
+}
+.entity-btn[data-entity="BG"].active .entity-code{color:var(--bg-gold)}
+.entity-btn[data-entity="BG"].active .entity-name{color:rgba(255,255,255,.7)}
+.entity-btn[data-entity="BG"].active::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:var(--bg-gold);
+}
+
+/* TR inactive */
+.entity-btn[data-entity="TR"]{border-color:var(--tr-pink2)}
+.entity-btn[data-entity="TR"] .entity-code{color:var(--tr-pink)}
+.entity-btn[data-entity="TR"] .entity-name{color:var(--tr-dark)}
+/* TR active */
+.entity-btn[data-entity="TR"].active{
+  background:var(--tr-pink);border-color:var(--tr-yellow);
+}
+.entity-btn[data-entity="TR"].active .entity-code{color:var(--tr-yellow)}
+.entity-btn[data-entity="TR"].active .entity-name{color:rgba(255,255,255,.8)}
+.entity-btn[data-entity="TR"].active::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:var(--tr-yellow);
+}
+
+.entity-code{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:20px;font-weight:500;margin-bottom:4px;
+  transition:color .18s;
+}
+.entity-name{font-size:10px;font-weight:600;line-height:1.3;transition:color .18s}
+.entity-sub{font-size:9px;margin-top:2px;opacity:.7;line-height:1.3}
+
+/* ── DATE ── */
+.date-row{display:flex;gap:6px}
+.date-seg{
+  flex:1;background:var(--fill);border-radius:12px;padding:10px 8px;
+  text-align:center;border:1.5px solid var(--sep);
+  transition:border-color .15s;
+}
+.date-seg:focus-within{border-color:var(--blue)}
+.date-seg-label{font-size:9px;color:var(--gray);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;font-weight:600}
+.date-seg input{
+  width:100%;background:transparent;border:none;outline:none;
+  font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:500;
+  color:var(--label);text-align:center;
+}
+.date-seg input::placeholder{color:var(--gray2)}
+
+/* ── FIELD ── */
+.field-row{
+  display:flex;align-items:center;padding:13px 16px;
+  border-bottom:1px solid var(--sep2);gap:12px;
+}
+.field-row:last-child{border-bottom:none}
+.field-label{font-size:15px;font-weight:500;color:var(--label);min-width:120px;flex-shrink:0}
+.field-input{
+  flex:1;background:transparent;border:none;outline:none;
+  font-family:-apple-system,sans-serif;font-size:15px;
+  text-align:right;min-width:0;
+  transition:color .15s;
+}
+.field-input::placeholder{color:var(--gray2)}
+
+/* CC field color */
+.entity-cc .field-input{color:var(--cc-dark)}
+.entity-bg .field-input{color:var(--bg-mid)}
+.entity-tr .field-input{color:var(--tr-pink)}
+
+/* ── TYPE CHIPS ── */
+.type-cat-label{
+  font-size:11px;font-weight:700;color:var(--label3);
+  text-transform:uppercase;letter-spacing:.06em;
+  padding:10px 16px 6px;
+}
+.type-grid{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 10px}
+.type-chip{
+  padding:7px 13px;border-radius:20px;
+  border:1.5px solid var(--sep);
+  font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;
+  color:var(--label2);background:var(--fill);cursor:pointer;
+  transition:all .12s;white-space:nowrap;
+}
+.type-chip:active{transform:scale(.95)}
+
+/* CC chip active */
+.entity-cc .type-chip.active{background:var(--cc-dark);border-color:var(--cc-dark);color:#fff}
+/* BG chip active */
+.entity-bg .type-chip.active{background:var(--bg-dark);border-color:var(--bg-gold);color:var(--bg-gold)}
+/* TR chip active */
+.entity-tr .type-chip.active{background:var(--tr-pink);border-color:var(--tr-yellow);color:var(--tr-yellow)}
+
+/* ── WP FORMAT ── */
+.wp-format-strip{display:flex;gap:6px;padding:0 16px 10px;flex-wrap:wrap}
+.wp-fmt-btn{
+  padding:6px 14px;border-radius:20px;
+  border:1.5px solid var(--sep);
+  font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;
+  color:var(--label2);background:var(--fill);cursor:pointer;transition:all .12s;
+}
+.wp-fmt-btn.active{background:var(--bg-dark);border-color:var(--bg-gold);color:var(--bg-gold)}
+.wp-fmt-row{display:none}
+.wp-fmt-row.show{display:block}
+
+/* ── OUTPUT ── */
+.output-card{
+  background:var(--fill);border-radius:14px;overflow:hidden;
+  box-shadow:0 2px 10px rgba(0,0,0,.09);margin:0 16px;
+  border:1.5px solid var(--sep);
+  transition:border-color .2s;
+}
+.output-card.cc-accent{border-color:var(--cc-dark)}
+.output-card.bg-accent{border-color:var(--bg-gold)}
+.output-card.tr-accent{border-color:var(--tr-yellow)}
+
+.output-header{
+  padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--sep2);
+  transition:background .2s;
+}
+.output-header.cc-hdr{background:var(--cc-dark)}
+.output-header.bg-hdr{background:var(--bg-dark)}
+.output-header.tr-hdr{background:var(--tr-pink)}
+.output-hdr-title{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(255,255,255,.5);
+}
+.output-hdr-title.bg-hdr{color:var(--bg-gold)}
+.output-hdr-title.tr-hdr{color:var(--tr-yellow)}
+.copy-all-btn{
+  font-size:12px;font-weight:700;
+  border:none;border-radius:8px;padding:5px 12px;cursor:pointer;
+  transition:all .12s;
+}
+.copy-all-btn.cc-btn{background:rgba(255,255,255,.15);color:#fff}
+.copy-all-btn.bg-btn{background:var(--bg-gold);color:var(--bg-dark)}
+.copy-all-btn.tr-btn{background:var(--tr-yellow);color:var(--tr-dark)}
+
+.output-row{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:12px 16px;border-bottom:1px solid var(--sep2);
+}
+.output-row:last-child{border-bottom:none}
+.output-type-label{font-size:11px;color:var(--label3);font-weight:500;min-width:110px;flex-shrink:0;line-height:1.4;margin-top:2px}
+.output-filename{
+  flex:1;font-family:'IBM Plex Mono',monospace;font-size:12px;
+  color:var(--label);line-height:1.7;word-break:break-all;min-width:0;
+}
+.ext-cc{color:var(--cc-mid)}
+.ext-bg{color:var(--bg-mid)}
+.ext-tr{color:var(--tr-dark)}
+.ent-cc{color:var(--cc-dark);font-weight:700}
+.ent-bg{color:var(--bg-gold);font-weight:700;background:var(--bg-dark);padding:1px 4px;border-radius:3px}
+.ent-tr{color:var(--tr-pink);font-weight:700}
+
+.copy-btn{
+  width:32px;height:32px;border-radius:8px;background:var(--gray6);
+  border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;transition:all .12s;
+}
+.copy-btn:active{transform:scale(.9)}
+.copy-btn.copied{background:var(--green);color:#fff}
+
+/* ── NAS CARD ── */
+.nas-card{
+  border-radius:14px;padding:14px 16px;margin:10px 16px 0;
+  border:1.5px solid transparent;
+  transition:all .2s;
+}
+.nas-card.cc-nas{background:var(--cc-soft);border-color:var(--cc-light)}
+.nas-card.bg-nas{background:var(--bg-gold-soft);border-color:var(--bg-gold)}
+.nas-card.tr-nas{background:var(--tr-yellow-soft);border-color:var(--tr-yellow)}
+.nas-label{font-size:10px;font-weight:700;color:var(--label3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.nas-path{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--label);line-height:1.8;word-break:break-all}
+.nas-copy-btn{
+  display:flex;align-items:center;gap:6px;margin-top:10px;
+  border:none;border-radius:10px;padding:8px 14px;cursor:pointer;
+  font-size:12px;font-weight:700;width:100%;justify-content:center;
+  transition:all .15s;
+}
+.nas-copy-btn.cc-btn{background:var(--cc-dark);color:#fff}
+.nas-copy-btn.bg-btn{background:var(--bg-gold);color:var(--bg-dark)}
+.nas-copy-btn.tr-btn{background:var(--tr-pink);color:var(--tr-yellow)}
+.nas-copy-btn.copied{background:var(--green)!important;color:#fff!important}
+
+/* ── HINT ── */
+.hint-box{
+  background:#FFF8E1;border:1px solid #FFCA28;
+  border-radius:12px;padding:12px 14px;margin:10px 16px 0;
+  display:flex;gap:8px;align-items:flex-start;
+}
+.hint-text{font-size:13px;color:#795548;line-height:1.5}
+
+/* ── HISTORY ── */
+.history-item{
+  padding:11px 16px;border-bottom:1px solid var(--sep2);
+  display:flex;align-items:flex-start;gap:10px;cursor:pointer;
+  transition:background .1s;
+}
+.history-item:last-child{border-bottom:none}
+.history-item:active{background:var(--gray6)}
+.history-filename{flex:1;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--label2);word-break:break-all;line-height:1.5}
+.history-time{font-size:11px;color:var(--gray2);flex-shrink:0}
+.history-del{width:24px;height:24px;border:none;background:none;color:var(--gray2);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0}
+.history-del:active{background:var(--green);color:#fff}
+.empty-history{padding:32px 16px;text-align:center;color:var(--gray2);font-size:13px}
+
+/* ── LIFF MENU PREVIEW ── */
+.rich-menu-card{
+  background:var(--fill);border-radius:14px;overflow:hidden;
+  box-shadow:0 1px 4px rgba(0,0,0,.08);margin:0 16px;
+}
+.rm-header{padding:12px 16px;font-size:13px;font-weight:700;color:var(--label);border-bottom:1px solid var(--sep2)}
+.rm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--sep2)}
+.rm-btn{
+  background:var(--fill);padding:14px 8px;
+  text-align:center;cursor:pointer;transition:background .12s;
+}
+.rm-btn:active{background:var(--gray6)}
+.rm-icon{font-size:22px;margin-bottom:4px}
+.rm-label{font-size:11px;font-weight:600;color:var(--label2)}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:30px;left:50%;transform:translateX(-50%);
+  background:rgba(0,0,0,.78);color:#fff;padding:10px 20px;border-radius:20px;
+  font-size:14px;font-weight:500;pointer-events:none;opacity:0;transition:opacity .2s;
+  backdrop-filter:blur(10px);white-space:nowrap;z-index:999;
+}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-left">
+      <div class="header-eyebrow">Chardchakaj · Boonta Gallery · Truly</div>
+      <div class="header-title">File Name Generator</div>
+    </div>
+    <div class="header-badge badge-cc" id="header-badge">CC</div>
+  </div>
+</div>
+
+<!-- 1: ENTITY -->
+<div class="section">
+  <div class="sec-label"><span class="sec-num">1</span>บริษัท</div>
+  <div class="entity-strip">
+    <div class="entity-btn active" data-entity="CC" onclick="setEntity('CC')">
+      <div class="entity-code">CC</div>
+      <div class="entity-name">Chardchakaj</div>
+      <div class="entity-sub">Photography · Video · MV</div>
+    </div>
+    <div class="entity-btn" data-entity="BG" onclick="setEntity('BG')">
+      <div class="entity-code">BG</div>
+      <div class="entity-name">Boonta Gallery</div>
+      <div class="entity-sub">Wet Plate · Fine Art</div>
+    </div>
+    <div class="entity-btn" data-entity="TR" onclick="setEntity('TR')">
+      <div class="entity-code">TR</div>
+      <div class="entity-name">Truly</div>
+      <div class="entity-sub">Fashion · Collection</div>
+    </div>
+  </div>
+</div>
+
+<!-- 2: DATE -->
+<div class="section">
+  <div class="sec-label"><span class="sec-num">2</span>วันที่</div>
+  <div class="date-row">
+    <div class="date-seg">
+      <div class="date-seg-label">ปี YYYY</div>
+      <input type="text" id="d-year" maxlength="4" placeholder="2026" inputmode="numeric" oninput="generate()">
+    </div>
+    <div class="date-seg">
+      <div class="date-seg-label">เดือน MM</div>
+      <input type="text" id="d-month" maxlength="2" placeholder="05" inputmode="numeric" oninput="generate()">
+    </div>
+    <div class="date-seg">
+      <div class="date-seg-label">วัน DD</div>
+      <input type="text" id="d-day" maxlength="2" placeholder="18" inputmode="numeric" oninput="generate()">
+    </div>
+  </div>
+</div>
+
+<!-- 3: CLIENT + PROJECT -->
+<div class="section">
+  <div class="sec-label"><span class="sec-num">3</span>Client / Project</div>
+  <div class="card" id="field-card">
+    <div class="field-row">
+      <div class="field-label">ชื่อย่อ Client</div>
+      <input class="field-input" id="client" placeholder="NIKE, SMITH…" oninput="generate()" style="text-transform:uppercase">
+    </div>
+    <div class="field-row">
+      <div class="field-label">ชื่อโปรเจค</div>
+      <input class="field-input" id="project" placeholder="CampaignA, Portrait…" oninput="generate()">
+    </div>
+  </div>
+</div>
+
+<!-- 4: TYPE -->
+<div class="section">
+  <div class="sec-label"><span class="sec-num">4</span>ประเภทงาน</div>
+  <div class="card" id="type-card">
+
+    <!-- CC -->
+    <div id="types-CC">
+      <div class="type-cat-label">📷 ภาพนิ่ง</div>
+      <div class="type-grid" id="tg-cc-photo">
+        <div class="type-chip" onclick="setType('PHOTO')">PHOTO</div>
+        <div class="type-chip" onclick="setType('FILM')">FILM</div>
+        <div class="type-chip" onclick="setType('SCAN')">SCAN</div>
+        <div class="type-chip" onclick="setType('RETOUCH')">RETOUCH</div>
+        <div class="type-chip" onclick="setType('SELECT')">SELECT</div>
+      </div>
+      <div class="type-cat-label">🎬 วีดิโอ / MV</div>
+      <div class="type-grid">
+        <div class="type-chip" onclick="setType('VDO')">VDO</div>
+        <div class="type-chip" onclick="setType('MV')">MV</div>
+        <div class="type-chip" onclick="setType('BTS')">BTS</div>
+        <div class="type-chip" onclick="setType('EDIT')">EDIT</div>
+        <div class="type-chip" onclick="setType('COLOR')">COLOR</div>
+        <div class="type-chip" onclick="setType('AUDIO')">AUDIO</div>
+        <div class="type-chip" onclick="setType('MOTION')">MOTION</div>
+        <div class="type-chip" onclick="setType('ROUGHCUT')">ROUGHCUT</div>
+        <div class="type-chip" onclick="setType('REVIEW')">REVIEW</div>
+        <div class="type-chip" onclick="setType('MASTER')">MASTER</div>
+        <div class="type-chip" onclick="setType('EXPORT')">EXPORT</div>
+      </div>
+      <div class="type-cat-label">📄 เอกสาร</div>
+      <div class="type-grid">
+        <div class="type-chip" onclick="setType('BRIEF')">BRIEF</div>
+        <div class="type-chip" onclick="setType('QUOTE')">QUOTE</div>
+        <div class="type-chip" onclick="setType('CONTRACT')">CONTRACT</div>
+        <div class="type-chip" onclick="setType('INVOICE')">INVOICE</div>
+        <div class="type-chip" onclick="setType('CALLSHEET')">CALLSHEET</div>
+        <div class="type-chip" onclick="setType('SHOTLIST')">SHOTLIST</div>
+        <div class="type-chip" onclick="setType('RECEIPT')">RECEIPT</div>
+        <div class="type-chip" onclick="setType('POSTER')">POSTER</div>
+        <div class="type-chip" onclick="setType('COPY')">COPY</div>
+      </div>
+    </div>
+
+    <!-- BG -->
+    <div id="types-BG" style="display:none">
+      <div class="type-cat-label">🪟 Wet Plate Collodion</div>
+      <div class="type-grid">
+        <div class="type-chip" onclick="setType('WETPLATE')">WETPLATE</div>
+        <div class="type-chip" onclick="setType('SCAN')">SCAN</div>
+        <div class="type-chip" onclick="setType('SELECT')">SELECT</div>
+        <div class="type-chip" onclick="setType('RETOUCH')">RETOUCH</div>
+      </div>
+      <!-- WP Format -->
+      <div class="type-cat-label" id="wp-lbl" style="display:none">📐 Format กล้อง Large Format</div>
+      <div class="wp-fmt-row" id="wp-fmt-row">
+        <div class="wp-format-strip">
+          <div class="wp-fmt-btn active" data-fmt="4x5" onclick="setWPFormat('4x5')">4x5"</div>
+          <div class="wp-fmt-btn" data-fmt="5x7" onclick="setWPFormat('5x7')">5x7"</div>
+          <div class="wp-fmt-btn" data-fmt="8x10" onclick="setWPFormat('8x10')">8x10"</div>
+          <div class="wp-fmt-btn" data-fmt="16x20" onclick="setWPFormat('16x20')">16x20"</div>
+        </div>
+      </div>
+      <div class="type-cat-label">📷 Digital / Film</div>
+      <div class="type-grid">
+        <div class="type-chip" onclick="setType('PHOTO')">PHOTO</div>
+        <div class="type-chip" onclick="setType('FILM')">FILM</div>
+        <div class="type-chip" onclick="setType('FILM_35mm')">FILM 35mm</div>
+        <div class="type-chip" onclick="setType('FILM_120')">FILM 120</div>
+      </div>
+      <div class="type-cat-label">📋 บันทึก / เอกสาร</div>
+      <div class="type-grid">
+        <div class="type-chip" onclick="setType('LOG')">LOG (Chemistry)</div>
+        <div class="type-chip" onclick="setType('LOG_PLATE')">LOG Plate</div>
+        <div class="type-chip" onclick="setType('BRIEF')">BRIEF</div>
+        <div class="type-chip" onclick="setType('QUOTE')">QUOTE</div>
+        <div class="type-chip" onclick="setType('INVOICE')">INVOICE</div>
+        <div class="type-chip" onclick="setType('RECEIPT')">RECEIPT</div>
+      </div>
+    </div>
+
+    <!-- TR -->
+    <div id="types-TR" style="display:none">
+      <div class="type-cat-label">👗 Collection / Design</div>
+      <div class="type-grid">
+        <div class="type-chip" onclick="setType('DESIGN')">DESIGN</div>
+        <div class="type-chip" onclick="setType('PATTERN')">PATTERN</div>
+        <div class="type-chip" onclick="setType('SPEC')">SPEC</div>
+        <div class="type-chip" onclick="setType('PHOTO')">PHOTO</div>
+        <div class="type-chip" onclick="setType('LOOKBOOK')">LOOKBOOK</div>
+        <div class="type-chip" onclick="setType('SELECT')">SELECT</div>
+        <div class="type-chip" onclick="setType('RETOUCH')">RETOUCH</div>
+        <div class="type-chip" onclick="setType('QC')">QC</div>
+      </div>
+      <div class="type-cat-label">📱 Marketing — Platform</div>
+      <div class="type-grid">
+        <div class="type-chip" onclick="setType('IG')">IG Post</div>
+        <div class="type-chip" onclick="setType('IG_STORY')">IG Story</div>
+        <div class="type-chip" onclick="setType('SHOPEE')">Shopee</div>
+        <div class="type-chip" onclick="setType('FB')">Facebook</div>
+        <div class="type-chip" onclick="setType('POSTER')">POSTER</div>
+        <div class="type-chip" onclick="setType('COPY')">COPYWRITING</div>
+        <div class="type-chip" onclick="setType('VDO')">VDO Ads</div>
+      </div>
+      <div class="type-cat-label">📄 เอกสาร</div>
+      <div class="type-grid">
+        <div class="type-chip" onclick="setType('BRIEF')">BRIEF</div>
+        <div class="type-chip" onclick="setType('SPEC')">SPEC</div>
+        <div class="type-chip" onclick="setType('INVOICE')">INVOICE</div>
+        <div class="type-chip" onclick="setType('RECEIPT')">RECEIPT</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 5: DESCRIPTION -->
+<div class="section">
+  <div class="sec-label"><span class="sec-num">5</span>รายละเอียด</div>
+  <div class="card" id="desc-card">
+    <div class="field-row">
+      <div class="field-label">Description</div>
+      <input class="field-input" id="desc" placeholder="Scene01, LookbookA…" oninput="generate()">
+    </div>
+    <div class="field-row">
+      <div class="field-label">Sub-type</div>
+      <input class="field-input" id="subtype" placeholder="CAMA, 9x16, Item01…" oninput="generate()">
+    </div>
+  </div>
+</div>
+
+<!-- OUTPUT -->
+<div class="section">
+  <div class="sec-label"><span class="sec-num">↓</span>ชื่อไฟล์ที่ได้</div>
+</div>
+<div class="output-card cc-accent" id="output-card">
+  <div class="output-header cc-hdr" id="output-hdr">
+    <div class="output-hdr-title" id="output-hdr-title">Generated Files</div>
+    <button class="copy-all-btn cc-btn" id="copy-all-btn" onclick="copyAll()">Copy ทั้งหมด</button>
+  </div>
+  <div id="output-rows"></div>
+</div>
+
+<!-- NAS PATH -->
+<div class="nas-card cc-nas" id="nas-card">
+  <div class="nas-label">📁 NAS Folder Path</div>
+  <div class="nas-path" id="nas-path">—</div>
+  <button class="nas-copy-btn cc-btn" id="nas-copy-btn" onclick="copyNAS()">📋 Copy NAS Path</button>
+</div>
+
+<div class="hint-box" style="margin-top:10px;margin-bottom:0">
+  <div style="font-size:16px;flex-shrink:0">💡</div>
+  <div class="hint-text">กด copy ทีละไฟล์ หรือ "Copy ทั้งหมด" · ชื่อไฟล์ update ทันทีทุกครั้งที่แก้ไข · กด entity เพื่อเปลี่ยนสีธีม</div>
+</div>
+
+<!-- RICH MENU PREVIEW -->
+<div class="section" style="margin-top:16px">
+  <div class="sec-label" style="font-size:11px">LINE Rich Menu — ตัวอย่าง</div>
+  <div class="rich-menu-card">
+    <div class="rm-header">👩‍💼 ถั่ว (Admin) — 6 ปุ่ม</div>
+    <div class="rm-grid">
+      <div class="rm-btn"><div class="rm-icon">📋</div><div class="rm-label">สรุปงาน</div></div>
+      <div class="rm-btn"><div class="rm-icon">🗂</div><div class="rm-label">Projects</div></div>
+      <div class="rm-btn"><div class="rm-icon">✅</div><div class="rm-label">Tasks</div></div>
+      <div class="rm-btn"><div class="rm-icon">🗄</div><div class="rm-label">File Gen</div></div>
+      <div class="rm-btn"><div class="rm-icon">📦</div><div class="rm-label">Archives</div></div>
+      <div class="rm-btn"><div class="rm-icon">➕</div><div class="rm-label">เพิ่มงาน</div></div>
+    </div>
+  </div>
+  <div style="margin-top:8px">
+  <div class="rich-menu-card">
+    <div class="rm-header">👥 ทีม (Read-only) — 3 ปุ่ม</div>
+    <div class="rm-grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="rm-btn"><div class="rm-icon">📋</div><div class="rm-label">งานของฉัน</div></div>
+      <div class="rm-btn"><div class="rm-icon">📁</div><div class="rm-label">ไฟล์งาน</div></div>
+      <div class="rm-btn"><div class="rm-icon">💬</div><div class="rm-label">ติดต่อถั่ว</div></div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- HISTORY -->
+<div class="section" style="margin-top:16px">
+  <div class="sec-label" style="display:flex;justify-content:space-between;align-items:center">
+    <span><span class="sec-num" style="display:inline-flex">🕐</span> ประวัติล่าสุด</span>
+    <span style="font-size:11px;color:var(--blue);cursor:pointer;text-transform:none;letter-spacing:0;font-weight:600" onclick="clearHistory()">ล้างทั้งหมด</span>
+  </div>
+  <div class="card" id="history-list">
+    <div class="empty-history">ยังไม่มีประวัติ</div>
+  </div>
+</div>
+
+<div style="height:48px"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────
+const S = {
+  entity:'CC', type:'', wpFormat:'4x5',
+  history: JSON.parse(localStorage.getItem('fg-hist-v2')||'[]'),
+};
+
+// init date
+const now=new Date();
+document.getElementById('d-year').value=now.getFullYear();
+document.getElementById('d-month').value=String(now.getMonth()+1).padStart(2,'0');
+document.getElementById('d-day').value=String(now.getDate()).padStart(2,'0');
+
+// ── THEME MAP ─────────────────────────────────────────
+const THEME = {
+  CC:{
+    badge:'badge-cc', hdr:'cc-hdr', card:'cc-accent',
+    btn:'cc-btn', nas:'cc-nas', hdrTitle:'',
+    chipCls:'entity-cc', fieldCls:'entity-cc',
+  },
+  BG:{
+    badge:'badge-bg', hdr:'bg-hdr', card:'bg-accent',
+    btn:'bg-btn', nas:'bg-nas', hdrTitle:'bg-hdr',
+    chipCls:'entity-bg', fieldCls:'entity-bg',
+  },
+  TR:{
+    badge:'badge-tr', hdr:'tr-hdr', card:'tr-accent',
+    btn:'tr-btn', nas:'tr-nas', hdrTitle:'tr-hdr',
+    chipCls:'entity-tr', fieldCls:'entity-tr',
+  },
+};
+
+function applyTheme(e) {
+  const t = THEME[e];
+  // header badge
+  const hb = document.getElementById('header-badge');
+  hb.className = 'header-badge '+t.badge;
+  hb.textContent = e;
+  // output card border
+  const oc = document.getElementById('output-card');
+  oc.className = 'output-card '+t.card;
+  // output header
+  const oh = document.getElementById('output-hdr');
+  oh.className = 'output-header '+t.hdr;
+  document.getElementById('output-hdr-title').className = 'output-hdr-title '+(t.hdrTitle||'');
+  document.getElementById('copy-all-btn').className = 'copy-all-btn '+t.btn;
+  // NAS card
+  document.getElementById('nas-card').className = 'nas-card '+t.nas;
+  document.getElementById('nas-copy-btn').className = 'nas-copy-btn '+t.btn;
+  // type card — entity class for chip colors
+  const tc = document.getElementById('type-card');
+  tc.className = 'card '+t.chipCls;
+  // field card
+  const fc = document.getElementById('field-card');
+  fc.className = 'card '+t.fieldCls;
+  const dc = document.getElementById('desc-card');
+  dc.className = 'card '+t.fieldCls;
+}
+
+// ── ENTITY ────────────────────────────────────────────
+function setEntity(e) {
+  S.entity=e; S.type='';
+  document.querySelectorAll('.entity-btn').forEach(b=>b.classList.toggle('active',b.dataset.entity===e));
+  ['CC','BG','TR'].forEach(x=>document.getElementById('types-'+x).style.display=x===e?'block':'none');
+  document.querySelectorAll('.type-chip').forEach(c=>c.classList.remove('active'));
+  applyTheme(e);
+  generate();
+}
+
+function setType(t) {
+  S.type=t;
+  document.querySelectorAll('.type-chip').forEach(c=>c.classList.toggle('active',c.textContent.trim()===t||c.textContent.trim().startsWith(t)));
+  const isWP = S.entity==='BG' && t==='WETPLATE';
+  const wfr = document.getElementById('wp-fmt-row');
+  const wlb = document.getElementById('wp-lbl');
+  if(wfr) wfr.classList.toggle('show',isWP);
+  if(wlb) wlb.style.display=isWP?'block':'none';
+  generate();
+}
+
+function setWPFormat(f) {
+  S.wpFormat=f;
+  document.querySelectorAll('.wp-fmt-btn').forEach(b=>b.classList.toggle('active',b.dataset.fmt===f));
+  generate();
+}
+
+// ── BUILD ─────────────────────────────────────────────
+const EXT_MAP={
+  PHOTO:'raw',WETPLATE:'tiff',FILM:'tiff',FILM_35mm:'tiff',FILM_120:'tiff',
+  SCAN:'tiff',RETOUCH:'psd',SELECT:'tiff',VDO:'mov',MV:'mov',BTS:'mp4',
+  EDIT:'prproj',COLOR:'drp',ROUGHCUT:'mp4',REVIEW:'mp4',MASTER:'mov',
+  AUDIO:'aaf',MOTION:'aep',EXPORT:'mp4',POSTER:'psd',LAYOUT:'psd',
+  LOGO:'ai',COPY:'txt',BRIEF:'pdf',QUOTE:'pdf',CONTRACT:'pdf',INVOICE:'pdf',
+  CALLSHEET:'pdf',SHOTLIST:'xlsx',RECEIPT:'pdf',LOG:'xlsx',LOG_PLATE:'xlsx',
+  DESIGN:'ai',PATTERN:'ai',SPEC:'pdf',QC:'xlsx',LOOKBOOK:'raw',
+  IG:'psd',IG_STORY:'psd',SHOPEE:'psd',FB:'psd',
+};
+
+function gDate(){
+  const y=document.getElementById('d-year').value||'2026';
+  const m=(document.getElementById('d-month').value||'01').padStart(2,'0');
+  const d=(document.getElementById('d-day').value||'01').padStart(2,'0');
+  return y+m+d;
+}
+const gClient=()=>(document.getElementById('client').value||'CLIENT').toUpperCase().replace(/\s/g,'');
+const gProj=()=>(document.getElementById('project').value||'Project').replace(/\s/g,'');
+const gDesc=()=>document.getElementById('desc').value.replace(/\s/g,'');
+const gSub=()=>document.getElementById('subtype').value.replace(/\s/g,'');
+
+function buildBase() {
+  const t=S.type||'TYPE';
+  const wp=S.entity==='BG'&&t==='WETPLATE'?`_${S.wpFormat}`:'';
+  const desc=gDesc()?`_${gDesc()}`:'';
+  const sub=gSub()?`_${gSub()}`:'';
+  return `${gDate()}_${S.entity}_${gClient()}_${gProj()}_${t}${wp}${desc}${sub}`;
+}
+
+function getRows() {
+  const base=buildBase(), t=S.type||'TYPE', ext=EXT_MAP[t]||'file';
+  if(['PHOTO','FILM','FILM_35mm','FILM_120','SCAN','WETPLATE','LOOKBOOK','SELECT'].includes(t))
+    return [{label:'ไฟล์ที่ 1',name:`${base}_001.${ext}`},{label:'ไฟล์ที่ 2',name:`${base}_002.${ext}`},{label:'ไฟล์ที่ 3',name:`${base}_003.${ext}`},{label:'Selects',name:`${base}_SELECT_001.tiff`}];
+  if(['RETOUCH','POSTER','LAYOUT','DESIGN','PATTERN','IG','IG_STORY','SHOPEE','FB','LOGO'].includes(t))
+    return [{label:'ไฟล์ทำงาน v1',name:`${base}_v01.${ext}`},{label:'Version 2',name:`${base}_v02.${ext}`},{label:'Export',name:`${base}_EXPORT_v01.jpg`},{label:'Print/PDF',name:`${base}_PRINT_v01.pdf`}];
+  if(['VDO','MV'].includes(t))
+    return [{label:'Footage CAM A',name:`${base}_CAMA_001.mov`},{label:'Footage CAM B',name:`${base}_CAMB_001.mov`},{label:'BTS',name:`${base}_BTS_001.mp4`},{label:'Edit Project',name:`${base}_EDIT_v01.prproj`},{label:'XML → Color',name:`${base}_XML_v01.xml`},{label:'Color Project',name:`${base}_COLOR_v01.drp`},{label:'Rough Cut',name:`${base}_ROUGHCUT_v01.mp4`},{label:'Review v1',name:`${base}_REVIEW_v01.mp4`},{label:'Master',name:`${base}_MASTER_v01.mov`},{label:'YouTube 1080p',name:`${base}_YT_1080p_v01.mp4`},{label:'Reels 9:16',name:`${base}_REELS_9x16_v01.mp4`},{label:'Story 15s',name:`${base}_STORY_15s_v01.mp4`}];
+  if(['EDIT','COLOR','AUDIO','MOTION'].includes(t)) {
+    const ex={EDIT:'prproj',COLOR:'drp',AUDIO:'aaf',MOTION:'aep'};
+    return [{label:'Project v1',name:`${base}_v01.${ex[t]}`},{label:'Project v2',name:`${base}_v02.${ex[t]}`},{label:'Render',name:`${base}_RENDER_v01.${t==='COLOR'?'mov':'mp4'}`}];
+  }
+  if(t==='COPY') return [{label:'Copy IG',name:`${base}_IG_v01.txt`},{label:'Copy Shopee',name:`${base}_SHOPEE_v01.txt`},{label:'Copy FB',name:`${base}_FB_v01.txt`}];
+  if(t==='QC') return [{label:'QC Report',name:`${base}_v01.xlsx`},{label:'QC Photo 1',name:`${base}_PHOTO_001.jpg`}];
+  return [{label:'ไฟล์ v1',name:`${base}_v01.${ext}`},{label:'ไฟล์ v2',name:`${base}_v02.${ext}`}];
+}
+
+function getNASPath() {
+  const e=S.entity, t=S.type||'TYPE';
+  const root=e==='CC'?'CHARDCHAKAJ':e==='BG'?'BOONTA_GALLERY':'TRULY';
+  const sub=e==='TR'?'COLLECTIONS/':'';
+  return `NAS_ROOT/${root}/${sub}2026/${gDate().slice(0,6)}_${gClient()}_${gProj()}_${t}/`;
+}
+
+function colorize(name) {
+  const e=S.entity;
+  const ecls=`ent-${e.toLowerCase()}`;
+  const excls=`ext-${e.toLowerCase()}`;
+  const parts=name.split('_');
+  if(parts.length>1) parts[1]=`<span class="${ecls}">${parts[1]}</span>`;
+  const joined=parts.join('_');
+  const di=joined.lastIndexOf('.');
+  if(di>-1) return joined.slice(0,di)+`<span class="${excls}">`+joined.slice(di)+`</span>`;
+  return joined;
+}
+
+let allGen=[];
+function generate() {
+  const rows=getRows(); allGen=rows.map(r=>r.name);
+  document.getElementById('output-rows').innerHTML=rows.map((r,i)=>`
+    <div class="output-row">
+      <div class="output-type-label">${r.label}</div>
+      <div class="output-filename">${colorize(r.name)}</div>
+      <button class="copy-btn" id="cb${i}" onclick="copyOne(${i},'${r.name.replace(/'/g,"\\'")}')">📋</button>
+    </div>`).join('');
+  document.getElementById('nas-path').textContent=getNASPath();
+  document.getElementById('nas-copy-btn').classList.remove('copied');
+}
+
+function copyOne(i,name) {
+  navigator.clipboard.writeText(name).then(()=>{
+    const b=document.getElementById('cb'+i);
+    b.textContent='✅';b.classList.add('copied');
+    setTimeout(()=>{b.textContent='📋';b.classList.remove('copied');},2000);
+    toast('Copied!');addHistory(name);
+  }).catch(()=>toast('ก็อปไม่ได้'));
+}
+function copyAll() {
+  navigator.clipboard.writeText(allGen.join('\n')).then(()=>{
+    toast(`✅ Copied ${allGen.length} ชื่อไฟล์`);allGen.forEach(addHistory);
+  }).catch(()=>toast('ก็อปไม่ได้'));
+}
+function copyNAS() {
+  const btn=document.getElementById('nas-copy-btn');
+  navigator.clipboard.writeText(document.getElementById('nas-path').textContent).then(()=>{
+    btn.textContent='✅ Copied!';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='📋 Copy NAS Path';btn.classList.remove('copied');},2000);
+    toast('NAS Path copied!');
+  });
+}
+
+// ── HISTORY ──────────────────────────────────────────
+function addHistory(name) {
+  if(S.history.find(h=>h.name===name))return;
+  S.history.unshift({name,time:Date.now()});
+  if(S.history.length>20)S.history=S.history.slice(0,20);
+  localStorage.setItem('fg-hist-v2',JSON.stringify(S.history));
+  renderHistory();
+}
+function clearHistory(){S.history=[];localStorage.removeItem('fg-hist-v2');renderHistory();}
+function fmtTime(ts){const d=Date.now()-ts;if(d<60000)return'เมื่อกี้';if(d<3600000)return`${Math.floor(d/60000)} นาที`;if(d<86400000)return`${Math.floor(d/3600000)} ชม.`;return`${Math.floor(d/86400000)} วัน`;}
+function renderHistory(){
+  const el=document.getElementById('history-list');
+  if(!S.history.length){el.innerHTML='<div class="empty-history">ยังไม่มีประวัติ — copy ชื่อไฟล์แล้วจะเก็บที่นี่</div>';return;}
+  el.innerHTML=S.history.map((h,i)=>`
+    <div class="history-item" onclick="navigator.clipboard.writeText('${h.name.replace(/'/g,"\\'")}').then(()=>toast('Copied!'))">
+      <div class="history-filename">${h.name}</div>
+      <div class="history-time">${fmtTime(h.time)}</div>
+      <button class="history-del" onclick="event.stopPropagation();S.history.splice(${i},1);localStorage.setItem('fg-hist-v2',JSON.stringify(S.history));renderHistory()">×</button>
+    </div>`).join('');
+}
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
+
+// ── INIT ──────────────────────────────────────────────
+applyTheme('CC');
+generate();
+renderHistory();
+</script>
+</body>
+</html>

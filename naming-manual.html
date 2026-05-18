@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>คู่มือการตั้งชื่อไฟล์ — Chardchakaj / Boonta Gallery / Truly</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  --cc: #1A1A2E;   /* Chardchakaj — navy */
+  --cc2: #E8E8F0;
+  --bg: #2C5F8A;   /* Boonta Gallery — blue */
+  --bg2: #E8F0F8;
+  --tr: #2D6A4F;   /* Truly — green */
+  --tr2: #E8F4EE;
+  --ink: #1C1C1E;
+  --ink2: #3C3C43;
+  --ink3: #6B6B6B;
+  --line: #E0E0E0;
+  --highlight: #FFF3CD;
+  --code-bg: #F5F5F5;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+  background: #FAFAFA;
+  line-height: 1.6;
+}
+
+/* ── PRINT ── */
+@media print {
+  body { background: white; font-size: 12px; }
+  .no-print { display: none; }
+  .page-break { page-break-before: always; }
+  .section { break-inside: avoid; }
+  a { color: inherit; text-decoration: none; }
+}
+
+/* ── COVER ── */
+.cover {
+  background: var(--ink);
+  color: white;
+  padding: 60px 48px 48px;
+  margin-bottom: 0;
+  position: relative;
+  overflow: hidden;
+}
+.cover::after {
+  content: '';
+  position: absolute;
+  right: -40px; bottom: -40px;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.04);
+}
+.cover-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: .15em;
+  text-transform: uppercase; color: rgba(255,255,255,.5);
+  margin-bottom: 16px;
+}
+.cover-title {
+  font-size: 32px; font-weight: 700; line-height: 1.2;
+  margin-bottom: 8px;
+}
+.cover-sub { font-size: 16px; color: rgba(255,255,255,.7); margin-bottom: 32px; }
+.cover-entities { display: flex; gap: 12px; flex-wrap: wrap; }
+.entity-chip {
+  padding: 6px 16px; border-radius: 20px;
+  font-size: 12px; font-weight: 600; letter-spacing: .03em;
+}
+.chip-cc { background: var(--cc); color: white; border: 1px solid rgba(255,255,255,.2); }
+.chip-bg { background: var(--bg); color: white; }
+.chip-tr { background: var(--tr); color: white; }
+.cover-meta {
+  margin-top: 40px; padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,.15);
+  font-size: 12px; color: rgba(255,255,255,.4);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+/* ── TOC ── */
+.toc {
+  background: white;
+  border: 1px solid var(--line);
+  padding: 32px 48px;
+  margin-bottom: 0;
+}
+.toc-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+.toc-item {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 6px 0; border-bottom: 1px dotted var(--line);
+  font-size: 13px;
+}
+.toc-item:last-child { border-bottom: none; }
+.toc-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink3); width: 24px; flex-shrink: 0; }
+.toc-label { flex: 1; }
+.toc-entity { font-size: 10px; font-weight: 600; padding: 1px 8px; border-radius: 4px; margin-left: 4px; }
+
+/* ── CONTENT ── */
+.content { max-width: 900px; margin: 0 auto; background: white; }
+
+.chapter {
+  padding: 40px 48px 32px;
+  border-bottom: 2px solid var(--line);
+}
+
+.chapter-header {
+  display: flex; align-items: flex-start; gap: 16px;
+  margin-bottom: 28px; padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+.chapter-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; color: var(--ink3);
+  letter-spacing: .1em; margin-top: 4px;
+}
+.chapter-title { font-size: 22px; font-weight: 700; line-height: 1.2; }
+.chapter-desc { font-size: 14px; color: var(--ink2); margin-top: 4px; }
+
+.entity-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: 6px;
+  font-size: 11px; font-weight: 700; letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.badge-cc { background: var(--cc2); color: var(--cc); }
+.badge-bg { background: var(--bg2); color: var(--bg); }
+.badge-tr { background: var(--tr2); color: var(--tr); }
+.badge-all { background: #F0F0F0; color: var(--ink2); }
+
+/* ── FORMAT BOX ── */
+.format-box {
+  background: var(--ink);
+  color: white;
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin: 16px 0;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.format-box .label {
+  font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+  color: rgba(255,255,255,.4); margin-bottom: 10px;
+}
+.format-box .formula {
+  font-size: 15px; font-weight: 500; line-height: 1.8;
+  color: #F0F0F0;
+}
+.format-box .formula .bracket {
+  color: #FF9F0A;
+}
+.format-box .formula .sep {
+  color: rgba(255,255,255,.3);
+}
+.format-box .formula .ext {
+  color: #30D158;
+}
+
+/* ── FIELD TABLE ── */
+.field-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 13px;
+}
+.field-table th {
+  background: #F5F5F5;
+  text-align: left;
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--ink3);
+  border-bottom: 2px solid var(--line);
+}
+.field-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.field-table tr:last-child td { border-bottom: none; }
+.field-table tr:hover td { background: #FAFAFA; }
+.field-name {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px; font-weight: 500;
+  color: var(--cc);
+  white-space: nowrap;
+}
+.field-req {
+  display: inline-block;
+  width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 4px; vertical-align: middle;
+}
+.req { background: #FF3B30; }
+.opt { background: #AEAEB2; }
+.req-label { font-size: 10px; color: var(--ink3); }
+
+/* ── EXAMPLE BOX ── */
+.example-box {
+  background: var(--code-bg);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--cc);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 12px 0;
+}
+.example-box.bg-accent { border-left-color: var(--bg); }
+.example-box.tr-accent { border-left-color: var(--tr); }
+.example-label {
+  font-size: 10px; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink3); margin-bottom: 8px;
+}
+.example-file {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px; line-height: 2; color: var(--ink);
+}
+.example-file .comment {
+  color: var(--ink3); font-size: 11px;
+  display: block; margin-top: -2px; margin-bottom: 4px;
+  font-family: 'Sarabun', sans-serif;
+}
+
+/* ── TYPE TABLE ── */
+.type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+.type-card {
+  background: var(--code-bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.type-code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px; font-weight: 500; color: var(--ink);
+  margin-bottom: 4px;
+}
+.type-desc { font-size: 12px; color: var(--ink3); }
+
+/* ── RULE BOX ── */
+.rule-box {
+  background: var(--highlight);
+  border: 1px solid #E6C800;
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin: 16px 0;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.rule-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.rule-text { font-size: 13px; line-height: 1.6; }
+.rule-text strong { font-weight: 700; }
+
+/* ── DO/DON'T ── */
+.do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+@media(max-width: 600px) { .do-dont { grid-template-columns: 1fr; } }
+.do-box, .dont-box {
+  border-radius: 8px; padding: 14px 16px;
+}
+.do-box { background: #EDFAF0; border: 1px solid #34C759; }
+.dont-box { background: #FFF0EF; border: 1px solid #FF3B30; }
+.do-label { font-size: 11px; font-weight: 700; color: #34C759; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .08em; }
+.dont-label { font-size: 11px; font-weight: 700; color: #FF3B30; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .08em; }
+.do-item, .dont-item {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; line-height: 1.8;
+}
+
+/* ── SECTION HEADER ── */
+.sec-header {
+  font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--ink3);
+  margin: 24px 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+
+/* ── FOLDER TREE ── */
+.folder-tree {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px; line-height: 1.9;
+  background: #F8F8F8;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 12px 0;
+  color: var(--ink);
+  overflow-x: auto;
+}
+.folder-tree .folder { color: #007AFF; font-weight: 500; }
+.folder-tree .file { color: var(--ink2); }
+.folder-tree .comment { color: var(--ink3); }
+
+/* ── PHASE BADGE ── */
+.phase-badge {
+  display: inline-flex; align-items: center;
+  gap: 6px; padding: 3px 10px;
+  border-radius: 4px; font-size: 11px; font-weight: 600;
+  background: #F0F0F0; color: var(--ink2);
+  margin: 2px;
+}
+
+/* ── FOOTER ── */
+.footer {
+  background: var(--ink);
+  color: rgba(255,255,255,.5);
+  padding: 24px 48px;
+  font-size: 11px;
+  font-family: 'IBM Plex Mono', monospace;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 8px;
+}
+
+h3 { font-size: 15px; font-weight: 700; margin: 20px 0 8px; color: var(--ink); }
+p { margin-bottom: 10px; color: var(--ink2); font-size: 14px; }
+ul { padding-left: 20px; margin-bottom: 10px; }
+ul li { margin-bottom: 4px; font-size: 13px; color: var(--ink2); }
+
+/* ── PRINT BUTTON ── */
+.print-btn {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--ink); color: white;
+  border: none; border-radius: 12px;
+  padding: 12px 20px; font-size: 14px; font-weight: 600;
+  cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,.2);
+  font-family: 'Sarabun', sans-serif;
+  display: flex; align-items: center; gap: 6px;
+  z-index: 100;
+}
+.print-btn:hover { opacity: .85; }
+</style>
+</head>
+<body>
+
+<!-- PRINT BUTTON -->
+<button class="print-btn no-print" onclick="window.print()">🖨 Print / Save PDF</button>
+
+<div class="content">
+
+<!-- ── COVER ── -->
+<div class="cover">
+  <div class="cover-tag">Internal Document · v1.0 · 2026</div>
+  <div class="cover-title">คู่มือการตั้งชื่อไฟล์<br>และจัดการโฟลเดอร์</div>
+  <div class="cover-sub">File Naming Convention & Folder Structure</div>
+  <div class="cover-entities">
+    <div class="entity-chip chip-cc">Chardchakaj</div>
+    <div class="entity-chip chip-bg">Boonta Gallery</div>
+    <div class="entity-chip chip-tr">Truly</div>
+  </div>
+  <div class="cover-meta">
+    จัดทำโดย Operate Lead · ใช้กับทุกไฟล์งานในบริษัท · NAS + iCloud + Local
+  </div>
+</div>
+
+<!-- ── TOC ── -->
+<div class="toc">
+  <div class="toc-title">สารบัญ</div>
+  <div class="toc-item"><div class="toc-num">01</div><div class="toc-label">หลักการพื้นฐาน — ทำไมต้องตั้งชื่อให้ถูก</div></div>
+  <div class="toc-item"><div class="toc-num">02</div><div class="toc-label">Format หลัก — โครงสร้างชื่อไฟล์</div></div>
+  <div class="toc-item"><div class="toc-num">03</div><div class="toc-label">รหัส Entity — CC / BG / TR <span class="toc-entity badge-all">ทุกบริษัท</span></div></div>
+  <div class="toc-item"><div class="toc-num">04</div><div class="toc-label">รหัส Type — ประเภทงานทั้งหมด</div></div>
+  <div class="toc-item"><div class="toc-num">05</div><div class="toc-label">Chardchakaj — งานถ่ายภาพ / วีดิโอ / MV <span class="toc-entity badge-cc">CC</span></div></div>
+  <div class="toc-item"><div class="toc-num">06</div><div class="toc-label">Boonta Gallery — Wet Plate / ฟิล์ม / Fine Art <span class="toc-entity badge-bg">BG</span></div></div>
+  <div class="toc-item"><div class="toc-num">07</div><div class="toc-label">Truly — แฟชั่น / Collection / Marketing <span class="toc-entity badge-tr">TR</span></div></div>
+  <div class="toc-item"><div class="toc-num">08</div><div class="toc-label">Version Control — การจัดการ v01, v02...</div></div>
+  <div class="toc-item"><div class="toc-num">09</div><div class="toc-label">NAS Folder Structure — โครงสร้างโฟลเดอร์</div></div>
+  <div class="toc-item"><div class="toc-num">10</div><div class="toc-label">ข้อห้าม — Do & Don't</div></div>
+  <div class="toc-item"><div class="toc-num">11</div><div class="toc-label">Quick Reference Card</div></div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- CHAPTER 01 -->
+<!-- ══════════════════════════════════ -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div>
+      <div class="chapter-num">CHAPTER 01</div>
+      <div class="chapter-title">หลักการพื้นฐาน</div>
+      <div class="chapter-desc">ทำไมการตั้งชื่อไฟล์ให้ถูกต้องถึงสำคัญ</div>
+    </div>
+  </div>
+
+  <p>ไฟล์งานทุกชิ้นในบริษัทถูกจัดเก็บใน NAS ซึ่งมีหลาย entity หลาย project และหลายคนเข้าถึง การตั้งชื่อไฟล์ที่ถูกต้องทำให้</p>
+  <ul>
+    <li>ค้นหาไฟล์ได้ทันทีโดยไม่ต้องเปิดดูทีละไฟล์</li>
+    <li>รู้ทันทีว่าไฟล์นี้เป็นของบริษัทไหน ลูกค้าไหน ประเภทอะไร version อะไร</li>
+    <li>ป้องกันการ overwrite ไฟล์ที่ยังใช้งานอยู่</li>
+    <li>สมาชิกใหม่เข้าใจ structure ได้ทันทีโดยไม่ต้องถาม</li>
+    <li>Archive งานได้อย่างมีระบบ ค้นย้อนหลังได้หลายปี</li>
+  </ul>
+
+  <div class="rule-box">
+    <div class="rule-icon">📌</div>
+    <div class="rule-text"><strong>กฎสำคัญที่สุด:</strong> ใช้ underscore (_) แทน space เสมอ ห้ามใช้ภาษาไทยในชื่อไฟล์ ห้ามใช้อักขระพิเศษ เช่น !, @, #, (, ), /, \</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- CHAPTER 02 -->
+<!-- ══════════════════════════════════ -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div>
+      <div class="chapter-num">CHAPTER 02</div>
+      <div class="chapter-title">Format หลัก</div>
+      <div class="chapter-desc">โครงสร้างชื่อไฟล์ที่ใช้กับทุกบริษัท</div>
+    </div>
+    <div class="entity-badge badge-all">ทุกบริษัท</div>
+  </div>
+
+  <div class="format-box">
+    <div class="label">MASTER FORMAT</div>
+    <div class="formula">
+      <span class="bracket">[YYYYMMDD]</span>
+      <span class="sep">_</span>
+      <span class="bracket">[ENTITY]</span>
+      <span class="sep">_</span>
+      <span class="bracket">[CLIENT/PROJECT]</span>
+      <span class="sep">_</span>
+      <span class="bracket">[TYPE]</span>
+      <span class="sep">_</span>
+      <span class="bracket">[DESCRIPTION]</span>
+      <span class="sep">_</span>
+      <span class="bracket">[VERSION/SEQ]</span>
+      <span class="ext">.[EXT]</span>
+    </div>
+  </div>
+
+  <table class="field-table">
+    <tr>
+      <th>ตำแหน่ง</th>
+      <th>ฟิลด์</th>
+      <th>รูปแบบ</th>
+      <th>ตัวอย่าง</th>
+      <th>หมายเหตุ</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td><span class="field-name">[YYYYMMDD]</span><br><span class="req-label"><span class="field-req req"></span>จำเป็น</span></td>
+      <td>8 หลัก ปีเดือนวัน</td>
+      <td><code>20260518</code></td>
+      <td>วันที่ถ่าย / สร้างไฟล์</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><span class="field-name">[ENTITY]</span><br><span class="req-label"><span class="field-req req"></span>จำเป็น</span></td>
+      <td>2 ตัวอักษร</td>
+      <td><code>CC</code> / <code>BG</code> / <code>TR</code></td>
+      <td>รหัสบริษัท ดูบทที่ 03</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><span class="field-name">[CLIENT/PROJECT]</span><br><span class="req-label"><span class="field-req req"></span>จำเป็น</span></td>
+      <td>ชื่อย่อ ไม่เกิน 15 ตัว</td>
+      <td><code>THAIMART</code> / <code>NIKE</code></td>
+      <td>ใช้ชื่อย่อที่ตกลงกันไว้ใน Sheet</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><span class="field-name">[TYPE]</span><br><span class="req-label"><span class="field-req req"></span>จำเป็น</span></td>
+      <td>รหัส TYPE</td>
+      <td><code>PHOTO</code> / <code>VDO</code></td>
+      <td>ดูบทที่ 04</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td><span class="field-name">[DESCRIPTION]</span><br><span class="req-label"><span class="field-req opt"></span>แนะนำ</span></td>
+      <td>ชื่อย่อ scene/item</td>
+      <td><code>LookbookA</code> / <code>Scene03</code></td>
+      <td>อธิบาย content ของไฟล์</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td><span class="field-name">[VERSION/SEQ]</span><br><span class="req-label"><span class="field-req req"></span>จำเป็น</span></td>
+      <td>v## หรือ ### (3 หลัก)</td>
+      <td><code>v01</code> / <code>001</code></td>
+      <td>ไฟล์ project ใช้ v## / ไฟล์ภาพใช้ ###</td>
+    </tr>
+  </table>
+
+  <div class="rule-box">
+    <div class="rule-icon">💡</div>
+    <div class="rule-text"><strong>Version vs Sequence:</strong> ไฟล์ที่มีการแก้ไข (edit, retouch, poster) ใช้ <code>v01, v02...</code> / ไฟล์ภาพถ่ายที่เป็น sequence ใช้ <code>001, 002...</code></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- CHAPTER 03 -->
+<!-- ══════════════════════════════════ -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div>
+      <div class="chapter-num">CHAPTER 03</div>
+      <div class="chapter-title">รหัส Entity</div>
+      <div class="chapter-desc">ระบุว่าไฟล์นี้เป็นของบริษัทไหน</div>
+    </div>
+  </div>
+
+  <table class="field-table">
+    <tr>
+      <th>รหัส</th>
+      <th>บริษัท</th>
+      <th>ประเภทงานหลัก</th>
+      <th>ตัวอย่างไฟล์</th>
+    </tr>
+    <tr>
+      <td><strong style="color:var(--cc);font-family:'IBM Plex Mono',monospace;font-size:15px">CC</strong></td>
+      <td><strong>Chardchakaj</strong><br><span style="font-size:12px;color:var(--ink3)">งานรับจ้างส่วนตัว</span></td>
+      <td>ถ่ายภาพ, วีดิโอ, MV<br>รับงาน commercial ทั่วไป</td>
+      <td><code style="font-size:11px">20260518_CC_NIKE_VDO_CampaignA_v01.prproj</code></td>
+    </tr>
+    <tr>
+      <td><strong style="color:var(--bg);font-family:'IBM Plex Mono',monospace;font-size:15px">BG</strong></td>
+      <td><strong>Boonta Gallery</strong><br><span style="font-size:12px;color:var(--ink3)">Fine art photography</span></td>
+      <td>Wet plate collodion<br>Large format, ฟิล์ม, Fine art</td>
+      <td><code style="font-size:11px">20260518_BG_PORTRAIT_WP_8x10_001.tiff</code></td>
+    </tr>
+    <tr>
+      <td><strong style="color:var(--tr);font-family:'IBM Plex Mono',monospace;font-size:15px">TR</strong></td>
+      <td><strong>Truly</strong><br><span style="font-size:12px;color:var(--ink3)">แบรนด์แฟชั่น</span></td>
+      <td>Collection, lookbook<br>Marketing, Shopee, IG</td>
+      <td><code style="font-size:11px">20260518_TR_CollectionA_PHOTO_Lookbook_001.raw</code></td>
+    </tr>
+  </table>
+
+  <div class="rule-box">
+    <div class="rule-icon">⚠️</div>
+    <div class="rule-text"><strong>งานที่ overlap:</strong> ถ้าเจ้านายถ่ายภาพให้ Truly ในนามส่วนตัว ใช้ <code>TR</code> เพราะ client คือ Truly / ถ้ารับงานภายนอกผ่าน Boonta Gallery ใช้ <code>BG</code></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- CHAPTER 04 -->
+<!-- ══════════════════════════════════ -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div>
+      <div class="chapter-num">CHAPTER 04</div>
+      <div class="chapter-title">รหัส Type</div>
+      <div class="chapter-desc">ระบุประเภทของไฟล์ / งาน</div>
+    </div>
+    <div class="entity-badge badge-all">ทุกบริษัท</div>
+  </div>
+
+  <div class="sec-header">งานภาพนิ่ง</div>
+  <div class="type-grid">
+    <div class="type-card"><div class="type-code">PHOTO</div><div class="type-desc">ถ่ายภาพดิจิตอลทั่วไป</div></div>
+    <div class="type-card"><div class="type-code">WETPLATE</div><div class="type-desc">Wet plate collodion ทุก format</div></div>
+    <div class="type-card"><div class="type-code">FILM</div><div class="type-desc">ฟิล์ม (scan จากม้วน)</div></div>
+    <div class="type-card"><div class="type-code">SCAN</div><div class="type-desc">Scan ไฟล์จากอุปกรณ์อื่น</div></div>
+    <div class="type-card"><div class="type-code">RETOUCH</div><div class="type-desc">ไฟล์ retouch / retouching</div></div>
+    <div class="type-card"><div class="type-code">SELECT</div><div class="type-desc">รูปที่คัดเลือกแล้ว (selects)</div></div>
+  </div>
+
+  <div class="sec-header">งานวีดิโอ</div>
+  <div class="type-grid">
+    <div class="type-card"><div class="type-code">VDO</div><div class="type-desc">วีดิโอทั่วไป / commercial</div></div>
+    <div class="type-card"><div class="type-code">MV</div><div class="type-desc">Music Video</div></div>
+    <div class="type-card"><div class="type-code">BTS</div><div class="type-desc">Behind the Scenes</div></div>
+    <div class="type-card"><div class="type-code">EDIT</div><div class="type-desc">ไฟล์ project ตัดต่อ</div></div>
+    <div class="type-card"><div class="type-code">COLOR</div><div class="type-desc">ไฟล์ color grade (DaVinci)</div></div>
+    <div class="type-card"><div class="type-code">AUDIO</div><div class="type-desc">ไฟล์เสียง / mix</div></div>
+    <div class="type-card"><div class="type-code">MOTION</div><div class="type-desc">Motion graphics / After Effects</div></div>
+    <div class="type-card"><div class="type-code">ROUGHCUT</div><div class="type-desc">Rough cut ส่ง review</div></div>
+    <div class="type-card"><div class="type-code">REVIEW</div><div class="type-desc">ไฟล์ส่ง proof / review</div></div>
+    <div class="type-card"><div class="type-code">MASTER</div><div class="type-desc">Final master ส่งลูกค้า</div></div>
+    <div class="type-card"><div class="type-code">EXPORT</div><div class="type-desc">Export สำหรับ platform</div></div>
+  </div>
+
+  <div class="sec-header">งานดีไซน์ / สิ่งพิมพ์</div>
+  <div class="type-grid">
+    <div class="type-card"><div class="type-code">POSTER</div><div class="type-desc">โปสเตอร์ / banner โฆษณา</div></div>
+    <div class="type-card"><div class="type-code">LAYOUT</div><div class="type-desc">Layout งานดีไซน์ทั่วไป</div></div>
+    <div class="type-card"><div class="type-code">LOGO</div><div class="type-desc">ไฟล์ logo / branding</div></div>
+    <div class="type-card"><div class="type-code">COPY</div><div class="type-desc">Copywriting / text content</div></div>
+    <div class="type-card"><div class="type-code">PRINT</div><div class="type-desc">ไฟล์พร้อมพิมพ์ (print-ready)</div></div>
+  </div>
+
+  <div class="sec-header">งาน Truly (แฟชั่น)</div>
+  <div class="type-grid">
+    <div class="type-card"><div class="type-code">DESIGN</div><div class="type-desc">ออกแบบลาย / pattern เสื้อ</div></div>
+    <div class="type-card"><div class="type-code">SPEC</div><div class="type-desc">Spec sheet / ใบสั่งผลิต</div></div>
+    <div class="type-card"><div class="type-code">QC</div><div class="type-desc">รายงาน QC / ตรวจสินค้า</div></div>
+    <div class="type-card"><div class="type-code">LOOKBOOK</div><div class="type-desc">ภาพ lookbook collection</div></div>
+    <div class="type-card"><div class="type-code">IG</div><div class="type-desc">ไฟล์สำหรับ Instagram</div></div>
+    <div class="type-card"><div class="type-code">SHOPEE</div><div class="type-desc">ไฟล์สำหรับ Shopee listing</div></div>
+  </div>
+
+  <div class="sec-header">เอกสาร</div>
+  <div class="type-grid">
+    <div class="type-card"><div class="type-code">BRIEF</div><div class="type-desc">Creative brief / project brief</div></div>
+    <div class="type-card"><div class="type-code">QUOTE</div><div class="type-desc">ใบเสนอราคา</div></div>
+    <div class="type-card"><div class="type-code">CONTRACT</div><div class="type-desc">สัญญา / contract</div></div>
+    <div class="type-card"><div class="type-code">INVOICE</div><div class="type-desc">ใบแจ้งหนี้ / invoice</div></div>
+    <div class="type-card"><div class="type-code">CALLSHEET</div><div class="type-desc">Call sheet วันถ่าย</div></div>
+    <div class="type-card"><div class="type-code">SHOTLIST</div><div class="type-desc">Shot list / script</div></div>
+    <div class="type-card"><div class="type-code">RECEIPT</div><div class="type-desc">ใบส่งงาน / delivery receipt</div></div>
+    <div class="type-card"><div class="type-code">LOG</div><div class="type-desc">บันทึก chemistry / equipment</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- CHAPTER 05 -->
+<!-- ══════════════════════════════════ -->
+<div class="chapter page-break">
+  <div class="chapter-header">
+    <div>
+      <div class="chapter-num">CHAPTER 05</div>
+      <div class="chapter-title">Chardchakaj</div>
+      <div class="chapter-desc">งานถ่ายภาพ / วีดิโอ / MV รับจ้างส่วนตัว</div>
+    </div>
+    <div class="entity-badge badge-cc">CC</div>
+  </div>
+
+  <div class="sec-header">ไฟล์ภาพนิ่ง</div>
+  <div class="format-box">
+    <div class="label">FORMAT — PHOTO</div>
+    <div class="formula">
+      <span class="bracket">[YYYYMMDD]</span><span class="sep">_CC_</span><span class="bracket">[CLIENT]</span><span class="sep">_PHOTO_</span><span class="bracket">[SCENE]</span><span class="sep">_</span><span class="bracket">[###]</span><span class="ext">.[raw/jpg/tiff]</span>
+    </div>
+  </div>
+  <div class="example-box">
+    <div class="example-label">ตัวอย่าง — RAW จากกล้อง</div>
+    <div class="example-file">
+      20260518_CC_NIKE_PHOTO_Scene01_001.raw
+      <span class="comment">→ วันที่ 18 พ.ค. 2026 / Chardchakaj / ลูกค้า NIKE / ถ่ายภาพ / Scene 1 / รูปที่ 1</span>
+      20260518_CC_NIKE_PHOTO_Scene01_002.raw
+      20260518_CC_NIKE_PHOTO_Scene01_SELECT_001.tiff
+      <span class="comment">→ รูปที่คัดแล้ว export เป็น TIFF</span>
+    </div>
+  </div>
+
+  <div class="sec-header">ไฟล์วีดิโอ / MV</div>
+  <div class="format-box">
+    <div class="label">FORMAT — VIDEO PROJECT FILES</div>
+    <div class="formula">
+      <span class="bracket">[YYYYMMDD]</span><span class="sep">_CC_</span><span class="bracket">[CLIENT]</span><span class="sep">_</span><span class="bracket">[VDO/MV]</span><span class="sep">_</span><span class="bracket">[PROJECTNAME]</span><span class="sep">_</span><span class="bracket">[TYPE]</span><span class="sep">_</span><span class="bracket">[v##]</span><span class="ext">.[ext]</span>
+    </div>
+  </div>
+  <div class="example-box">
+    <div class="example-label">ตัวอย่าง — VDO Workflow ทั้ง pipeline</div>
+    <div class="example-file">
+      <span class="comment">— RAW Footage —</span>
+      20260518_CC_BRAND_VDO_CampaignA_CAMA_001.mov
+      20260518_CC_BRAND_VDO_CampaignA_CAMB_001.mov
+      20260518_CC_BRAND_VDO_CampaignA_BTS_001.mp4
+
+      <span class="comment">— Post Production —</span>
+      20260518_CC_BRAND_VDO_CampaignA_EDIT_v01.prproj
+      <span class="comment">→ ไฟล์ Premiere ที่ Editor ทำงาน</span>
+      20260518_CC_BRAND_VDO_CampaignA_ROUGHCUT_v01.mp4
+      <span class="comment">→ ส่งให้ review ครั้งแรก</span>
+      20260518_CC_BRAND_VDO_CampaignA_XML_v01.xml
+      <span class="comment">→ export ให้ Colorist แยกไปทำ Color Grade</span>
+      20260518_CC_BRAND_VDO_CampaignA_COLOR_v01.drp
+      <span class="comment">→ ไฟล์ DaVinci Resolve ของ Colorist</span>
+      20260518_CC_BRAND_VDO_CampaignA_REVIEW_v02.mp4
+      <span class="comment">→ ส่ง review ครั้งที่ 2 หลัง grade</span>
+      20260518_CC_BRAND_VDO_CampaignA_MASTER_v01.mov
+      <span class="comment">→ Final master ProRes ส่งลูกค้า</span>
+
+      <span class="comment">— Export per Platform —</span>
+      20260518_CC_BRAND_VDO_CampaignA_YT_1080p_v01.mp4
+      20260518_CC_BRAND_VDO_CampaignA_REELS_9x16_v01.mp4
+      20260518_CC_BRAND_VDO_CampaignA_STORY_15s_v01.mp4
+    </div>
+  </div>
+
+  <div class="sec-header">เอกสารประกอบ</div>
+  <div class="example-box">
+    <div class="example-label">ตัวอย่าง — เอกสาร Pre-Production</div>
+    <div class="example-file">
+      20260515_CC_BRAND_QUOTE_CampaignA_v01.pdf
+      <span class="comment">→ ใบเสนอราคา ส่งก่อนวันถ่าย</span>
+      20260516_CC_BRAND_CONTRACT_CampaignA_v01.pdf
+      20260517_CC_BRAND_CALLSHEET_Day1_v01.pdf
+      <span class="comment">→ Call sheet มีวันระบุ day ด้วย</span>
+      20260517_CC_BRAND_SHOTLIST_CampaignA_v01.xlsx
+      20260519_CC_BRAND_INVOICE_CampaignA_v01.pdf
+      20260520_CC_BRAND_RECEIPT_CampaignA_v01.pdf
+      <span class="comment">→ ใบส่งงาน ออกหลังส่งไฟล์จริงแล้ว</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- CHAPTER 06 -->
+<!-- ══════════════════════════════════ -->
+<div class="chapter page-break">
+  <div class="chapter-header">
+    <div>
+      <div class="chapter-num">CHAPTER 06</div>
+      <div class="chapter-title">Boonta Gallery</div>
+      <div class="chapter-desc">Wet Plate Collodion / Large Format / Fine Art Photography</div>
+    </div>
+    <div class="entity-badge badge-bg">BG</div>
+  </div>
+
+  <p>งาน Boonta Gallery มีความพิเศษตรงที่ไฟล์ TIFF จาก scan มีขนาดใหญ่มาก และต้องระบุ <strong>format ของกล้อง</strong> ในชื่อไฟล์ด้วย เพื่อให้รู้ทันทีว่า plate ขนาดไหน</p>
+
+  <div class="sec-header">รหัส Large Format</div>
+  <div class="type-grid">
+    <div class="type-card"><div class="type-code">4x5</div><div class="type-desc">Large Format 4×5 นิ้ว</div></div>
+    <div class="type-card"><div class="type-code">5x7</div><div class="type-desc">Large Format 5×7 นิ้ว</div></div>
+    <div class="type-card"><div class="type-code">8x10</div><div class="type-desc">Large Format 8×10 นิ้ว</div></div>
+    <div class="type-card"><div class="type-code">16x20</div><div class="type-desc">Large Format 16×20 นิ้ว</div></div>
+    <div class="type-card"><div class="type-code">DIG</div><div class="type-desc">กล้องดิจิตอล</div></div>
+    <div class="type-card"><div class="type-code">FILM</div><div class="type-desc">ฟิล์ม (ระบุ format ต่อท้าย)</div></div>
+  </div>
+
+  <div class="sec-header">Wet Plate — Format</div>
+  <div class="format-box">
+    <div class="label">FORMAT — WET PLATE SCAN</div>
+    <div class="formula">
+      <span class="bracket">[YYYYMMDD]</span><span class="sep">_BG_</span><span class="bracket">[CLIENT/SESSION]</span><span class="sep">_WP_</span><span class="bracket">[FORMAT]</span><span class="sep">_</span><span class="bracket">[###]</span><span class="ext">.tiff</span>
+    </div>
+  </div>
+  <div class="example-box bg-accent">
+    <div class="example-label">ตัวอย่าง — Wet Plate Sessions</div>
+    <div class="example-file">
+      20260518_BG_SMITH_WP_8x10_001.tiff
+      <span class="comment">→ 18 พ.ค. / Boonta Gallery / ลูกค้า SMITH / Wet Plate / 8×10 / plate แรก</span>
+      20260518_BG_SMITH_WP_8x10_002.tiff
+      20260518_BG_SMITH_WP_8x10_SELECT_001.tiff
+      <span class="comment">→ plate ที่คัดแล้ว ย้ายเข้า SELECTS folder</span>
+      20260518_BG_OPENHOUSE_WP_4x5_001.tiff
+      <span class="comment">→ session Open House ใช้กล้อง 4×5</span>
+      20260518_BG_OPENHOUSE_WP_16x20_001.tiff
+      <span class="comment">→ plate ใหญ่ 16×20 ระบุ format ชัดเจน</span>
+    </div>
+  </div>
+
+  <div class="sec-header">ภาพดิจิตอล / ฟิล์ม</div>
+  <div class="example-box bg-accent">
+    <div class="example-label">ตัวอย่าง — Digital + Film</div>
+    <div class="example-file">
+      20260518_BG_PORTRAIT_PHOTO_DIG_001.raw
+      <span class="comment">→ ถ่ายด้วยกล้องดิจิตอล</span>
+      20260518_BG_PORTRAIT_FILM_120_SCAN_001.tiff
+      <span class="comment">→ ฟิล์ม 120 scan แล้ว</span>
+      20260518_BG_PORTRAIT_FILM_35mm_SCAN_001.tiff
+      <span class="comment">→ ฟิล์ม 35mm scan แล้ว</span>
+    </div>
+  </div>
+
+  <div class="sec-header">Chemistry Log — สำคัญมาก</div>
+  <div class="example-box bg-accent">
+    <div class="example-label">ตัวอย่าง — บันทึกน้ำยา</div>
+    <div class="example-file">
+      20260518_BG_SMITH_LOG_Chemistry_v01.xlsx
+      <span class="comment">→ บันทึก formula น้ำยาที่ใช้วันนั้น</span>
+      20260518_BG_SMITH_LOG_PlateCondition_v01.xlsx
+      <span class="comment">→ บันทึกสภาพ plate แต่ละแผ่น</span>
+      20260518_BG_EQUIPMENT_LOG_Maintenance_v01.xlsx
+      <span class="comment">→ บันทึกการดูแลอุปกรณ์</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- CHAPTER 07 -->
+<!-- ══════════════════════════════════ -->
+<div class="chapter page-break">
+  <div class="chapter-header">
+    <div>
+      <div class="chapter-num">CHAPTER 07</div>
+      <div class="chapter-title">Truly</div>
+      <div class="chapter-desc">แบรนด์แฟชั่น — Collection / Marketing / Platform</div>
+    </div>
+    <div class="entity-badge badge-tr">TR</div>
+  </div>
+
+  <div class="sec-header">ภาพถ่าย Collection / Lookbook</div>
+  <div class="format-box">
+    <div class="label">FORMAT — TRULY PHOTO</div>
+    <div class="formula">
+      <span class="bracket">[YYYYMMDD]</span><span class="sep">_TR_</span><span class="bracket">[COLLECTION]</span><span class="sep">_</span><span class="bracket">[TYPE]</span><span class="sep">_</span><span class="bracket">[ITEM/SCENE]</span><span class="sep">_</span><span class="bracket">[###/v##]</span><span class="ext">.[ext]</span>
+    </div>
+  </div>
+  <div class="example-box tr-accent">
+    <div class="example-label">ตัวอย่าง — Photo + Marketing Files</div>
+    <div class="example-file">
+      <span class="comment">— ถ่ายภาพ Lookbook —</span>
+      20260518_TR_ColA_PHOTO_Lookbook_001.raw
+      20260518_TR_ColA_PHOTO_Lookbook_001.tiff
+      <span class="comment">→ export TIFF สำหรับ retouch</span>
+      20260518_TR_ColA_RETOUCH_Item01_v01.psd
+      20260518_TR_ColA_RETOUCH_Item01_v01.jpg
+      <span class="comment">→ JPEG ส่งให้ทำ marketing</span>
+
+      <span class="comment">— ไฟล์ Instagram —</span>
+      20260518_TR_ColA_IG_Item01_v01.psd
+      <span class="comment">→ ไฟล์ทำงาน 1080×1080</span>
+      20260518_TR_ColA_IG_Item01_EXPORT_v01.jpg
+      <span class="comment">→ Export พร้อมโพสต์ ✅ Approved</span>
+
+      <span class="comment">— ไฟล์ Shopee —</span>
+      20260518_TR_ColA_SHOPEE_Item01_v01.psd
+      20260518_TR_ColA_SHOPEE_Item01_EXPORT_v01.jpg
+      <span class="comment">→ Export พร้อมลง listing</span>
+
+      <span class="comment">— Copywriting —</span>
+      20260518_TR_ColA_COPY_IG_v01.txt
+      20260518_TR_ColA_COPY_SHOPEE_v01.txt
+    </div>
+  </div>
+
+  <div class="sec-header">เอกสารโรงงาน / QC</div>
+  <div class="example-box tr-accent">
+    <div class="example-label">ตัวอย่าง — Production Order + QC</div>
+    <div class="example-file">
+      20260501_TR_ColA_SPEC_Item01_v01.pdf
+      <span class="comment">→ Spec sheet ส่งโรงงาน</span>
+      20260501_TR_ColA_SPEC_Item01_v02.pdf
+      <span class="comment">→ แก้ไขครั้งที่ 2</span>
+      20260510_TR_ColA_QC_Report_v01.xlsx
+      <span class="comment">→ รายงาน QC หลังรับของจากโรงงาน</span>
+      20260510_TR_ColA_QC_Photo_Item01_001.jpg
+      <span class="comment">→ รูปถ่าย QC ประกอบรายงาน</span>
+    </div>
+  </div>
+
+  <div class="sec-header">Collection Name Codes</div>
+  <div class="rule-box">
+    <div class="rule-icon">📝</div>
+    <div class="rule-text">ชื่อ Collection ใช้ตัวย่อที่ตกลงกันก่อนเริ่มงาน เช่น <code>ColA</code>, <code>ColB</code>, <code>Summer26</code>, <code>Winter26</code> ห้ามใช้ชื่อยาวหรือมี space</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- CHAPTER 08 -->
+<!-- ══════════════════════════════════ -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div>
+      <div class="chapter-num">CHAPTER 08</div>
+      <div class="chapter-title">Version Control</div>
+      <div class="chapter-desc">การจัดการ version ไม่ให้ไฟล์หาย</div>
+    </div>
+    <div class="entity-badge badge-all">ทุกบริษัท</div>
+  </div>
+
+  <table class="field-table">
+    <tr><th>ใช้เมื่อ</th><th>Format</th><th>ตัวอย่าง</th></tr>
+    <tr>
+      <td>ไฟล์ project / เอกสาร ที่มีการแก้ไข</td>
+      <td><code>v01, v02, v03...</code></td>
+      <td><code>..._EDIT_v01.prproj → _v02.prproj</code></td>
+    </tr>
+    <tr>
+      <td>ไฟล์ภาพถ่ายที่เป็น sequence</td>
+      <td><code>001, 002, 003...</code></td>
+      <td><code>..._001.raw → _002.raw</code></td>
+    </tr>
+    <tr>
+      <td>ไฟล์ส่ง review หลายรอบ</td>
+      <td><code>REVIEW_v01, v02...</code></td>
+      <td><code>..._REVIEW_v01.mp4 → _v02.mp4</code></td>
+    </tr>
+    <tr>
+      <td>ไฟล์ final ที่ approve แล้ว</td>
+      <td>เพิ่ม <code>FINAL</code> หรือ <code>APPROVED</code></td>
+      <td><code>..._MASTER_FINAL_v01.mov</code></td>
+    </tr>
+  </table>
+
+  <div class="rule-box">
+    <div class="rule-icon">🚫</div>
+    <div class="rule-text"><strong>ห้ามทำ:</strong> ห้ามใช้ชื่อ <code>final_final</code>, <code>final2</code>, <code>new_version</code>, <code>จริงๆ</code> — ใช้ระบบ v## เท่านั้น</div>
+  </div>
+
+  <div class="do-dont">
+    <div class="do-box">
+      <div class="do-label">✅ ถูกต้อง</div>
+      <div class="do-item">
+        _EDIT_v01.prproj<br>
+        _EDIT_v02.prproj<br>
+        _REVIEW_v01.mp4<br>
+        _MASTER_FINAL_v01.mov
+      </div>
+    </div>
+    <div class="dont-box">
+      <div class="dont-label">❌ ห้ามทำ</div>
+      <div class="dont-item">
+        _EDIT_final.prproj<br>
+        _EDIT_new.prproj<br>
+        _REVIEW_จริงๆ.mp4<br>
+        _MASTER_final_final.mov
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- CHAPTER 09 -->
+<!-- ══════════════════════════════════ -->
+<div class="chapter page-break">
+  <div class="chapter-header">
+    <div>
+      <div class="chapter-num">CHAPTER 09</div>
+      <div class="chapter-title">NAS Folder Structure</div>
+      <div class="chapter-desc">โครงสร้างโฟลเดอร์ทั้งหมดใน NAS</div>
+    </div>
+  </div>
+
+  <div class="folder-tree">
+<span class="folder">📁 NAS_ROOT/</span>
+│
+├── <span class="folder">📁 CHARDCHAKAJ/</span>
+│   └── <span class="folder">📁 2026/</span>
+│       └── <span class="folder">📁 202605_NIKE_VDO/</span>    <span class="comment">← YYYYMM_CLIENT_TYPE</span>
+│           ├── <span class="folder">📁 01_BRIEF/</span>
+│           ├── <span class="folder">📁 02_PRE_PRODUCTION/</span>
+│           │   ├── CALLSHEET/ SHOTLIST/ STORYBOARD/
+│           ├── <span class="folder">📁 03_PRODUCTION/</span>
+│           │   ├── <span class="folder">📁 FOOTAGE/</span>
+│           │   │   ├── CAM_A/   CAM_B/   BTS/
+│           │   ├── AUDIO/   STILLS_ON_SET/
+│           ├── <span class="folder">📁 04_POST/</span>
+│           │   ├── <span class="folder">📁 EDIT/</span>        <span class="comment">← Premiere files</span>
+│           │   ├── <span class="folder">📁 COLOR/</span>       <span class="comment">← DaVinci files + XML/EDL</span>
+│           │   ├── <span class="folder">📁 AUDIO_MIX/</span>
+│           │   ├── <span class="folder">📁 MOTION/</span>      <span class="comment">← After Effects</span>
+│           │   └── <span class="folder">📁 REVIEW/</span>      <span class="comment">← ไฟล์ส่ง proof</span>
+│           ├── <span class="folder">📁 05_DELIVERY/</span>
+│           │   ├── MASTER/   PLATFORM_CUT/   RECEIPT/
+│           └── <span class="folder">📁 06_ARCHIVE/</span>
+│
+├── <span class="folder">📁 BOONTA_GALLERY/</span>
+│   ├── <span class="folder">📁 2026/</span>
+│   │   └── <span class="folder">📁 202605_SMITH_WETPLATE/</span>
+│   │       ├── <span class="folder">📁 01_BRIEF/</span>
+│   │       ├── <span class="folder">📁 02_PRE/</span>
+│   │       │   └── CHEMISTRY_LOG/   EQUIPMENT_CHECK/
+│   │       ├── <span class="folder">📁 03_PRODUCTION/</span>
+│   │       │   ├── <span class="folder">📁 WETPLATE/</span>
+│   │       │   │   ├── SCANS/   SELECTS/   PLATE_LOG/
+│   │       │   ├── DIGITAL/   FILM/
+│   │       ├── <span class="folder">📁 04_POST/</span>
+│   │       │   └── RETOUCH/   REVIEW/
+│   │       └── <span class="folder">📁 05_DELIVERY/</span>
+│   │           └── HIGHRES_TIFF/   WEB_JPEG/   PRINT/
+│   └── <span class="folder">📁 PLATE_ARCHIVE/</span>   <span class="comment">← log แผ่น plate จริงที่เก็บอยู่</span>
+│
+├── <span class="folder">📁 TRULY/</span>
+│   ├── <span class="folder">📁 COLLECTIONS/</span>
+│   │   └── <span class="folder">📁 2026_CollectionA/</span>
+│   │       ├── <span class="folder">📁 01_DESIGN/</span>      <span class="comment">← ไฟล์ออกแบบลาย</span>
+│   │       ├── <span class="folder">📁 02_PRODUCTION_ORDER/</span> <span class="comment">← ใบสั่งโรงงาน + Spec</span>
+│   │       ├── <span class="folder">📁 03_PHOTO_SHOOT/</span>
+│   │       │   └── RAW/   SELECTS/   BTS/
+│   │       ├── <span class="folder">📁 04_MARKETING/</span>
+│   │       │   ├── IG/   SHOPEE/   COPYWRITING/   VIDEO_ADS/
+│   │       ├── <span class="folder">📁 05_QC/</span>          <span class="comment">← รายงาน QC + รูปถ่าย</span>
+│   │       └── <span class="folder">📁 06_APPROVED/</span>    <span class="comment">← ผ่าน proof แล้ว ✅</span>
+│   └── <span class="folder">📁 ARCHIVE/</span>
+│
+└── <span class="folder">📁 SHARED/</span>             <span class="comment">← ใช้ร่วมกันทุก entity</span>
+    ├── EQUIPMENT_LOG/
+    ├── FONTS_ASSETS/
+    ├── TEMPLATES/
+    └── FINANCE/
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- CHAPTER 10 -->
+<!-- ══════════════════════════════════ -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div>
+      <div class="chapter-num">CHAPTER 10</div>
+      <div class="chapter-title">Do &amp; Don't</div>
+      <div class="chapter-desc">กฎสำคัญที่ทุกคนต้องรู้</div>
+    </div>
+    <div class="entity-badge badge-all">ทุกบริษัท</div>
+  </div>
+
+  <div class="do-dont">
+    <div class="do-box">
+      <div class="do-label">✅ ทำ</div>
+      <div class="do-item">
+        ใช้ภาษาอังกฤษเท่านั้น<br>
+        ใช้ _ แทน space<br>
+        ใช้ตัวพิมพ์ใหญ่สำหรับ TYPE code<br>
+        ระบุ version ทุกครั้งที่แก้ไข<br>
+        บันทึกวันที่ขึ้นต้นเสมอ<br>
+        ระบุ Entity (CC/BG/TR) ทุกไฟล์<br>
+        ย้ายไฟล์เข้า folder ที่ถูกต้อง<br>
+        ตรวจ naming ก่อน save ทุกครั้ง
+      </div>
+    </div>
+    <div class="dont-box">
+      <div class="dont-label">❌ ห้าม</div>
+      <div class="dont-item">
+        ห้ามใช้ภาษาไทยในชื่อไฟล์<br>
+        ห้ามใช้ space ในชื่อไฟล์<br>
+        ห้ามใช้ !@#$%&amp;*()[]{}|/\<br>
+        ห้ามชื่อ "final_final" หรือ "new"<br>
+        ห้ามทิ้งไฟล์ไว้ Desktop<br>
+        ห้ามลบไฟล์โดยไม่แจ้งทีม<br>
+        ห้าม overwrite ไฟล์เก่า<br>
+        ห้ามใช้ชื่อ folder ยาวเกิน 30 ตัว
+      </div>
+    </div>
+  </div>
+
+  <div class="rule-box">
+    <div class="rule-icon">🆘</div>
+    <div class="rule-text"><strong>ไม่แน่ใจ?</strong> ถามถั่วก่อน ดีกว่าตั้งชื่อผิดแล้วต้อง rename ทีหลัง การ rename ไฟล์ที่อยู่ใน NAS อาจทำให้ link ใน project files เสียหายได้</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- CHAPTER 11 — QUICK REF -->
+<!-- ══════════════════════════════════ -->
+<div class="chapter page-break">
+  <div class="chapter-header">
+    <div>
+      <div class="chapter-num">CHAPTER 11</div>
+      <div class="chapter-title">Quick Reference Card</div>
+      <div class="chapter-desc">ตัดออกไปติดที่โต๊ะได้เลย</div>
+    </div>
+  </div>
+
+  <div style="background:var(--ink);color:white;border-radius:12px;padding:28px;margin-bottom:16px">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.12em;text-transform:uppercase;margin-bottom:16px">MASTER FORMAT</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:16px;color:#F0F0F0;line-height:2;margin-bottom:20px">
+      <span style="color:#FF9F0A">[YYYYMMDD]</span>_<span style="color:#30D158">[ENTITY]</span>_<span style="color:#64D2FF">[CLIENT]</span>_<span style="color:#BF5AF2">[TYPE]</span>_<span style="color:#FF9F0A">[DESC]</span>_<span style="color:#FF6961">[v##/###]</span>.[ext]
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+      <div>
+        <div style="font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">ENTITY</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:2">
+          <span style="color:#30D158">CC</span> — Chardchakaj<br>
+          <span style="color:#64D2FF">BG</span> — Boonta Gallery<br>
+          <span style="color:#BF5AF2">TR</span> — Truly
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">TYPE — ภาพ/วีดิโอ</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:2;color:rgba(255,255,255,.8)">
+          PHOTO · WETPLATE · FILM<br>
+          VDO · MV · BTS · EDIT<br>
+          COLOR · ROUGHCUT · MASTER
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">TYPE — เอกสาร/ดีไซน์</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:2;color:rgba(255,255,255,.8)">
+          BRIEF · QUOTE · CONTRACT<br>
+          INVOICE · CALLSHEET<br>
+          POSTER · IG · SHOPEE · QC
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div class="example-box">
+      <div class="example-label">CC — VDO ตัวอย่าง</div>
+      <div class="example-file" style="font-size:11px">
+        20260518_CC_NIKE_VDO_CampA_EDIT_v01.prproj<br>
+        20260518_CC_NIKE_VDO_CampA_COLOR_v01.drp<br>
+        20260518_CC_NIKE_VDO_CampA_MASTER_v01.mov
+      </div>
+    </div>
+    <div class="example-box bg-accent">
+      <div class="example-label">BG — Wet Plate ตัวอย่าง</div>
+      <div class="example-file" style="font-size:11px">
+        20260518_BG_SMITH_WP_8x10_001.tiff<br>
+        20260518_BG_SMITH_WP_8x10_SELECT_001.tiff<br>
+        20260518_BG_SMITH_LOG_Chemistry_v01.xlsx
+      </div>
+    </div>
+    <div class="example-box tr-accent">
+      <div class="example-label">TR — Collection ตัวอย่าง</div>
+      <div class="example-file" style="font-size:11px">
+        20260518_TR_ColA_PHOTO_Lookbook_001.raw<br>
+        20260518_TR_ColA_IG_Item01_EXPORT_v01.jpg<br>
+        20260518_TR_ColA_COPY_SHOPEE_v01.txt
+      </div>
+    </div>
+    <div class="example-box">
+      <div class="example-label">เอกสาร ตัวอย่าง</div>
+      <div class="example-file" style="font-size:11px">
+        20260515_CC_BRAND_QUOTE_v01.pdf<br>
+        20260516_CC_BRAND_CONTRACT_v01.pdf<br>
+        20260517_CC_BRAND_CALLSHEET_Day1_v01.pdf
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div>File Naming Convention Manual · v1.0 · May 2026</div>
+  <div>Chardchakaj · Boonta Gallery · Truly</div>
+  <div>จัดทำโดย Operate Lead</div>
+</div>
+
+</div><!-- /content -->
+</body>
+</html>

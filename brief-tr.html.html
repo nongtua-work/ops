@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Truly — Production Brief</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ══ SCREEN STYLES ══ */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --tr-pink:#C2185B;--tr-pink2:#E91E8C;--tr-pink-soft:#FCE4EC;
+  --tr-yellow:#FFD600;--tr-yellow-soft:#FFFDE7;
+  --tr-dark:#880E4F;--tr-ink:#1C1C1E;--tr-ink2:#3C3C43;
+  --tr-line:#F8BBD9;--tr-bg:#FFF5F9;--fill:#FFFFFF;
+  --sep:rgba(0,0,0,.08);--sep2:rgba(0,0,0,.04);
+  --green:#34C759;--orange:#FF9500;--red:#FF3B30;
+}
+body{
+  font-family:'Sarabun',sans-serif;font-size:14px;
+  color:var(--tr-ink);background:var(--tr-bg);
+  -webkit-font-smoothing:antialiased;
+}
+.app{max-width:680px;margin:0 auto;padding-bottom:80px}
+
+/* ── TOOLBAR ── */
+.toolbar{
+  background:rgba(255,245,249,.94);
+  backdrop-filter:blur(12px);
+  border-bottom:2px solid var(--tr-pink);
+  padding:12px 16px;
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;
+}
+.tb-brand{display:flex;align-items:center;gap:8px}
+.tb-logo{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--tr-pink);color:var(--tr-yellow);
+  font-family:'DM Mono',monospace;font-size:13px;font-weight:500;
+  display:flex;align-items:center;justify-content:center;
+}
+.tb-title{font-size:14px;font-weight:700;color:var(--tr-dark)}
+.tb-actions{display:flex;gap:6px}
+.tb-btn{
+  padding:8px 14px;border-radius:10px;border:none;cursor:pointer;
+  font-family:'Sarabun',sans-serif;font-size:13px;font-weight:700;
+  transition:all .15s;
+}
+.tb-btn:active{transform:scale(.96)}
+.btn-preview{background:var(--tr-pink-soft);color:var(--tr-pink)}
+.btn-print{background:var(--tr-pink);color:#fff}
+.btn-reset{background:var(--sep2);color:var(--tr-ink2);font-weight:500}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--tr-line);margin:0 16px}
+.tab-btn{
+  flex:1;padding:12px 8px;text-align:center;
+  font-size:13px;font-weight:700;color:var(--tr-ink2);
+  cursor:pointer;border-bottom:3px solid transparent;
+  margin-bottom:-2px;transition:all .15s;
+}
+.tab-btn.active{color:var(--tr-pink);border-bottom-color:var(--tr-pink)}
+.tab-content{display:none;padding:16px}
+.tab-content.active{display:block}
+
+/* ── SECTION ── */
+.form-section{
+  background:var(--fill);border-radius:14px;
+  overflow:hidden;border:1px solid var(--tr-line);
+  margin-bottom:14px;
+}
+.section-header{
+  padding:12px 16px;
+  background:linear-gradient(135deg,var(--tr-pink),var(--tr-pink2));
+  display:flex;align-items:center;gap:8px;
+}
+.section-icon{font-size:16px}
+.section-title{font-size:13px;font-weight:700;color:#fff;letter-spacing:.02em}
+.section-body{padding:0}
+
+/* ── FORM FIELDS ── */
+.field-row{
+  display:grid;grid-template-columns:140px 1fr;
+  align-items:start;
+  padding:11px 16px;border-bottom:1px solid var(--sep2);
+  gap:12px;
+}
+.field-row:last-child{border-bottom:none}
+.field-row.full{grid-template-columns:1fr;gap:6px}
+.field-row.two{grid-template-columns:1fr 1fr;gap:10px}
+.field-label{
+  font-size:12px;font-weight:700;color:var(--tr-ink2);
+  padding-top:10px;line-height:1.3;
+}
+.field-required::after{content:' *';color:var(--red)}
+.field-input{
+  width:100%;padding:9px 12px;
+  background:var(--tr-bg);border:1.5px solid var(--tr-line);
+  border-radius:9px;color:var(--tr-ink);
+  font-family:'Sarabun',sans-serif;font-size:14px;
+  outline:none;transition:border-color .15s;
+  -webkit-appearance:none;
+}
+.field-input:focus{border-color:var(--tr-pink);background:#fff}
+select.field-input{cursor:pointer}
+textarea.field-input{resize:none;min-height:72px;line-height:1.6}
+.field-input.full-w{grid-column:1/-1}
+
+/* inline label + input pair (for two-col) */
+.sub-field{display:flex;flex-direction:column;gap:4px}
+.sub-label{font-size:11px;font-weight:600;color:var(--tr-ink2);opacity:.7;text-transform:uppercase;letter-spacing:.04em}
+
+/* ── CREW TABLE ── */
+.crew-table{width:100%;border-collapse:collapse}
+.crew-table th{
+  padding:8px 12px;font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.06em;color:var(--tr-pink);
+  background:var(--tr-pink-soft);text-align:left;
+}
+.crew-table td{padding:6px 8px;border-bottom:1px solid var(--sep2)}
+.crew-table td input{
+  width:100%;border:none;background:transparent;
+  font-family:'Sarabun',sans-serif;font-size:13px;color:var(--tr-ink);
+  outline:none;padding:4px 6px;border-radius:6px;
+  transition:background .12s;
+}
+.crew-table td input:focus{background:var(--tr-yellow-soft)}
+.crew-table tr:last-child td{border-bottom:none}
+.add-row-btn{
+  width:100%;padding:9px;border:1.5px dashed var(--tr-line);
+  background:transparent;border-radius:9px;cursor:pointer;
+  color:var(--tr-pink);font-size:13px;font-weight:600;
+  font-family:'Sarabun',sans-serif;margin-top:8px;
+  transition:all .15s;
+}
+.add-row-btn:hover{background:var(--tr-pink-soft)}
+
+/* ── SHOT LIST ── */
+.shot-row{
+  display:grid;grid-template-columns:36px 80px 1fr 80px 60px;
+  gap:6px;align-items:center;
+  padding:7px 12px;border-bottom:1px solid var(--sep2);
+}
+.shot-row.header{
+  background:var(--tr-pink-soft);padding:8px 12px;
+}
+.shot-header-lbl{font-size:11px;font-weight:700;color:var(--tr-pink);text-transform:uppercase;letter-spacing:.05em}
+.shot-num{font-family:'DM Mono',monospace;font-size:13px;color:var(--tr-pink);font-weight:500;text-align:center}
+.shot-input{
+  width:100%;border:none;background:transparent;
+  font-family:'Sarabun',sans-serif;font-size:12px;color:var(--tr-ink);
+  outline:none;padding:4px 6px;border-radius:5px;transition:background .12s;
+}
+.shot-input:focus{background:var(--tr-yellow-soft)}
+
+/* ── CHECKLIST ── */
+.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;padding:8px 0}
+@media(max-width:400px){.check-grid{grid-template-columns:1fr}}
+.check-item{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 16px;cursor:pointer;transition:background .1s;
+}
+.check-item:hover{background:var(--tr-pink-soft)}
+.check-item input[type=checkbox]{
+  width:18px;height:18px;accent-color:var(--tr-pink);
+  cursor:pointer;flex-shrink:0;
+}
+.check-label{font-size:13px;color:var(--tr-ink);line-height:1.3}
+
+/* ── STATUS BADGE ── */
+.status-select{
+  padding:6px 12px;border-radius:20px;border:none;
+  font-family:'Sarabun',sans-serif;font-size:12px;font-weight:700;
+  cursor:pointer;outline:none;-webkit-appearance:none;
+}
+.status-draft{background:rgba(142,142,147,.15);color:#636366}
+.status-confirmed{background:rgba(52,199,89,.15);color:#1B6B35}
+.status-inprogress{background:rgba(255,149,0,.15);color:#9A5C00}
+
+/* ── INFO BOX ── */
+.info-box{
+  padding:12px 14px;border-radius:10px;margin:12px 0;
+  display:flex;gap:8px;align-items:flex-start;
+  font-size:13px;line-height:1.6;
+}
+.info-box.orange{background:rgba(255,149,0,.1);border-left:3px solid var(--orange)}
+.info-box.pink{background:var(--tr-pink-soft);border-left:3px solid var(--tr-pink)}
+
+/* ── PRINT PREVIEW OVERLAY ── */
+.preview-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);
+  z-index:500;display:none;align-items:center;justify-content:center;
+  padding:20px;backdrop-filter:blur(4px);
+}
+.preview-overlay.show{display:flex}
+.preview-box{
+  background:#fff;border-radius:16px;
+  max-width:700px;width:100%;max-height:90vh;
+  overflow-y:auto;
+  box-shadow:0 20px 60px rgba(0,0,0,.3);
+}
+.preview-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;border-bottom:1px solid #E5E5EA;
+  position:sticky;top:0;background:#fff;z-index:10;
+}
+.preview-title{font-size:16px;font-weight:700}
+.preview-actions{display:flex;gap:8px}
+.preview-close{
+  width:30px;height:30px;border-radius:50%;
+  background:#F2F2F7;border:none;cursor:pointer;
+  font-size:16px;display:flex;align-items:center;justify-content:center;
+}
+.preview-print-btn{
+  padding:7px 16px;background:var(--tr-pink);color:#fff;
+  border:none;border-radius:8px;font-family:'Sarabun',sans-serif;
+  font-size:13px;font-weight:700;cursor:pointer;
+}
+.preview-content{padding:24px}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  background:rgba(0,0,0,.76);color:#fff;padding:9px 18px;
+  border-radius:20px;font-size:13px;font-weight:500;
+  pointer-events:none;opacity:0;transition:opacity .2s;
+  backdrop-filter:blur(10px);z-index:999;white-space:nowrap;
+}
+.toast.show{opacity:1}
+
+/* ══ PRINT STYLES ══ */
+@media print{
+  body{background:#fff!important;font-size:12px!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .toolbar,.tabs,.tab-btn,.preview-overlay,.toast,.no-print{display:none!important}
+  .tab-content{display:block!important;padding:0!important}
+  .app{max-width:100%;padding:0;margin:0}
+  .form-section{break-inside:avoid;border:1px solid #ddd!important;margin-bottom:12px}
+  .field-input,select.field-input,textarea.field-input{border:none!important;background:transparent!important;padding:4px 0!important}
+  .crew-table td input,.shot-input{background:transparent!important}
+  .add-row-btn,.btn-preview,.btn-print,.btn-reset{display:none!important}
+  .print-header{display:block!important}
+  .section-header{background:var(--tr-pink)!important}
+  @page{margin:1.5cm;size:A4}
+}
+.print-header{display:none}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- TOOLBAR -->
+<div class="toolbar no-print">
+  <div class="tb-brand">
+    <div class="tb-logo">TR</div>
+    <div>
+      <div class="tb-title">Truly — Production Brief</div>
+    </div>
+  </div>
+  <div class="tb-actions">
+    <button class="tb-btn btn-reset" onclick="resetForm()">↺</button>
+    <button class="tb-btn btn-preview" onclick="openPreview()">👁 Preview</button>
+    <button class="tb-btn btn-print" onclick="window.print()">🖨 PDF</button>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs no-print">
+  <div class="tab-btn active" onclick="switchTab('brief',this)">📋 Production Brief</div>
+  <div class="tab-btn" onclick="switchTab('callsheet',this)">📅 Call Sheet</div>
+  <div class="tab-btn" onclick="switchTab('checklist',this)">✅ Checklist</div>
+</div>
+
+<!-- ═══════════════════════════════
+     TAB 1: PRODUCTION BRIEF
+═══════════════════════════════ -->
+<div class="tab-content active" id="tab-brief">
+
+  <!-- PROJECT INFO -->
+  <div class="form-section">
+    <div class="section-header">
+      <div class="section-icon">📌</div>
+      <div class="section-title">ข้อมูลโปรเจค</div>
+    </div>
+    <div class="section-body">
+      <div class="field-row">
+        <div class="field-label field-required">ชื่อโปรเจค</div>
+        <input class="field-input" id="project-name" placeholder="เช่น Truly SS2026 Lookbook">
+      </div>
+      <div class="field-row">
+        <div class="field-label">Entity</div>
+        <select class="field-input" id="entity">
+          <option value="TR">TR — Truly</option>
+          <option value="CC">CC — Chardchakaj</option>
+          <option value="BG">BG — Boonta Gallery</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <div class="field-label field-required">ประเภทงาน</div>
+        <select class="field-input" id="job-type">
+          <option value="">เลือกประเภท</option>
+          <option value="Lookbook">Lookbook</option>
+          <option value="Campaign">Campaign</option>
+          <option value="Product Shot">Product Shot</option>
+          <option value="Reels/Video">Reels / Video</option>
+          <option value="Both Photo+Video">Photo + Video</option>
+          <option value="E-commerce">E-commerce (Shopee/IG)</option>
+        </select>
+      </div>
+      <div class="field-row two">
+        <div class="sub-field">
+          <div class="sub-label">วันถ่าย</div>
+          <input class="field-input" type="date" id="shoot-date" value="2026-05-20">
+        </div>
+        <div class="sub-field">
+          <div class="sub-label">สถานะ</div>
+          <select class="field-input status-select status-confirmed" id="status" onchange="updateStatusStyle(this)">
+            <option value="draft">Draft</option>
+            <option value="confirmed" selected>Confirmed</option>
+            <option value="inprogress">In Progress</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-label">Location</div>
+        <input class="field-input" id="location" placeholder="เช่น Studio BKK / On-location">
+      </div>
+      <div class="field-row">
+        <div class="field-label">Call Time</div>
+        <input class="field-input" type="time" id="call-time" value="06:00">
+      </div>
+      <div class="field-row">
+        <div class="field-label">Wrap Time (est.)</div>
+        <input class="field-input" type="time" id="wrap-time" value="18:00">
+      </div>
+    </div>
+  </div>
+
+  <!-- COLLECTION -->
+  <div class="form-section">
+    <div class="section-header">
+      <div class="section-icon">👗</div>
+      <div class="section-title">Collection / สินค้าที่ถ่าย</div>
+    </div>
+    <div class="section-body">
+      <div class="field-row">
+        <div class="field-label">Collection</div>
+        <input class="field-input" id="collection" placeholder="เช่น Collection A — Thai Mart">
+      </div>
+      <div class="field-row">
+        <div class="field-label">จำนวน Look</div>
+        <input class="field-input" id="look-count" type="number" placeholder="เช่น 8 looks" min="1">
+      </div>
+      <div class="field-row full">
+        <div class="field-label">รายการสินค้า/ชุด</div>
+        <textarea class="field-input" id="items" placeholder="เช่น&#10;1. เสื้อ A สีขาว + กางเกง B&#10;2. ชุดกระโปรง C สีชมพู&#10;3. ชุด D กับ accessories..." rows="4"></textarea>
+      </div>
+      <div class="field-row full">
+        <div class="field-label">สินค้าที่ยังขาด</div>
+        <textarea class="field-input" id="missing-items" placeholder="รายการที่ยังมาไม่ครบ..." rows="2" style="border-color:var(--orange)"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATIVE DIRECTION -->
+  <div class="form-section">
+    <div class="section-header">
+      <div class="section-icon">🎨</div>
+      <div class="section-title">Creative Direction</div>
+    </div>
+    <div class="section-body">
+      <div class="field-row">
+        <div class="field-label">Mood / Concept</div>
+        <input class="field-input" id="mood" placeholder="เช่น Soft feminine, editorial minimal">
+      </div>
+      <div class="field-row">
+        <div class="field-label">Color Palette</div>
+        <input class="field-input" id="color-palette" placeholder="เช่น Pastel pink, cream, gold">
+      </div>
+      <div class="field-row">
+        <div class="field-label">Reference</div>
+        <input class="field-input" id="reference" placeholder="ลิงก์ Pinterest / moodboard">
+      </div>
+      <div class="field-row">
+        <div class="field-label">Platform เป้าหมาย</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;padding-top:8px">
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer">
+            <input type="checkbox" id="plat-ig" style="accent-color:var(--tr-pink)"> Instagram
+          </label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer">
+            <input type="checkbox" id="plat-shopee" style="accent-color:var(--tr-pink)"> Shopee
+          </label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer">
+            <input type="checkbox" id="plat-fb" style="accent-color:var(--tr-pink)"> Facebook
+          </label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer">
+            <input type="checkbox" id="plat-tiktok" style="accent-color:var(--tr-pink)"> TikTok
+          </label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer">
+            <input type="checkbox" id="plat-print" style="accent-color:var(--tr-pink)"> Print
+          </label>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-label">Deliverables</div>
+        <input class="field-input" id="deliverables" placeholder="เช่น 20 ภาพ retouch + 3 Reels">
+      </div>
+    </div>
+  </div>
+
+  <!-- EQUIPMENT -->
+  <div class="form-section">
+    <div class="section-header">
+      <div class="section-icon">📷</div>
+      <div class="section-title">อุปกรณ์ที่ใช้</div>
+    </div>
+    <div class="section-body">
+      <div class="field-row">
+        <div class="field-label">Camera</div>
+        <select class="field-input" id="camera">
+          <option value="">เลือกกล้อง</option>
+          <option value="Digital (Sony)">Digital — Sony</option>
+          <option value="Digital (Canon)">Digital — Canon</option>
+          <option value="Digital (Other)">Digital — อื่นๆ</option>
+          <option value="Film 35mm">Film 35mm</option>
+          <option value="Film 120">Film 120</option>
+          <option value="Wet Plate 4x5">Wet Plate 4×5"</option>
+          <option value="Wet Plate 5x7">Wet Plate 5×7"</option>
+          <option value="Wet Plate 8x10">Wet Plate 8×10"</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <div class="field-label">Lens(es)</div>
+        <input class="field-input" id="lenses" placeholder="เช่น 85mm f/1.4, 50mm">
+      </div>
+      <div class="field-row">
+        <div class="field-label">Lighting</div>
+        <input class="field-input" id="lighting" placeholder="เช่น Natural light, Strobe 2 heads">
+      </div>
+      <div class="field-row full">
+        <div class="field-label">อุปกรณ์เพิ่มเติม</div>
+        <textarea class="field-input" id="extra-equip" placeholder="เช่น Reflector, C-stand, Fog machine..." rows="2"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREW -->
+  <div class="form-section">
+    <div class="section-header">
+      <div class="section-icon">👥</div>
+      <div class="section-title">ทีมงาน</div>
+    </div>
+    <div class="section-body" style="padding:12px">
+      <table class="crew-table" id="crew-table">
+        <thead>
+          <tr>
+            <th>ตำแหน่ง</th>
+            <th>ชื่อ</th>
+            <th>เบอร์โทร</th>
+            <th>หมายเหตุ</th>
+          </tr>
+        </thead>
+        <tbody id="crew-body">
+          <tr>
+            <td><input placeholder="Photographer/Director"></td>
+            <td><input placeholder="ชื่อ"></td>
+            <td><input placeholder="0xx-xxx-xxxx" type="tel"></td>
+            <td><input placeholder="-"></td>
+          </tr>
+          <tr>
+            <td><input placeholder="Operate Lead" value="ถั่ว"></td>
+            <td><input placeholder="ชื่อ"></td>
+            <td><input placeholder="0xx-xxx-xxxx" type="tel"></td>
+            <td><input placeholder="-"></td>
+          </tr>
+          <tr>
+            <td><input placeholder="Stylist / Art"></td>
+            <td><input placeholder="ชื่อ"></td>
+            <td><input placeholder="0xx-xxx-xxxx" type="tel"></td>
+            <td><input placeholder="-"></td>
+          </tr>
+          <tr>
+            <td><input placeholder="MUA"></td>
+            <td><input placeholder="ชื่อ"></td>
+            <td><input placeholder="0xx-xxx-xxxx" type="tel"></td>
+            <td><input placeholder="-"></td>
+          </tr>
+          <tr>
+            <td><input placeholder="Talent / Model"></td>
+            <td><input placeholder="ชื่อ"></td>
+            <td><input placeholder="0xx-xxx-xxxx" type="tel"></td>
+            <td><input placeholder="-"></td>
+          </tr>
+        </tbody>
+      </table>
+      <button class="add-row-btn" onclick="addCrewRow()">+ เพิ่มทีมงาน</button>
+    </div>
+  </div>
+
+  <!-- NOTES -->
+  <div class="form-section">
+    <div class="section-header">
+      <div class="section-icon">📝</div>
+      <div class="section-title">หมายเหตุ / สิ่งที่ต้องจัดเตรียม</div>
+    </div>
+    <div class="section-body">
+      <div class="field-row full">
+        <textarea class="field-input" id="notes" placeholder="รายการที่ต้องเตรียม / สิ่งที่ต้องระวัง / ข้อความสำคัญ..." rows="4"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILE NAMING -->
+  <div class="form-section">
+    <div class="section-header">
+      <div class="section-icon">🗄</div>
+      <div class="section-title">File Naming</div>
+    </div>
+    <div class="section-body">
+      <div class="field-row">
+        <div class="field-label">ชื่อไฟล์ (auto)</div>
+        <div style="padding-top:8px">
+          <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--tr-pink);background:var(--tr-pink-soft);padding:8px 12px;border-radius:8px;word-break:break-all" id="filename-preview">กรอกข้อมูลด้านบนก่อน</div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-label">NAS Folder</div>
+        <div style="padding-top:8px">
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--tr-ink2);background:var(--sep2);padding:8px 12px;border-radius:8px;word-break:break-all" id="nas-preview">TRULY/COLLECTIONS/...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-brief -->
+
+<!-- ═══════════════════════════════
+     TAB 2: CALL SHEET
+═══════════════════════════════ -->
+<div class="tab-content" id="tab-callsheet">
+
+  <div class="info-box pink">
+    <span>🌸</span>
+    <div>ข้อมูลโปรเจค วันที่ และทีมงาน ดึงมาจาก Brief อัตโนมัติ — กรอก Timeline วันถ่ายด้านล่างได้เลย</div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="form-section">
+    <div class="section-header">
+      <div class="section-icon">⏰</div>
+      <div class="section-title">Timeline วันถ่าย</div>
+    </div>
+    <div class="section-body" style="padding:12px">
+      <div class="shot-row header">
+        <div class="shot-header-lbl">#</div>
+        <div class="shot-header-lbl">เวลา</div>
+        <div class="shot-header-lbl">กิจกรรม / Scene</div>
+        <div class="shot-header-lbl">Location</div>
+        <div class="shot-header-lbl">หมายเหตุ</div>
+      </div>
+      <div id="timeline-body">
+        <div class="shot-row">
+          <div class="shot-num">1</div>
+          <td><input class="shot-input" type="time" value="06:00"></td>
+          <td><input class="shot-input" placeholder="เดินทาง / เตรียม location"></td>
+          <td><input class="shot-input" placeholder="Location"></td>
+          <td><input class="shot-input" placeholder="-"></td>
+        </div>
+        <div class="shot-row">
+          <div class="shot-num">2</div>
+          <td><input class="shot-input" type="time" value="07:30"></td>
+          <td><input class="shot-input" placeholder="Makeup & Hair"></td>
+          <td><input class="shot-input" placeholder="On-site"></td>
+          <td><input class="shot-input" placeholder="-"></td>
+        </div>
+        <div class="shot-row">
+          <div class="shot-num">3</div>
+          <td><input class="shot-input" type="time" value="09:00"></td>
+          <td><input class="shot-input" placeholder="เริ่มถ่าย Look 1-3"></td>
+          <td><input class="shot-input" placeholder="Studio A"></td>
+          <td><input class="shot-input" placeholder="-"></td>
+        </div>
+        <div class="shot-row">
+          <div class="shot-num">4</div>
+          <td><input class="shot-input" type="time" value="12:00"></td>
+          <td><input class="shot-input" placeholder="พักกลางวัน"></td>
+          <td><input class="shot-input" placeholder="-"></td>
+          <td><input class="shot-input" placeholder="1 ชั่วโมง"></td>
+        </div>
+        <div class="shot-row">
+          <div class="shot-num">5</div>
+          <td><input class="shot-input" type="time" value="13:00"></td>
+          <td><input class="shot-input" placeholder="ถ่าย Look 4-6"></td>
+          <td><input class="shot-input" placeholder="Studio B"></td>
+          <td><input class="shot-input" placeholder="-"></td>
+        </div>
+        <div class="shot-row">
+          <div class="shot-num">6</div>
+          <td><input class="shot-input" type="time" value="16:00"></td>
+          <td><input class="shot-input" placeholder="ถ่าย Video / Reels"></td>
+          <td><input class="shot-input" placeholder="-"></td>
+          <td><input class="shot-input" placeholder="-"></td>
+        </div>
+        <div class="shot-row">
+          <div class="shot-num">7</div>
+          <td><input class="shot-input" type="time" value="18:00"></td>
+          <td><input class="shot-input" placeholder="เก็บของ / Wrap"></td>
+          <td><input class="shot-input" placeholder="-"></td>
+          <td><input class="shot-input" placeholder="-"></td>
+        </div>
+      </div>
+      <button class="add-row-btn" onclick="addTimelineRow()">+ เพิ่มช่วงเวลา</button>
+    </div>
+  </div>
+
+  <!-- SHOT LIST -->
+  <div class="form-section">
+    <div class="section-header">
+      <div class="section-icon">📸</div>
+      <div class="section-title">Shot List</div>
+    </div>
+    <div class="section-body" style="padding:12px">
+      <div class="shot-row header">
+        <div class="shot-header-lbl">#</div>
+        <div class="shot-header-lbl">Look</div>
+        <div class="shot-header-lbl">รายละเอียด / ชุด</div>
+        <div class="shot-header-lbl">Angle/Format</div>
+        <div class="shot-header-lbl">Priority</div>
+      </div>
+      <div id="shot-body">
+        <div class="shot-row">
+          <div class="shot-num">1</div>
+          <input class="shot-input" placeholder="Look 1">
+          <input class="shot-input" placeholder="ชุด / สี / accessories">
+          <input class="shot-input" placeholder="Full body, detail">
+          <select class="shot-input" style="max-width:60px">
+            <option>🔴</option><option>🟡</option><option>🟢</option>
+          </select>
+        </div>
+        <div class="shot-row">
+          <div class="shot-num">2</div>
+          <input class="shot-input" placeholder="Look 2">
+          <input class="shot-input" placeholder="ชุด / สี / accessories">
+          <input class="shot-input" placeholder="Full body, detail">
+          <select class="shot-input" style="max-width:60px">
+            <option>🔴</option><option>🟡</option><option>🟢</option>
+          </select>
+        </div>
+        <div class="shot-row">
+          <div class="shot-num">3</div>
+          <input class="shot-input" placeholder="Look 3">
+          <input class="shot-input" placeholder="ชุด / สี / accessories">
+          <input class="shot-input" placeholder="Full body, detail">
+          <select class="shot-input" style="max-width:60px">
+            <option>🔴</option><option>🟡</option><option>🟢</option>
+          </select>
+        </div>
+      </div>
+      <button class="add-row-btn" onclick="addShotRow()">+ เพิ่ม Shot</button>
+    </div>
+  </div>
+
+  <!-- CONTACTS SUMMARY -->
+  <div class="form-section">
+    <div class="section-header">
+      <div class="section-icon">📞</div>
+      <div class="section-title">เบอร์ติดต่อด่วน วันถ่าย</div>
+    </div>
+    <div class="section-body">
+      <div class="field-row">
+        <div class="field-label">Emergency Contact</div>
+        <input class="field-input" id="emergency" placeholder="ชื่อ + เบอร์โทร">
+      </div>
+      <div class="field-row">
+        <div class="field-label">Location Contact</div>
+        <input class="field-input" id="location-contact" placeholder="เจ้าของสถานที่ + เบอร์">
+      </div>
+      <div class="field-row">
+        <div class="field-label">Transport</div>
+        <input class="field-input" id="transport" placeholder="แผนเดินทาง / จุดนัดพบ">
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-callsheet -->
+
+<!-- ═══════════════════════════════
+     TAB 3: CHECKLIST
+═══════════════════════════════ -->
+<div class="tab-content" id="tab-checklist">
+
+  <div class="info-box orange">
+    <span>⚠️</span>
+    <div>เช็คให้ครบก่อนออกกอง — ของที่ยังขาดให้บันทึกใน Production Brief</div>
+  </div>
+
+  <div class="form-section">
+    <div class="section-header">
+      <div class="section-icon">👗</div>
+      <div class="section-title">สินค้า / Collection</div>
+    </div>
+    <div class="check-grid">
+      <label class="check-item"><input type="checkbox"> <span class="check-label">เสื้อผ้าทุก Look ครบ</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">Accessories ครบ</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">กระเป๋า / Bag ครบ</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">แขวน/พับเรียบร้อย</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">รองเท้า / Shoes</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">Label / Tag ติดครบ</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">Steamer / อุปกรณ์รีด</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">Size chart พร้อม</span></label>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="section-header">
+      <div class="section-icon">📷</div>
+      <div class="section-title">อุปกรณ์ถ่ายภาพ</div>
+    </div>
+    <div class="check-grid">
+      <label class="check-item"><input type="checkbox"> <span class="check-label">กล้อง + Battery ชาร์จ</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">Memory Card / CFexpress</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">Lens ทุกตัว</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">Tripod / Light Stand</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">Flash / Strobe</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">Diffuser / Reflector</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">Laptop / Tethering cable</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">Backup HDD/SSD</span></label>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="section-header">
+      <div class="section-icon">💄</div>
+      <div class="section-title">Makeup & Styling</div>
+    </div>
+    <div class="check-grid">
+      <label class="check-item"><input type="checkbox"> <span class="check-label">MUA confirmed</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">Talent/Model confirmed</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">Moodboard แชร์ให้ MUA</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">อุปกรณ์แต่งหน้าพร้อม</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">Mirror / Vanity light</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">Changing area พร้อม</span></label>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="section-header">
+      <div class="section-icon">📋</div>
+      <div class="section-title">เอกสาร & Logistics</div>
+    </div>
+    <div class="check-grid">
+      <label class="check-item"><input type="checkbox"> <span class="check-label">Production Brief พิมพ์แล้ว</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">Call Sheet แชร์ทีมแล้ว</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">แผนที่ / Google Maps</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">อาหาร / น้ำดื่มทีม</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">ยาสามัญประจำบ้าน</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">เงินสด / บัตร</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">Power bank</span></label>
+      <label class="check-item"><input type="checkbox"> <span class="check-label">Contact sheet พร้อม</span></label>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div style="background:var(--fill);border-radius:14px;padding:16px;border:1px solid var(--tr-line);margin-bottom:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div style="font-size:14px;font-weight:700;color:var(--tr-dark)">ความพร้อมโดยรวม</div>
+      <div style="font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--tr-pink)" id="progress-txt">0%</div>
+    </div>
+    <div style="height:8px;background:var(--tr-line);border-radius:4px;overflow:hidden">
+      <div style="height:100%;background:linear-gradient(90deg,var(--tr-pink),var(--tr-pink2));border-radius:4px;transition:width .3s" id="progress-bar"></div>
+    </div>
+  </div>
+
+</div><!-- /tab-checklist -->
+
+</div><!-- /app -->
+
+<!-- PREVIEW OVERLAY -->
+<div class="preview-overlay" id="preview-overlay" onclick="if(event.target===this)closePreview()">
+  <div class="preview-box">
+    <div class="preview-nav">
+      <div class="preview-title">Preview — Production Brief</div>
+      <div class="preview-actions">
+        <button class="preview-print-btn" onclick="window.print()">🖨 พิมพ์ / PDF</button>
+        <button class="preview-close" onclick="closePreview()">✕</button>
+      </div>
+    </div>
+    <div class="preview-content" id="preview-content"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── TABS ──────────────────────────────────────────────
+function switchTab(name, el) {
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  el.classList.add('active');
+}
+
+// ── STATUS STYLE ──────────────────────────────────────
+function updateStatusStyle(sel) {
+  sel.className = 'field-input status-select';
+  if(sel.value==='confirmed') sel.classList.add('status-confirmed');
+  else if(sel.value==='inprogress') sel.classList.add('status-inprogress');
+  else sel.classList.add('status-draft');
+}
+
+// ── FILE NAMING AUTO ──────────────────────────────────
+function updateFilename() {
+  const date = (document.getElementById('shoot-date').value||'').replace(/-/g,'');
+  const entity = document.getElementById('entity').value||'TR';
+  const coll = (document.getElementById('collection').value||'Collection').replace(/\s+/g,'').slice(0,12);
+  const type = (document.getElementById('job-type').value||'PHOTO').replace(/\s+/g,'').toUpperCase().slice(0,8);
+  if(date) {
+    document.getElementById('filename-preview').textContent = `${date}_${entity}_${coll}_${type}_BRIEF_v01.pdf`;
+    document.getElementById('nas-preview').textContent = `TRULY/COLLECTIONS/2026_${coll}_${type}/01_BRIEF/`;
+  }
+}
+['shoot-date','entity','collection','job-type'].forEach(id => {
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('input', updateFilename);
+});
+updateFilename();
+
+// ── ADD ROWS ──────────────────────────────────────────
+let crewCount = 5;
+function addCrewRow() {
+  crewCount++;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input placeholder="ตำแหน่ง"></td>
+    <td><input placeholder="ชื่อ"></td>
+    <td><input placeholder="0xx-xxx-xxxx" type="tel"></td>
+    <td><input placeholder="-"></td>`;
+  document.getElementById('crew-body').appendChild(tr);
+}
+
+let tlCount = 7;
+function addTimelineRow() {
+  tlCount++;
+  const div = document.createElement('div');
+  div.className = 'shot-row';
+  div.innerHTML = `
+    <div class="shot-num">${tlCount}</div>
+    <td><input class="shot-input" type="time"></td>
+    <td><input class="shot-input" placeholder="กิจกรรม"></td>
+    <td><input class="shot-input" placeholder="Location"></td>
+    <td><input class="shot-input" placeholder="-"></td>`;
+  document.getElementById('timeline-body').appendChild(div);
+}
+
+let shotCount = 3;
+function addShotRow() {
+  shotCount++;
+  const div = document.createElement('div');
+  div.className = 'shot-row';
+  div.innerHTML = `
+    <div class="shot-num">${shotCount}</div>
+    <input class="shot-input" placeholder="Look ${shotCount}">
+    <input class="shot-input" placeholder="ชุด / สี / accessories">
+    <input class="shot-input" placeholder="Full body, detail">
+    <select class="shot-input" style="max-width:60px">
+      <option>🔴</option><option>🟡</option><option>🟢</option>
+    </select>`;
+  document.getElementById('shot-body').appendChild(div);
+}
+
+// ── CHECKLIST PROGRESS ─────────────────────────────────
+document.addEventListener('change', e => {
+  if(e.target.type==='checkbox') updateProgress();
+});
+function updateProgress() {
+  const all = document.querySelectorAll('input[type=checkbox]');
+  const checked = document.querySelectorAll('input[type=checkbox]:checked');
+  const pct = all.length ? Math.round(checked.length/all.length*100) : 0;
+  document.getElementById('progress-txt').textContent = pct+'%';
+  document.getElementById('progress-bar').style.width = pct+'%';
+}
+
+// ── PREVIEW ───────────────────────────────────────────
+function openPreview() {
+  const pn = document.getElementById('project-name').value || 'ยังไม่ระบุ';
+  const date = document.getElementById('shoot-date').value;
+  const entity = document.getElementById('entity').value;
+  const callTime = document.getElementById('call-time').value;
+  const wrapTime = document.getElementById('wrap-time').value;
+  const location = document.getElementById('location').value || '-';
+  const collection = document.getElementById('collection').value || '-';
+  const missing = document.getElementById('missing-items').value;
+
+  document.getElementById('preview-content').innerHTML = `
+    <div style="border-bottom:3px solid var(--tr-pink);padding-bottom:16px;margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:48px;height:48px;border-radius:12px;background:var(--tr-pink);color:var(--tr-yellow);font-family:'DM Mono',monospace;font-size:18px;font-weight:500;display:flex;align-items:center;justify-content:center">${entity}</div>
+        <div>
+          <div style="font-size:11px;color:var(--tr-pink);font-weight:700;letter-spacing:.1em;text-transform:uppercase">Truly — Production Brief</div>
+          <div style="font-size:20px;font-weight:700;color:var(--tr-dark)">${pn}</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+      <div><div style="font-size:10px;color:var(--tr-pink);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px">วันถ่าย</div><div style="font-size:15px;font-weight:700">${date||'-'}</div></div>
+      <div><div style="font-size:10px;color:var(--tr-pink);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px">Call Time</div><div style="font-size:15px;font-weight:700">${callTime} — ${wrapTime}</div></div>
+      <div><div style="font-size:10px;color:var(--tr-pink);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px">Location</div><div style="font-size:13px">${location}</div></div>
+      <div><div style="font-size:10px;color:var(--tr-pink);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px">Collection</div><div style="font-size:13px">${collection}</div></div>
+    </div>
+    ${missing?`<div style="background:rgba(255,149,0,.1);border-left:3px solid var(--orange);padding:10px 14px;border-radius:8px;margin-bottom:16px"><div style="font-size:12px;font-weight:700;color:var(--orange);margin-bottom:4px">⚠️ สินค้าที่ยังขาด</div><div style="font-size:13px">${missing}</div></div>`:''}
+    <div style="font-size:12px;color:var(--tr-ink2);border-top:1px solid var(--tr-line);padding-top:12px;margin-top:16px;display:flex;justify-content:space-between">
+      <span>Nongtua.work · Truly</span>
+      <span>${new Date().toLocaleDateString('th-TH')}</span>
+    </div>`;
+  document.getElementById('preview-overlay').classList.add('show');
+}
+function closePreview() {
+  document.getElementById('preview-overlay').classList.remove('show');
+}
+
+// ── RESET ─────────────────────────────────────────────
+function resetForm() {
+  if(!confirm('ล้างข้อมูลทั้งหมด?')) return;
+  document.querySelectorAll('input:not([type=checkbox]):not([type=time]):not([type=date])').forEach(el=>{
+    if(el.placeholder!=='ถั่ว') el.value='';
+  });
+  document.querySelectorAll('textarea').forEach(el=>el.value='');
+  document.querySelectorAll('input[type=checkbox]').forEach(el=>el.checked=false);
+  document.getElementById('shoot-date').value='2026-05-20';
+  document.getElementById('call-time').value='06:00';
+  document.getElementById('wrap-time').value='18:00';
+  updateProgress();updateFilename();
+  toast('↺ ล้างข้อมูลแล้ว');
+}
+
+// ── TOAST ─────────────────────────────────────────────
+function toast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// ── AUTO SAVE ─────────────────────────────────────────
+// save to localStorage every 30s
+setInterval(() => {
+  const data = {};
+  document.querySelectorAll('[id]').forEach(el => {
+    if(el.tagName==='INPUT'||el.tagName==='TEXTAREA'||el.tagName==='SELECT')
+      data[el.id] = el.type==='checkbox'?el.checked:el.value;
+  });
+  localStorage.setItem('truly-brief-v1', JSON.stringify(data));
+}, 30000);
+
+// restore on load
+const saved = JSON.parse(localStorage.getItem('truly-brief-v1')||'{}');
+Object.keys(saved).forEach(id => {
+  const el = document.getElementById(id);
+  if(el) {
+    if(el.type==='checkbox') el.checked=saved[id];
+    else el.value=saved[id];
+  }
+});
+updateProgress();
+updateFilename();
+updateStatusStyle(document.getElementById('status'));
+</script>
+</body>
+</html>
