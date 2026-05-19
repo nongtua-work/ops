@@ -957,8 +957,6 @@ liff.init({ liffId: LIFF_ID })
     } else {
       liff.getProfile().then(profile => {
         const uId = profile.userId;
-
-          alert(“somopomel:\n” + uId); 
          
         // ตรวจสอบว่าพนักงานคนนี้คือแอดมินไหม
         if (ADMIN_IDS.includes(uId)) {
@@ -990,6 +988,62 @@ liff.init({ liffId: LIFF_ID })
   });
 
 renderCollections();
+
+// ════════════════════════════════════════
+// INIT (เริ่มต้นระบบลุยกับ LINE LIFF)
+// ════════════════════════════════════════
+function renderAll(){renderBoss();renderTasks();}
+
+// เปิดใช้งานระบบ LINE LIFF และดึงชีตอัตโนมัติเมื่อพร้อม
+if (LIFF_ID && LIFF_ID !== "YOUR_LINE_LIFF_ID") {
+  liff.init({ liffId: LIFF_ID })
+    .then(() => {
+      if (!liff.isLoggedIn()) {
+        liff.login();
+      } else {
+        liff.getProfile().then(profile => {
+          const uId = profile.userId;
+          
+          // 🚨 แปะน้องเด้งข้อความไว้ตรงนี้เลยแก อยู่ใน liff.init อันเดิม ไม่ต้องลบอันเก่าออก!
+          alert("ก๊อปปี้ไอดีนี้ไว้เลยแก:\n" + uId); 
+          
+          if (ADMIN_IDS.includes(uId)) {
+            isAdminMode = true;
+            document.getElementById("admin-fab").style.display = "flex";
+            document.getElementById("admin-action-bar").style.display = "flex";
+            toast(`โหมดแอดมิน: ยินดีต้อนรับคุณ ${profile.displayName} ⚡`);
+          } else {
+            isAdminMode = false;
+            document.getElementById("admin-fab").style.display = "none";
+            document.getElementById("admin-action-bar").style.display = "none";
+            toast(`สวัสดีคุณ ${profile.displayName} ☕`);
+          }
+          currentEntity = "ALL";
+          fetchTasks();
+        }).catch(err => {
+          console.error("LIFF getProfile error:", err);
+          setupGuestMode();
+        });
+      }
+    })
+    .catch(err => {
+      console.error("LIFF init error:", err);
+      setupGuestMode();
+    });
+} else {
+  setupGuestMode();
+}
+
+function setupGuestMode() {
+  isAdminMode = false;
+  document.getElementById("admin-fab").style.display = "none";
+  document.getElementById("admin-action-bar").style.display = "none";
+  toast("⚠️ โหมดทั่วไป (ไม่ได้ต่อ LINE OA)");
+  currentEntity = "ALL";
+  fetchTasks();
+}
+
+
 </script>
 </body>
 </html>
