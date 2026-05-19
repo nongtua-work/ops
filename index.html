@@ -970,6 +970,26 @@ async function initLiff() {
   }
 }
 
+// ── READ URL PARAMS ──────────────────────────────────
+function goToPageFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  const page = params.get('page');
+  const tabs = document.querySelectorAll('.tab-item');
+  const map = {
+    'boss':        [0, 'สรุปงาน',    'OPS Dashboard'],
+    'tasks':       [1, 'งานล่าสุด',  'Tasks'],
+    'collections': [2, 'Collections','Collections'],
+    'more':        [3, 'Timeline',   'More'],
+    'add':         [null, null, null],
+  };
+  if(page && map[page]) {
+    const [idx, title, eyebrow] = map[page];
+    if(idx !== null) goTab(page, title, eyebrow, tabs[idx]);
+    if(page === 'add') openSheet();
+  }
+}
+goToPageFromURL();  
+
 function renderAll(){renderBoss();renderTasks();}
 renderAll();
 renderCollections();
