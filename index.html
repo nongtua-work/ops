@@ -976,30 +976,27 @@ function goToPageFromURL() {
   const page = params.get('page');
   const tabs = document.querySelectorAll('.tab-item');
   const map = {
-    'boss':        [0, 'สรุปงาน',    'OPS Dashboard'],
-    'tasks':       [1, 'งานล่าสุด',  'Tasks'],
-    'collections': [2, 'Collections','Collections'],
-    'more':        [3, 'Timeline',   'More'],
-    'add':         [null, null, null],
+    'boss':        [0, 'สรุปงาน'],
+    'collections': [1, 'Collections'],
+    'tasks':       [2, 'งานล่าสุด'],
+    'timeline':    [3, 'Timeline'],
   };
   if(page && map[page]) {
-    const [idx, title, eyebrow] = map[page];
-    if(idx !== null) goTab(page, title, eyebrow, tabs[idx]);
-    if(page === 'add') openSheet();
+    const [idx, label] = map[page];
+    goTab(page, label, tabs[idx]);
   }
+  if(page === 'add') openSheet();
 }
-goToPageFromURL();  
-  
+
 function renderAll(){renderBoss();renderTasks();}
 renderAll();
 renderCollections();
-goToPageFromURL();  ← เพิ่ม
+goToPageFromURL();
 initLiff();
 </script>
 
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
-
-<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  
 </body>
 </html>
