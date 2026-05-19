@@ -44,7 +44,7 @@ body{background:var(--a-bg);color:var(--a-ink);transition:background .4s ease,co
 
 .scroll-viewport{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:85px}
 
-/* แถบเมนูด้านล่าง 5 แท็บ เรียงแถวตรงเป๊ะ ไม่เด้งซ้อนทับ */
+/* Bottom Tab Bar */
 .bottom-tabs{position:absolute;bottom:0;left:0;right:0;height:75px;border-top:1px solid var(--a-line);display:flex;justify-content:space-around;align-items:center;padding:0 4px 15px;z-index:100}
 .cc .bottom-tabs{background:rgba(250,250,250,.96)}
 .bg .bottom-tabs{background:rgba(244,247,244,.96)}
@@ -65,7 +65,7 @@ body{background:var(--a-bg);color:var(--a-ink);transition:background .4s ease,co
 .section-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;margin-top:10px}
 .section-title{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--a-mid);font-family:var(--font-mono)}
 
-/* Summary Box UI */
+/* Summary & Stat Box UI */
 .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
 .stat-card{background:var(--a-soft);border:1px solid var(--a-line);border-radius:12px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;height:95px}
 .stat-n{font-size:32px;font-weight:700;line-height:1;font-family:var(--font-mono)}
@@ -211,6 +211,7 @@ body{background:var(--a-bg);color:var(--a-ink);transition:background .4s ease,co
       <div class="section-hdr"><span class="section-title">👥 ความคืบหน้ารายคน</span></div>
       <div id="team-list"></div>
     </div>
+    
   </div>
 
   <div class="bottom-tabs">
@@ -234,7 +235,7 @@ body{background:var(--a-bg);color:var(--a-ink);transition:background .4s ease,co
 
 <div class="detail-overlay" id="detail-screen">
   <div class="detail-hdr">
-    <h2 class="title-main" id="detail-title" style="font-size:18px">Collection A</h2>
+    <h2 class="title-main" id="detail-title" style="font-size:18px">Collection Detail</h2>
     <button class="detail-close" onclick="closeDetail()">✕</button>
   </div>
   <div class="detail-scroll">
@@ -468,7 +469,7 @@ function openDetail(id){
   document.getElementById('copy-text-el').textContent=currentColl.copy.ig;
   document.getElementById('detail-screen').classList.add('open');
 }
-function closeDetail(){document.getElementById('detail-screen').remove('open');}
+function closeDetail(){document.getElementById('detail-screen').classList.remove('open');}
 function copyCopy(){navigator.clipboard.writeText(document.getElementById('copy-text-el').textContent).then(()=>toast('📋 Copy แล้ว!'));}
 
 function renderTimeline(){
