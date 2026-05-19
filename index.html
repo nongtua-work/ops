@@ -954,11 +954,13 @@ function addTask(){
   const name=document.getElementById('fn').value.trim();if(!name){document.getElementById('fn').focus();return;}
   tasks.push({id:nid++,name,project:document.getElementById('fp').value,person:document.getElementById('fper').value,due:document.getElementById('fd').value,status:document.getElementById('fs').value,updated:Date.now()});
   save();closeSheet();document.getElementById('fn').value='';renderAll();showToast('เพิ่มงานแล้ว ✅');
-}
+} 
+  
+// ── TOAST ─────────────────────────────────────────────
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
 
-// ── LIFF ─────────────────────────────────────────
+// ── LIFF ─────────────────────────────────────────────
 const LIFF_ID = "2010125903-hSMEChl3";
-
 async function initLiff() {
   try {
     await liff.init({ liffId: LIFF_ID });
@@ -967,14 +969,13 @@ async function initLiff() {
     console.log('LIFF init failed', e);
   }
 }
-initLiff();  
-  
-// ── TOAST ─────────────────────────────────────────────
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
 
 function renderAll(){renderBoss();renderTasks();}
 renderAll();
 renderCollections();
+initLiff();
 </script>
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </body>
 </html>
