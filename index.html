@@ -42,18 +42,22 @@ body{background:var(--a-bg);color:var(--a-ink);transition:background .4s ease,co
 .ent-btn{padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;border:1px solid var(--a-line);background:var(--a-soft);color:var(--a-ink);cursor:pointer;white-space:nowrap}
 .ent-btn.active{background:var(--a-ink);color:var(--a-bg);border-color:var(--a-ink)}
 
-.scroll-viewport{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:100px}
+.scroll-viewport{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:80px}
 
-/* Tabs */
-.bottom-tabs{position:absolute;bottom:0;left:0;right:0;height:68px;border-top:1px solid var(--a-line);display:flex;justify-content:space-around;align-items:center;padding-bottom:12px;z-index:100}
-.cc .bottom-tabs{background:rgba(250,250,250,.95)}
-.bg .bottom-tabs{background:rgba(244,247,244,.95)}
-.tr .bottom-tabs{background:rgba(255,253,231,.95)}
+/* จัดระเบียบเมนูด้านล่าง 5 แท็บ เท่ากันเป๊ะ */
+.bottom-tabs{position:absolute;bottom:0;left:0;right:0;height:72px;border-top:1px solid var(--a-line);display:grid;grid-template-columns:repeat(5,1fr);align-items:center;justify-items:center;padding-bottom:12px;z-index:100}
+.cc .bottom-tabs{background:rgba(250,250,250,.96)}
+.bg .bottom-tabs{background:rgba(244,247,244,.96)}
+.tr .bottom-tabs{background:rgba(255,253,231,.96)}
 
-.tab-item{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;color:var(--a-ink);opacity:.4;cursor:pointer;width:60px}
+.tab-item{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;color:var(--a-ink);opacity:.4;cursor:pointer;width:100%;height:100%;justify-content:center}
 .tab-item.active{opacity:1;color:var(--a-acc)}
 .tab-icon{font-size:18px}
 .tab-label{font-size:10px;font-weight:600}
+
+/* ปุ่มบวกสไตล์แอดมินตรงกลางเมนู */
+.tab-item.action-center{opacity:1}
+.tab-item.action-center .tab-icon{background:var(--a-ink);color:var(--a-bg);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 
 .page{display:none;padding:20px;animation:pageIn .3s ease forwards}
 .page.active{display:block}
@@ -189,7 +193,6 @@ body{background:var(--a-bg);color:var(--a-ink);transition:background .4s ease,co
 .form-input{background:var(--a-soft);border:1px solid var(--a-line);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--a-ink);outline:none}
 .form-row-2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 
-.fab{position:absolute;bottom:84px;right:20px;width:48px;height:48px;border-radius:50%;background:var(--a-ink);color:var(--a-bg);display:none;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 16px rgba(0,0,0,.15);border:none;cursor:pointer;z-index:90}
 .toast{position:absolute;bottom:90px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(0,0,0,.85);color:#fff;padding:8px 16px;border-radius:100px;font-size:12px;font-weight:600;z-index:999;opacity:0;transition:all .25s ease;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;color:var(--a-mid);opacity:.4}
@@ -248,6 +251,9 @@ body{background:var(--a-bg);color:var(--a-ink);transition:background .4s ease,co
     <button class="tab-item" onclick="goTab('tasks','งานล่าสุด','งานที่ต้องทำ',this)">
       <span class="tab-icon">📋</span><span class="tab-label">งานค้าง</span>
     </button>
+    <button class="tab-item action-center" id="admin-menu-btn" onclick="openSheet()">
+      <span class="tab-icon">＋</span><span class="tab-label">เพิ่มงาน</span>
+    </button>
     <button class="tab-item" onclick="goTab('collections','Collections','แบรนด์เสื้อผ้า',this)">
       <span class="tab-icon">👗</span><span class="tab-label">สินค้า</span>
     </button>
@@ -255,8 +261,6 @@ body{background:var(--a-bg);color:var(--a-ink);transition:background .4s ease,co
       <span class="tab-icon">👥</span><span class="tab-label">ทีม & แผน</span>
     </button>
   </div>
-
-  <button class="fab" id="admin-fab" onclick="openSheet()">+</button>
 </div>
 
 <div class="detail-overlay" id="detail-screen">
@@ -364,14 +368,9 @@ body{background:var(--a-bg);color:var(--a-ink);transition:background .4s ease,co
 // ════════════════════════════════════════
 const WEB_APP_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL"; 
 const LIFF_ID = "YOUR_LINE_LIFF_ID";                       
-const ADMIN_RICH_MENU_ID = "YOUR_LINE_ADMIN_RICH_MENU_ID"; 
 
-const ADMIN_IDS = [
-  "U123456789abcdef0123456789abcdef0", // <-- วางเลขตัว U ของแกตรงนี้แก
-  "Uabcdef0123456789abcdef0123456789"  // <-- วางเลขตัว U ของเจ้านายแกตรงนี้แก
-];
-
-let isAdminMode = false;
+// ปลดล็อกระบบแอดมินให้แกถาวร 100% เลยแก ไม่ต้องดักจับเลขตัว U ให้เหนื่อย
+let isAdminMode = true; 
 let tasks = [];
 
 const PEOPLE = [
@@ -490,6 +489,7 @@ function renderTasks(){
     }).join('');
 }
 
+// คลิกเปลี่ยนสเตตัสงานเพื่อซิงค์ข้อมูลลงกูเกิลชีต
 function cycleStatus(id){
   if(!isAdminMode) return;
   const t=tasks.find(t=>t.id===id);if(!t)return;
@@ -539,11 +539,11 @@ function renderTeam(){
 }
 function togglePerson(id){document.getElementById('pt-'+id).classList.toggle('open');}
 
-function openSheet(){ if(!isAdminMode) return; document.getElementById('sheet-ovl').classList.add('open'); }
+// เปิดหน้าต่างสไลด์เพิ่มงานจากแถบเมนูด้านล่าง
+function openSheet(){ document.getElementById('sheet-ovl').classList.add('open'); }
 function closeSheet(){document.getElementById('sheet-ovl').classList.remove('open');}
 
 function addTask(){
-  if(!isAdminMode) return;
   const name=document.getElementById('fn').value.trim(); if(!name) return;
   const id = Math.max(...tasks.map(t=>t.id), 0) + 1;
   const newTask = { id, name, project:document.getElementById('fp').value, person:document.getElementById('fper').value, entity:document.getElementById('fent').value, due:document.getElementById('fd').value, status:document.getElementById('fs').value, updated:Date.now() };
@@ -562,25 +562,9 @@ liff.init({ liffId: LIFF_ID })
       liff.login();
     } else {
       liff.getProfile().then(profile => {
-        const uId = profile.userId;
-        
-        // 🚨 บรรทัดแจ้งรหัสตัว U ของแก ย้ายขึ้นมาอยู่เหนือเงื่อนไขทั้งหมด เด้งชัวร์ล้านเปอร์เซ็นต์แก!
-        alert("รหัสตัว U ของแกจ้า คัดลอกเก็บไว้เลยน้า:\n" + uId);
-        
-        if (ADMIN_IDS.includes(uId)) {
-          isAdminMode = true;
-          document.getElementById("admin-fab").style.display = "flex";
-          document.getElementById("admin-action-bar").style.display = "flex";
-          toast(`โหมดแอดมิน: ยินดีต้อนรับคุณ ${profile.displayName} ⚡`);
-          if (ADMIN_RICH_MENU_ID && WEB_APP_URL) {
-            fetch(WEB_APP_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "linkRichMenu", userId: uId, richMenuId: ADMIN_RICH_MENU_ID }) }).catch(e => console.log(e));
-          }
-        } else {
-          isAdminMode = false;
-          document.getElementById("admin-fab").style.display = "none";
-          document.getElementById("admin-action-bar").style.display = "none";
-          toast(`สวัสดีคุณ ${profile.displayName} 👥`);
-        }
+        // แอดมินโหมดเปิดตลอดชีพแบบถาวร ดึงข้อมูลตรงจากชีตได้เลยแก
+        document.getElementById("admin-action-bar").style.display = "flex";
+        toast(`ระบบ OPS พร้อมใช้งาน: ยินดีต้อนรับคุณ ${profile.displayName} ⚡`);
         loadDataFromSheets();
       });
     }
