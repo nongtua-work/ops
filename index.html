@@ -42,22 +42,22 @@ body{background:var(--a-bg);color:var(--a-ink);transition:background .4s ease,co
 .ent-btn{padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;border:1px solid var(--a-line);background:var(--a-soft);color:var(--a-ink);cursor:pointer;white-space:nowrap}
 .ent-btn.active{background:var(--a-ink);color:var(--a-bg);border-color:var(--a-ink)}
 
-.scroll-viewport{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:80px}
+.scroll-viewport{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:85px}
 
-/* จัดระเบียบเมนูด้านล่าง 5 แท็บ เท่ากันเป๊ะ */
-.bottom-tabs{position:absolute;bottom:0;left:0;right:0;height:72px;border-top:1px solid var(--a-line);display:grid;grid-template-columns:repeat(5,1fr);align-items:center;justify-items:center;padding-bottom:12px;z-index:100}
+/* 🛠️ แก้ไขโครงสร้างเมนูด้านล่างใหม่ยกแผง ป้องกันอาการอ๊อง ซ้อนทับกัน */
+.bottom-tabs{position:absolute;bottom:0;left:0;right:0;height:75px;border-top:1px solid var(--a-line);display:flex;justify-content:space-around;align-items:center;padding:0 4px 15px;z-index:100}
 .cc .bottom-tabs{background:rgba(250,250,250,.96)}
 .bg .bottom-tabs{background:rgba(244,247,244,.96)}
 .tr .bottom-tabs{background:rgba(255,253,231,.96)}
 
-.tab-item{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;color:var(--a-ink);opacity:.4;cursor:pointer;width:100%;height:100%;justify-content:center}
+.tab-item{display:flex;flex-direction:column;align-items:center;justify-content:center;background:none;border:none;color:var(--a-ink);opacity:.4;cursor:pointer;flex:1;height:100%;padding:4px 0}
 .tab-item.active{opacity:1;color:var(--a-acc)}
-.tab-icon{font-size:18px}
-.tab-label{font-size:10px;font-weight:600}
+.tab-icon{font-size:18px;display:block;line-height:1;margin-bottom:3px}
+.tab-label{font-size:10px;font-weight:600;white-space:nowrap;display:block;line-height:1}
 
-/* ปุ่มบวกสไตล์แอดมินตรงกลางเมนู */
+/* ดีไซน์ปุ่มบวกตรงกลางเมนูด้านล่างให้ล็อกตายตัว */
 .tab-item.action-center{opacity:1}
-.tab-item.action-center .tab-icon{background:var(--a-ink);color:var(--a-bg);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.tab-item.action-center .tab-icon{background:var(--a-ink);color:var(--a-bg);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,.15);margin-bottom:0}
 
 .page{display:none;padding:20px;animation:pageIn .3s ease forwards}
 .page.active{display:block}
@@ -251,7 +251,7 @@ body{background:var(--a-bg);color:var(--a-ink);transition:background .4s ease,co
     <button class="tab-item" onclick="goTab('tasks','งานล่าสุด','งานที่ต้องทำ',this)">
       <span class="tab-icon">📋</span><span class="tab-label">งานค้าง</span>
     </button>
-    <button class="tab-item action-center" id="admin-menu-btn" onclick="openSheet()">
+    <button class="tab-item action-center" id="admin-menu-btn" onclick="checkPasswordToOpen()">
       <span class="tab-icon">＋</span><span class="tab-label">เพิ่มงาน</span>
     </button>
     <button class="tab-item" onclick="goTab('collections','Collections','แบรนด์เสื้อผ้า',this)">
@@ -369,7 +369,7 @@ body{background:var(--a-bg);color:var(--a-ink);transition:background .4s ease,co
 const WEB_APP_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL"; 
 const LIFF_ID = "YOUR_LINE_LIFF_ID";                       
 
-// ปลดล็อกระบบแอดมินให้แกถาวร 100% เลยแก ไม่ต้องดักจับเลขตัว U ให้เหนื่อย
+const SECRET_PASSWORD = "letmakeitpossible";
 let isAdminMode = true; 
 let tasks = [];
 
@@ -489,7 +489,6 @@ function renderTasks(){
     }).join('');
 }
 
-// คลิกเปลี่ยนสเตตัสงานเพื่อซิงค์ข้อมูลลงกูเกิลชีต
 function cycleStatus(id){
   if(!isAdminMode) return;
   const t=tasks.find(t=>t.id===id);if(!t)return;
@@ -539,8 +538,15 @@ function renderTeam(){
 }
 function togglePerson(id){document.getElementById('pt-'+id).classList.toggle('open');}
 
-// เปิดหน้าต่างสไลด์เพิ่มงานจากแถบเมนูด้านล่าง
-function openSheet(){ document.getElementById('sheet-ovl').classList.add('open'); }
+function checkPasswordToOpen() {
+  const inputPassword = prompt("🔐 กรุณากรอกรหัสผ่านเพื่อสั่งเพิ่มงานใหม่:");
+  if (inputPassword === SECRET_PASSWORD) {
+    document.getElementById('sheet-ovl').classList.add('open');
+  } else if (inputPassword !== null) {
+    alert("❌ รหัสผ่านไม่ถูกต้องแก! ไม่สามารถเพิ่มงานได้");
+  }
+}
+
 function closeSheet(){document.getElementById('sheet-ovl').classList.remove('open');}
 
 function addTask(){
@@ -553,16 +559,12 @@ function addTask(){
   }
 }
 
-// ════════════════════════════════════════
-// LINE LIFF ENTRY POINT
-// ════════════════════════════════════════
 liff.init({ liffId: LIFF_ID })
   .then(() => {
     if (!liff.isLoggedIn()) {
       liff.login();
     } else {
       liff.getProfile().then(profile => {
-        // แอดมินโหมดเปิดตลอดชีพแบบถาวร ดึงข้อมูลตรงจากชีตได้เลยแก
         document.getElementById("admin-action-bar").style.display = "flex";
         toast(`ระบบ OPS พร้อมใช้งาน: ยินดีต้อนรับคุณ ${profile.displayName} ⚡`);
         loadDataFromSheets();
