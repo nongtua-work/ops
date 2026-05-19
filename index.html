@@ -956,6 +956,19 @@ function addTask(){
   save();closeSheet();document.getElementById('fn').value='';renderAll();showToast('เพิ่มงานแล้ว ✅');
 }
 
+// ── LIFF ─────────────────────────────────────────
+const LIFF_ID = "2010125903-hSMEChl3";
+
+async function initLiff() {
+  try {
+    await liff.init({ liffId: LIFF_ID });
+    if (!liff.isLoggedIn()) liff.login();
+  } catch(e) {
+    console.log('LIFF init failed', e);
+  }
+}
+initLiff();  
+  
 // ── TOAST ─────────────────────────────────────────────
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
 
