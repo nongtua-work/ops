@@ -424,7 +424,7 @@ body{background:var(--a-bg);color:var(--a-ink);transition:background .4s cubic-b
           <option value="พี่จิน">พี่จิน (PM)</option>
           <option value="พี่เฟียน">พี่เฟียน (Editor 1)</option>
           <option value="พี่พีท">พี่พีท (Editor 2)</option>
-          <option value="พี่คิวซี">พี่คิวซี (QC)</option>
+          <option value="พี่เอฟ">พี่เอฟ (Stock)</option>
         </select>
       </div>
     </div>
@@ -466,8 +466,8 @@ body{background:var(--a-bg);color:var(--a-ink);transition:background .4s cubic-b
 // ════════════════════════════════════════
 // CONFIGURATION (แกใส่ข้อมูลส่วนตัวตรงนี้ได้เลย)
 // ════════════════════════════════════════
-const WEB_APP_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL"; // <-- ใส่ URL เว็บแอปของแกตรงนี้แก
-const LIFF_ID = "YOUR_LINE_LIFF_ID";                       // <-- ใส่เลข LIFF ID ของแกตรงนี้แก
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw63HhylbHL4lvuAjOzUb0elgDLw_1gCYA_4C3_zK6v6zR6nhGM7H3-4z-SyYG0BVI0Og/exec"; // <-- ใส่ URL เว็บแอปของแกตรงนี้แก
+const LIFF_ID = "2010125903-hSMEChl3";                       // <-- ใส่เลข LIFF ID ของแกตรงนี้แก
 const ADMIN_RICH_MENU_ID = "YOUR_LINE_ADMIN_RICH_MENU_ID"; // <-- ใส่เลข Rich Menu ID อันของแอดมินแก (ถ้าไม่อยากให้สลับเมนูอัตโนมัติ ให้ใส่ค่าว่าง "")
 
 // ════════════════════════════════════════
@@ -490,7 +490,7 @@ const PEOPLE = [
   {id:'พี่จิน', av:'จ', role:'Project Manager'},
   {id:'พี่เฟียน',av:'ฟ', role:'Editor Visual'},
   {id:'พี่พีท', av:'พ', role:'Editor Fashion'},
-  {id:'พี่คิวซี',av:'ค', role:'QC เสื้อ'},
+  {id:'พี่เอฟ',av:'อ', role:'Stock QC สินค้า'},
 ];
 
 const COLLECTIONS = [
@@ -957,7 +957,9 @@ liff.init({ liffId: LIFF_ID })
     } else {
       liff.getProfile().then(profile => {
         const uId = profile.userId;
-        
+
+          alert(“somopomel:\n” + uId); 
+         
         // ตรวจสอบว่าพนักงานคนนี้คือแอดมินไหม
         if (ADMIN_IDS.includes(uId)) {
           isAdminMode = true;
