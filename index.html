@@ -55,10 +55,10 @@ html,body{height:100%;overflow:hidden;-webkit-font-smoothing:antialiased}
 /* ══════════════════════════════════════
    THEME SWITCH CORES
 ══════════════════════════════════════ */
-body.cc{--a-bg:var(--cc-bg);--a-ink:var(--cc-ink);--a-mid:var(--cc-mid);--a-soft:var(--cc-soft);--a-line:var(--cc-line);--a-acc:var(--cc-acc);font-family:var(--font-sans)}
-body.bg{--a-bg:var(--bg-bg);--a-ink:var(--bg-ink);--a-mid:var(--bg-mid);--a-soft:var(--bg-soft);--a-line:var(--bg-line);--a-acc:var(--bg-acc);font-family:var(--font-sans)}
-body.tr{--a-bg:var(--tr-bg);--a-ink:var(--tr-ink);--a-mid:var(--tr-mid);--a-soft:var(--tr-soft);--a-line:var(--tr-line);--a-acc:var(--tr-acc);font-family:var(--font-sans)}
-body.all{--a-bg:#F2F2F7;--a-ink:#1C1C1E;--a-mid:#8E8E93;--a-soft:#FFFFFF;--a-line:#E5E5EA;--a-acc:#007AFF;font-family:var(--font-sans)}
+.cc{--a-bg:var(--cc-bg);--a-ink:var(--cc-ink);--a-mid:var(--cc-mid);--a-soft:var(--cc-soft);--a-line:var(--cc-line);--a-acc:var(--cc-acc);font-family:var(--font-sans)}
+.bg{--a-bg:var(--bg-bg);--a-ink:var(--bg-ink);--a-mid:var(--bg-mid);--a-soft:var(--bg-soft);--a-line:var(--bg-line);--a-acc:var(--bg-acc);font-family:var(--font-sans)}
+.tr{--a-bg:var(--tr-bg);--a-ink:var(--tr-ink);--a-mid:var(--tr-mid);--a-soft:var(--tr-soft);--a-line:var(--tr-line);--a-acc:var(--tr-acc);font-family:var(--font-sans)}
+.all{--a-bg:#F2F2F7;--a-ink:#1C1C1E;--a-mid:#8E8E93;--a-soft:#FFFFFF;--a-line:#E5E5EA;--a-acc:#007AFF;font-family:var(--font-sans)}
 
 body{background:var(--a-bg);color:var(--a-ink);transition:background .4s cubic-bezier(.16,1,.3,1),color .4s cubic-bezier(.16,1,.3,1)}
 
@@ -73,8 +73,8 @@ body{background:var(--a-bg);color:var(--a-ink);transition:background .4s cubic-b
 .nav-left-meta{display:flex;flex-direction:column}
 .eyebrow{font-family:var(--font-mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:1px;opacity:.5;margin-bottom:2px}
 .title-main{font-size:24px;font-weight:700;letter-spacing:-.5px}
-body.bg .title-main{font-family:var(--font-serif);font-weight:700;font-style:italic}
-body.tr .title-main{text-transform:uppercase;font-style:italic;font-weight:900;letter-spacing:0}
+.bg .title-main{font-family:var(--font-serif);font-weight:700;font-style:italic}
+.tr .title-main{text-transform:uppercase;font-style:italic;font-weight:900;letter-spacing:0}
 
 /* Brand Filter Track */
 .brand-strip{display:flex;gap:6px;margin-top:14px;overflow-x:auto;padding-bottom:2px}
@@ -87,9 +87,9 @@ body.tr .title-main{text-transform:uppercase;font-style:italic;font-weight:900;l
 
 /* Bottom Tab Bar */
 .bottom-tabs{position:absolute;bottom:0;left:0;right:0;height:68px;background:rgba(255,255,255,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--a-line);display:flex;justify-content:space-around;align-items:center;padding-bottom:12px;z-index:100}
-body.cc .bottom-tabs{background:rgba(250,250,250,.9)}
-body.bg .bottom-tabs{background:rgba(244,247,244,.9)}
-body.tr .bottom-tabs{background:rgba(255,253,231,.9)}
+.cc .bottom-tabs{background:rgba(250,250,250,.9)}
+.bg .bottom-tabs{background:rgba(244,247,244,.9)}
+.tr .bottom-tabs{background:rgba(255,253,231,.9)}
 
 .tab-item{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;color:var(--a-ink);opacity:.4;cursor:pointer;transition:all .2s cubic-bezier(.16,1,.3,1);width:60px}
 .tab-item.active{opacity:1;color:var(--a-acc)}
@@ -120,8 +120,8 @@ body.tr .bottom-tabs{background:rgba(255,253,231,.9)}
 .sn-red{color:var(--g-red)}
 
 .alert-strip{background:var(--tr-soft);border:1px solid var(--tr-line);border-radius:12px;padding:14px;display:flex;gap:12px;margin-bottom:24px;align-items:flex-start}
-body.cc .alert-strip{background:#FFF5F5;border-color:#FEB2B2}
-body.bg .alert-strip{background:var(--bg-soft);border-color:var(--bg-line)}
+.cc .alert-strip{background:#FFF5F5;border-color:#FEB2B2}
+.bg .alert-strip{background:var(--bg-soft);border-color:var(--bg-line)}
 .alert-title{font-size:13px;font-weight:700;color:var(--g-red);margin-bottom:4px}
 .alert-body{font-size:12px;line-height:1.5;opacity:.8}
 
@@ -162,7 +162,6 @@ body.bg .alert-strip{background:var(--bg-soft);border-color:var(--bg-line)}
 /* ══════════════════════════════════════
    PAGE 4: TIMELINE & TEAM BLOCK
 ══════════════════════════════════════ */
-/* Matrix Timeline Grid */
 .tl-container{background:var(--a-soft);border:1px solid var(--a-line);border-radius:14px;padding:14px;overflow-x:auto;margin-bottom:24px}
 .tl-header-row{display:grid;grid-template-columns:80px repeat(5,1fr);gap:6px;align-items:center;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--a-line)}
 .tl-day-lbl{text-align:center;font-size:10px;opacity:.4;line-height:1.2}
@@ -179,7 +178,6 @@ body.bg .alert-strip{background:var(--bg-soft);border-color:var(--bg-line)}
 .tl-cell-lbl{font-size:8px;font-weight:600;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;opacity:.8}
 .tl-sep{height:1px;background:var(--a-line);opacity:.5}
 
-/* Team Accordion Blocks */
 .person-block{background:var(--a-soft);border:1px solid var(--a-line);border-radius:14px;margin-bottom:8px;overflow:hidden}
 .person-hdr{padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer}
 .person-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
@@ -208,7 +206,6 @@ body.bg .alert-strip{background:var(--bg-soft);border-color:var(--bg-line)}
 .detail-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--a-ink)}
 .detail-scroll{flex:1;overflow-y:auto;padding:20px}
 
-/* Image Carousel Box */
 .carousel-box{position:relative;margin-bottom:20px}
 .carousel-inner{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;border-radius:14px;border:1px solid var(--a-line)}
 .carousel-inner::-webkit-scrollbar{display:none}
@@ -221,11 +218,9 @@ body.bg .alert-strip{background:var(--bg-soft);border-color:var(--bg-line)}
 .cdot{width:6px;height:6px;border-radius:50%;background:var(--a-line);transition:background .2s}
 .cdot.active{background:var(--a-acc)}
 
-/* Asset Assets Quick Links */
 .asset-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:24px}
 .asset-btn{background:var(--a-soft);border:1px solid var(--a-line);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--a-ink);font-size:12px;font-weight:600}
 
-/* Mock Feed Preview Tabs */
 .plat-tabs{display:flex;background:var(--a-soft);padding:3px;border-radius:8px;margin-bottom:12px;border:1px solid var(--a-line)}
 .plat-btn{flex:1;background:none;border:none;padding:6px;font-size:11px;font-weight:700;color:var(--a-ink);opacity:.5;cursor:pointer;border-radius:6px;transition:all .2s}
 .plat-btn.active{background:var(--a-bg);opacity:1;box-shadow:0 2px 8px rgba(0,0,0,.04)}
@@ -242,20 +237,17 @@ body.bg .alert-strip{background:var(--bg-soft);border-color:var(--bg-line)}
 .shopee-price{color:#EE4D2D;font-weight:700;font-size:16px;margin-bottom:8px;font-family:var(--font-mono)}
 .shopee-desc{opacity:.7;line-height:1.4}
 
-/* Copywriting Board Box */
 .copy-box{background:var(--a-soft);border:1px solid var(--a-line);border-radius:12px;padding:14px;margin-bottom:24px;position:relative}
 .copy-lbl{font-family:var(--font-mono);font-size:10px;font-weight:700;opacity:.4;text-transform:uppercase;margin-bottom:6px}
 .copy-text{font-size:12px;line-height:1.5;white-space:pre-wrap;color:var(--a-ink)}
 .copy-btn{position:absolute;top:10px;right:10px;background:var(--a-bg);border:1px solid var(--a-line);padding:4px 8px;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer}
 
-/* Linked Steps Tasks inside Details */
 .dtask-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--a-line)}
 .dtask-row:last-child{border-bottom:none}
 .dtask-dot{width:6px;height:6px;border-radius:50%}
 .dtask-name{font-size:12px;font-weight:500;flex:1}
 .dtask-badge{font-size:9px;padding:2px 6px}
 
-/* Action Execution Bar */
 .action-bar{display:flex;gap:10px;margin-top:20px;flex-shrink:0}
 .ab-btn{flex:1;padding:12px;border-radius:10px;font-size:13px;font-weight:700;border:none;cursor:pointer;text-align:center}
 .ab-rev{background:var(--a-soft);color:var(--a-ink);border:1px solid var(--a-line)}
@@ -264,7 +256,7 @@ body.bg .alert-strip{background:var(--bg-soft);border-color:var(--bg-line)}
 /* ══════════════════════════════════════
    BOTTOM SHEET: ADD NEW TASK FORM
 ══════════════════════════════════════ */
-.sheet-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.3);z-index:600;opacity:0;pointer-events:none;transition:opacity .3s ease;display:flex;alignment:flex-end;justify-content:center}
+.sheet-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.3);z-index:600;opacity:0;pointer-events:none;transition:opacity .3s ease;display:flex;align-items:flex-end;justify-content:center}
 .sheet-overlay.open{opacity:1;pointer-events:auto}
 .sheet-content{width:100%;max-width:480px;background:var(--a-bg);border-radius:20px 20px 0 0;padding:20px 20px 34px;transform:translateY(100%);transition:transform .3s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column;gap:14px;margin-top:auto}
 .sheet-overlay.open .sheet-content{transform:translateY(0)}
@@ -278,8 +270,8 @@ body.bg .alert-strip{background:var(--bg-soft);border-color:var(--bg-line)}
 .form-input:focus{border-color:var(--a-ink)}
 .form-row-2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 
-/* Floating Action Trigger Button */
-.fab{position:absolute;bottom:84px;right:20px;width:48px;height:48px;border-radius:50%;background:var(--a-ink);color:var(--a-bg);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 16px rgba(0,0,0,.15);border:none;cursor:pointer;z-index:90}
+/* ปุ่มบวก FAB (เริ่มต้นซ่อนไว้ก่อน จะโผล่เฉพาะแอดมิน) */
+.fab{position:absolute;bottom:84px;right:20px;width:48px;height:48px;border-radius:50%;background:var(--a-ink);color:var(--a-bg);display:none;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 16px rgba(0,0,0,.15);border:none;cursor:pointer;z-index:90}
 
 /* ══════════════════════════════════════
    TOAST SYSTEM
@@ -287,7 +279,6 @@ body.bg .alert-strip{background:var(--bg-soft);border-color:var(--bg-line)}
 .toast{position:absolute;bottom:90px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(0,0,0,.85);color:#fff;padding:8px 16px;border-radius:100px;font-size:12px;font-weight:600;z-index:999;opacity:0;pointer-events:none;transition:all .25s cubic-bezier(.16,1,.3,1);white-space:nowrap;backdrop-filter:blur(4px)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* Empty State Wrapper */
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;color:var(--a-mid);opacity:.4;text-align:center}
 .empty-big{font-size:40px;margin-bottom:8px;display:block}
 </style>
@@ -356,7 +347,7 @@ body.bg .alert-strip{background:var(--bg-soft);border-color:var(--bg-line)}
     </button>
   </div>
 
-  <button class="fab" onclick="openSheet()">+</button>
+  <button class="fab" id="admin-fab" onclick="openSheet()">+</button>
 
 </div>
 
@@ -392,7 +383,7 @@ body.bg .alert-strip{background:var(--bg-soft);border-color:var(--bg-line)}
     <div class="section-hdr"><span class="section-title" style="font-size:11px">📍 สเตตัสงานโปรดักชันที่ผูกไว้</span></div>
     <div id="detail-tasks" style="background:var(--a-soft);border:1px solid var(--a-line);border-radius:12px;padding:4px 14px;margin-bottom:20px"></div>
 
-    <div class="action-bar">
+    <div class="action-bar" id="admin-action-bar" style="display:none">
       <button class="ab-btn ab-rev" onclick="reviseCollection()">✏️ สั่งแก้ไขงาน</button>
       <button class="ab-btn ab-app" onclick="approveCollection()">✅ อนุมัติผ่านบรูฟ</button>
     </div>
@@ -473,13 +464,25 @@ body.bg .alert-strip{background:var(--bg-soft);border-color:var(--bg-line)}
 
 <script>
 // ════════════════════════════════════════
-// CONFIGURATION (แกใส่ URL กับ LIFF ID ตรงนี้ได้เลยน้า)
+// CONFIGURATION (แกใส่ข้อมูลส่วนตัวตรงนี้ได้เลย)
 // ════════════════════════════════════════
-const WEB_APP_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL"; // <-- ใส่ URL เว็บแอปจากสเต็ปที่ 2 ตรงนี้แก
+const WEB_APP_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL"; // <-- ใส่ URL เว็บแอปของแกตรงนี้แก
 const LIFF_ID = "YOUR_LINE_LIFF_ID";                       // <-- ใส่เลข LIFF ID ของแกตรงนี้แก
+const ADMIN_RICH_MENU_ID = "YOUR_LINE_ADMIN_RICH_MENU_ID"; // <-- ใส่เลข Rich Menu ID อันของแอดมินแก (ถ้าไม่อยากให้สลับเมนูอัตโนมัติ ให้ใส่ค่าว่าง "")
 
 // ════════════════════════════════════════
-// DATA (ฐานข้อมูลของระบบ)
+// ADMIN WHITELIST (ใส่ LINE User ID คนที่เป็นแอดมิน)
+// ════════════════════════════════════════
+const ADMIN_IDS = [
+  "U123456789abcdef0123456789abcdef0", // <-- เปลี่ยนเป็น LINE User ID ของแกแก
+  "Uabcdef0123456789abcdef0123456789", // <-- เปลี่ยนเป็น LINE User ID ของเจ้านายแก
+];
+
+let isAdminMode = false; // ตัวแปรคอยเช็กว่าคนเปิดใช่แอดมินไหม
+let tasks = [];
+
+// ════════════════════════════════════════
+// DATA (ฐานข้อมูลภายใน)
 // ════════════════════════════════════════
 const PEOPLE = [
   {id:'ถั่ว',    av:'ถ', role:'Operate Lead'},
@@ -509,22 +512,6 @@ const COLLECTIONS = [
    copy:{ig:'Behind the scenes จันทบุรี 📸\\n#BehindTheScenes #จันทบุรี #WetPlate',shopee:''}},
 ];
 
-const SEED = [
-  {id:1,name:'เช็ค status โรงงาน collection A',project:'Collection A',person:'พี่อาร์ม',entity:'TR',due:'2026-05-18',status:'todo',updated:Date.now()-300000},
-  {id:2,name:'ส่ง rough cut คลิป collection A',project:'Collection A',person:'พี่เฟียน',entity:'TR',due:'2026-05-20',status:'inprogress',updated:Date.now()-1800000},
-  {id:3,name:'ตัดคลิป fashion Collection B',project:'Collection B',person:'พี่พีท',entity:'TR',due:'2026-05-21',status:'todo',updated:Date.now()-3600000},
-  {id:4,name:'QC เสื้อตัวอย่างทุก SKU',project:'Collection A',person:'พี่คิวซี',entity:'TR',due:'2026-05-19',status:'inprogress',updated:Date.now()-5400000},
-  {id:5,name:'ประสาน location จันทบุรี',project:'จันทบุรี',person:'พี่จิน',entity:'CC',due:'2026-05-18',status:'done',updated:Date.now()-7200000},
-  {id:6,name:'วางแผนถ่ายจันทบุรี 20–22 พ.ค.',project:'จันทบุรี',person:'ถั่ว',entity:'CC',due:'2026-05-18',status:'inprogress',updated:Date.now()-10800000},
-  {id:7,name:'สรุป brief 3 collections',project:'Marketing',person:'ถั่ว',entity:'TR',due:'2026-05-19',status:'inprogress',updated:Date.now()-12000000},
-  {id:8,name:'Survey location เชียงใหม่',project:'Marketing',person:'พี่จิน',entity:'CC',due:'2026-05-19',status:'todo',updated:Date.now()-14400000},
-  {id:9,name:'จองตั๋วเชียงใหม่',project:'Marketing',person:'พี่อาร์ม',entity:'CC',due:'2026-05-19',status:'blocked',updated:Date.now()-15600000},
-];
-
-let tasks = JSON.parse(localStorage.getItem('ops-final')||'null') || SEED;
-let nid = Math.max(...tasks.map(t=>t.id), 0) + 1;
-const save = () => localStorage.setItem('ops-final', JSON.stringify(tasks));
-
 // ════════════════════════════════════════
 // NETWORK FETCH (ดึงข้อมูลจริงจาก Google Sheets)
 // ════════════════════════════════════════
@@ -536,7 +523,6 @@ function loadDataFromSheets() {
         if (data && data.tasks && data.tasks.length > 0) {
           tasks = data.tasks;
           nid = Math.max(...tasks.map(t=>t.id), 0) + 1;
-          save();
           renderAll();
         }
       })
@@ -548,7 +534,6 @@ function loadDataFromSheets() {
 // ENTITY + THEME
 // ════════════════════════════════════════
 let currentEntity = 'CC';
-
 const ENTITY_COLORS = {
   CC: { av:'#0A0A0A', avBg:'#F0F0F0', bar:'#0A0A0A' },
   BG: { av:'#B8860B', avBg:'#1A3328', bar:'#C9A227' },
@@ -646,7 +631,9 @@ function renderTasks(){
     :ft.map(t=>{
       const over=isOver(t);
       const si=over?{cls:'sb-stuck',l:'เกิน'}:SI[t.status]||SI.todo;
-      return`<div class="task-row" onclick="cycleStatus(${t.id})">
+      // ถ้าไม่ใช่แอดมิน จะตัดฟังก์ชันกดคลิกเพื่อเปลี่ยนสถานะงานออก ป้องกันคนกดเล่น
+      const clickAction = isAdminMode ? `onclick="cycleStatus(${t.id})"` : '';
+      return`<div class="task-row" ${clickAction}>
         <div class="task-icon" style="background:${PROJ_COLORS[t.project]||'rgba(0,0,0,.04)'}">${PROJ_ICONS[t.project]||'📎'}</div>
         <div class="task-main">
           <div class="task-name">${t.name}</div>
@@ -661,10 +648,11 @@ function renderTasks(){
 }
 
 function cycleStatus(id){
+  if(!isAdminMode) return; // ดักควายอีกชั้น ถ้าไม่ใช่แอดมินห้ามรัน
   const t=tasks.find(t=>t.id===id);if(!t)return;
   const c=['todo','inprogress','done','blocked'];
   t.status=c[(c.indexOf(t.status)+1)%c.length];t.updated=Date.now();
-  save();renderAll();toast(`→ ${t.status==='done'?'✅ เสร็จ':t.status==='inprogress'?'🟡 กำลังทำ':t.status==='blocked'?'🔴 ติดปัญหา':'📋 รอทำ'}`);
+  renderAll();toast(`→ ${t.status==='done'?'✅ เสร็จ':t.status==='inprogress'?'🟡 กำลังทำ':t.status==='blocked'?'🔴 ติดปัญหา':'📋 รอทำ'}`);
   
   if (WEB_APP_URL && WEB_APP_URL !== "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL") {
     fetch(WEB_APP_URL, {
@@ -859,15 +847,19 @@ function renderTeam(){
       ?`<div class="pt-row" style="opacity:.4;font-size:13px">ไม่มีงานที่ assign</div>`
       :pt.map(t=>{
         const dot=t.status==='done'?'var(--g-green)':isOver(t)||t.status==='blocked'?'var(--g-red)':t.status==='inprogress'?'var(--g-orange)':'#C7C7CC';
+        // หากไม่ใช่แอดมิน ให้แสดงเป็นตัวหนังสือสถานะธรรมดา (ซ่อนแถว Select เลือกแก้คะ)
+        const selectHTML = isAdminMode 
+          ? `<select class="pt-sel" onchange="upStatus(${t.id},this.value)" onclick="event.stopPropagation()">
+              <option value="todo" ${t.status==='todo'?'selected':''}>รอทำ</option>
+              <option value="inprogress" ${t.status==='inprogress'?'selected':''}>กำลังทำ</option>
+              <option value="done" ${t.status==='done'?'selected':''}>เสร็จ</option>
+              <option value="blocked" ${t.status==='blocked'?'selected':''}>ติดปัญหา</option>
+             </select>`
+          : `<span style="font-size:11px;font-weight:600;opacity:.5">${t.status==='done'?'เสร็จแล้ว':t.status==='inprogress'?'กำลังทำ':t.status==='blocked'?'ติดปัญหา':'รอทำ'}</span>`;
         return`<div class="pt-row">
           <div class="pt-dot" style="background:${dot}"></div>
           <div class="pt-name">${t.name}</div>
-          <select class="pt-sel" onchange="upStatus(${t.id},this.value)" onclick="event.stopPropagation()">
-            <option value="todo" ${t.status==='todo'?'selected':''}>รอทำ</option>
-            <option value="inprogress" ${t.status==='inprogress'?'selected':''}>กำลังทำ</option>
-            <option value="done" ${t.status==='done'?'selected':''}>เสร็จ</option>
-            <option value="blocked" ${t.status==='blocked'?'selected':''}>ติดปัญหา</option>
-          </select>
+          ${selectHTML}
         </div>`;
       }).join('');
     return`<div class="person-block">
@@ -889,10 +881,11 @@ function renderTeam(){
 
 function togglePerson(id){document.getElementById('pt-'+id).classList.toggle('open');}
 function upStatus(id,val){
+  if(!isAdminMode) return;
   const t=tasks.find(t=>t.id===id);
   if(t){
     t.status=val;t.updated=Date.now();
-    save();renderAll();
+    renderAll();
     
     if (WEB_APP_URL && WEB_APP_URL !== "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL") {
       fetch(WEB_APP_URL, {
@@ -909,18 +902,19 @@ function upStatus(id,val){
 // SHEET
 // ════════════════════════════════════════
 function openSheet(){
+  if(!isAdminMode) return;
   document.getElementById('sheet-ovl').classList.add('open');
   document.getElementById('fd').value=TSTR;
   document.getElementById('fent').value=currentEntity;
 }
 function closeSheet(){document.getElementById('sheet-ovl').classList.remove('open');}
 function addTask(){
+  if(!isAdminMode) return;
   const name=document.getElementById('fn').value.trim();
   if(!name){document.getElementById('fn').focus();return;}
-  const id = nid++;
+  const id = Math.max(...tasks.map(t=>t.id), 0) + 1;
   const newTask = {
-    id: id,
-    name: name,
+    id: id, name: name,
     project:document.getElementById('fp').value,
     person:document.getElementById('fper').value,
     entity:document.getElementById('fent').value,
@@ -929,7 +923,7 @@ function addTask(){
     updated:Date.now()
   };
   tasks.push(newTask);
-  save();closeSheet();document.getElementById('fn').value='';
+  closeSheet();document.getElementById('fn').value='';
   renderAll();toast('✅ เพิ่มงานแล้ว');
   
   if (WEB_APP_URL && WEB_APP_URL !== "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL") {
@@ -952,31 +946,46 @@ function toast(msg){
 }
 
 // ════════════════════════════════════════
-// INIT (เริ่มต้นระบบลุยกับ LINE LIFF)
+// INIT (ตรวจสอบสิทธิ์ LINE และเปิดฟีเจอร์)
 // ════════════════════════════════════════
 function renderAll(){renderBoss();renderTasks();}
 
-// เปิดใช้งานระบบ LINE LIFF และดึงชีตอัตโนมัติเมื่อพร้อม
-if (LIFF_ID && LIFF_ID !== "YOUR_LINE_LIFF_ID") {
-  liff.init({ liffId: LIFF_ID })
-    .then(() => {
-      if (!liff.isLoggedIn()) {
-        liff.login();
-      } else {
-        liff.getProfile().then(profile => {
-          toast(`ยินดีต้อนรับคุณ ${profile.displayName} 🚀`);
-          loadDataFromSheets();
-        });
-      }
-    })
-    .catch(err => {
-      console.error("LIFF Init Error:", err);
-      loadDataFromSheets();
-    });
-} else {
-  // หากยังไม่ได้ใส่เลขลิฟต์ ให้โหลดข้อมูลหน้าสแตนด์บายจำลองไปก่อน
-  renderAll();
-}
+liff.init({ liffId: LIFF_ID })
+  .then(() => {
+    if (!liff.isLoggedIn()) {
+      liff.login();
+    } else {
+      liff.getProfile().then(profile => {
+        const uId = profile.userId;
+        
+        // ตรวจสอบว่าพนักงานคนนี้คือแอดมินไหม
+        if (ADMIN_IDS.includes(uId)) {
+          isAdminMode = true;
+          // ปลดล็อกเปิดปุ่มเพิ่มงาน บรูฟงานของแอดมินขึ้นมาให้โชว์สวยๆ
+          document.getElementById("admin-fab").style.display = "flex";
+          document.getElementById("admin-action-bar").style.display = "flex";
+          toast(`โหมดแอดมิน: ยินดีต้อนรับคุณ ${profile.displayName} ⚡`);
+          
+          // ส่งคำสั่งแอบสลับริชเมนูใน LINE เป็นอันของแอดมินอัตโนมัติ (ถ้าแกผูกไอดีไว้)
+          if (ADMIN_RICH_MENU_ID && WEB_APP_URL) {
+            fetch(WEB_APP_URL, {
+              method: "POST",
+              mode: "no-cors",
+              body: JSON.stringify({ action: "linkRichMenu", userId: uId, richMenuId: ADMIN_RICH_MENU_ID })
+            }).catch(e => console.log(e));
+          }
+        } else {
+          toast(`โหมดทีมงาน: ยินดีต้อนรับคุณ ${profile.displayName} 👥`);
+        }
+        
+        loadDataFromSheets();
+      });
+    }
+  })
+  .catch(err => {
+    console.error("LIFF Init Error:", err);
+    loadDataFromSheets();
+  });
 
 renderCollections();
 </script>
