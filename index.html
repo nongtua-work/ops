@@ -63,7 +63,7 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 
 /* alert */
 .alert-box{background:rgba(255,59,48,.08);border:1px solid rgba(255,59,48,.2);border-radius:12px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:16px}
-.alert-title{font-size:13px;font-weight:700;color:var(--g-red);margin-bottom:3px}
+.alert-title{font-size:13px;font-weight:700;color:var(--g-red);margin-bottom:4px}
 .alert-body{font-size:12px;opacity:.7;line-height:1.5}
 
 /* brief card */
@@ -147,7 +147,7 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 .tab-icon{font-size:20px;margin-bottom:2px}
 .tab-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
 
-/* ── DETAIL SCREEN ── */
+/* ── DETAIL SCREEN (OVERLAY) ── */
 .detail-screen{position:fixed;top:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:480px;height:100%;background:var(--a-bg);z-index:200;display:flex;flex-direction:column;transition:transform .3s cubic-bezier(.32,.72,0,1);visibility:hidden;pointer-events:none}
 .detail-screen.open{transform:translateX(-50%) translateY(0);visibility:visible;pointer-events:auto}
 .detail-nav{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--a-line)}
@@ -200,14 +200,32 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 .link-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .link-name{flex:1;font-size:13px;font-weight:600}
 .link-sub{font-size:11px;opacity:.4;margin-top:1px}
-.link-chev{font-size:14px;opacity:.25}
-
-/* approve */
+.link-chev">›</div>
+</a>
+.link-row:active{opacity:.7}
 .approve-strip{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
 .approve-btn{padding:12px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .12s}
 .approve-btn:active{opacity:.7}
 .btn-approve{background:var(--g-green);color:#fff}
 .btn-revise{background:var(--a-soft);color:var(--a-ink);border:1.5px solid var(--a-line)}
+
+/* ── ADD SHEET (FORM OVERLAY) ── */
+.sheet-ovl{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;display:none;align-items:flex-end;justify-content:center}
+.sheet-ovl.open{display:flex}
+.sheet{width:100%;background:var(--a-bg);border-radius:20px 20px 0 0;padding:0 0 calc(20px + env(safe-area-inset-bottom,0px));animation:shup .3s cubic-bezier(.32,.72,0,1);max-height:90vh;overflow-y:auto;transition:background .3s}
+@keyframes shup{from{transform:translateY(100%)}to{transform:none}}
+.sheet-handle-wrap{display:flex;justify-content:center;padding:10px 0 6px}
+.sheet-handle{width:36px;height:4px;border-radius:2px;background:var(--a-line)}
+.sheet-nav{display:flex;align-items:center;justify-content:space-between;padding:4px 16px 14px;border-bottom:1px solid var(--a-line)}
+.sheet-cancel{font-size:15px;color:var(--a-mid);cursor:pointer;padding:4px}
+.sheet-title{font-size:17px;font-weight:700}
+.sheet-save{font-size:15px;font-weight:700;color:var(--a-acc);cursor:pointer;padding:4px;transition:color .3s}
+.sheet-body{padding:0 16px}
+.f-grp{margin-top:14px}
+.f-lbl{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;opacity:.4;margin-bottom:6px;display:block}
+.f-in{width:100%;padding:11px 13px;background:var(--a-soft);border:1.5px solid var(--a-line);border-radius:10px;color:var(--a-ink);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;-webkit-appearance:none;transition:border-color .15s,background .3s}
+.f-in:focus{border-color:var(--a-acc)}
+select.f-in{cursor:pointer}
 
 /* ── PASSWORD MODAL ── */
 .pw-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
@@ -229,7 +247,7 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 .pw-cancel{background:#2C2C2E;color:rgba(255,255,255,.6);border:1px solid #3A3A3C}
 
 /* ── LOADING ── */
-.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:12px;opacity:.4}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;gap:12px;opacity:.4}
 .loading-spinner{width:24px;height:24px;border:2px solid var(--a-line);border-top-color:var(--a-acc);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-text{font-size:13px;font-weight:500}
@@ -254,7 +272,7 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
         <div class="eyebrow" id="page-eyebrow">OPS Dashboard</div>
         <div class="page-title" id="page-title">สรุปงาน</div>
       </div>
-      <button class="add-btn" onclick="openSheetAdmin()">+</button>
+      <button class="add-btn" onclick="openAddSheet()">+</button>
     </div>
     <div class="entity-strip">
       <button class="ent-btn active" data-e="CC" onclick="setEntity('CC')">Chardchakaj</button>
@@ -311,7 +329,7 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
     <button class="tab-item" onclick="goTab('tasks','งานล่าสุด','Tasks',this)">
       <span class="tab-icon">✅</span><span class="tab-label">งาน</span>
     </button>
-    <button class="tab-item tab-add" onclick="openSheetAdmin()">
+    <button class="tab-item tab-add" onclick="openAddSheet()">
       <span class="tab-icon-add">＋</span>
     </button>
     <button class="tab-item" onclick="goTab('collections','Collections','Collections',this)">
@@ -362,6 +380,52 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
   </div>
 </div>
 
+<div class="sheet-ovl" id="sheet-ovl">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
+    <div class="sheet-nav">
+      <span class="sheet-cancel" onclick="closeSheet()">ยกเลิก</span>
+      <span class="sheet-title">สั่งการ / เพิ่มงานใหม่</span>
+      <span class="sheet-save" onclick="addTask()">บันทึก</span>
+    </div>
+    <div class="sheet-body">
+      <div class="f-grp">
+        <label class="f-lbl">ชิ้นงาน / สิ่งที่ต้องทำ</label>
+        <input type="text" class="f-in" id="fn" placeholder="เช่น ถ่ายแบบคอล A, ตัดต่อ Teaser">
+      </div>
+      <div class="f-grp">
+        <label class="f-lbl">โปรเจกต์งาน</label>
+        <select class="f-in" id="fp"></select>
+      </div>
+      <div class="f-grp">
+        <label class="f-lbl">คนรับผิดชอบ</label>
+        <select class="f-in" id="fper"></select>
+      </div>
+      <div class="f-grp">
+        <label class="f-lbl">สังกัดค่ายแบรนด์</label>
+        <select class="f-in" id="fent">
+          <option value="CC">Chardchakaj</option>
+          <option value="BT">Boonta Gallery</option>
+          <option value="TR">Truly</option>
+        </select>
+      </div>
+      <div class="f-grp">
+        <label class="f-lbl">กำหนดส่งมอบงาน</label>
+        <input type="date" class="f-in" id="fd">
+      </div>
+      <div class="f-grp" style="margin-bottom: 24px;">
+        <label class="f-lbl">สเตตัสตั้งต้น</label>
+        <select class="f-in" id="fs">
+          <option value="todo">📋 รอทำ</option>
+          <option value="inprogress">🟡 กำลังทำ</option>
+          <option value="blocked">🔴 ติดปัญหา</option>
+          <option value="done">✅ เสร็จแล้ว</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="pw-overlay" id="pw-overlay">
   <div class="pw-box">
     <div class="pw-icon">🔒</div>
@@ -380,7 +444,7 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 
 <script>
 // ════════════════════════════════════════
-// CONFIG — แก้ลิงก์ Web App ตรงนี้แก
+// CONFIGURATION
 // ════════════════════════════════════════
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzscde5obYfNW29k2hZTREmUQ6-ofnMZ7EiGXWYC7ikqB-TrjBMU_JhvMzd-wQAvFsY/exec";
 const LIFF_ID     = "2010125903-hSMEChl3";
@@ -395,7 +459,6 @@ let currentEntity = 'CC';
 let currentColl = null, currentPlatform = 'ig';
 let isAdmin = false;
 
-// FALLBACK RECOVERY SEED DATA
 const SEED_TASKS = [
   {id:'T-001',name:'เช็ค status โรงงาน collection A',project:'Collection A',person:'พี่อาร์ม',entity:'TR',due:'2026-05-18',status:'todo',updated:Date.now()},
   {id:'T-002',name:'ส่ง rough cut คลิป collection A',project:'Collection A',person:'พี่เฟียน',entity:'TR',due:'2026-05-20',status:'inprogress',updated:Date.now()},
@@ -417,7 +480,7 @@ const SEED_COLLECTIONS = [
 const SEED_PROJECTS = ['Collection A','Collection B','Collection C','จันทบุรี','Marketing','Boonta Gallery Session','อื่นๆ'];
 
 // ════════════════════════════════════════
-// FLOW CONNECTIONS
+// FLOW SYNC CONNECTIONS (แก้ไขหัวคอลัมน์ดึงซิงค์ Sheets ได้จริง)
 // ════════════════════════════════════════
 function loadData() {
   if (!WEB_APP_URL || WEB_APP_URL.includes('YOUR_')) {
@@ -426,57 +489,58 @@ function loadData() {
   fetch(WEB_APP_URL + '?action=all')
     .then(r => r.json())
     .then(data => {
-      if (data.tasks?.length) {
+      // ซิงค์ตารางสเตตัสงานค้างให้ทำงานร่วมกันตรงช่องเป๊ะ ๆแก
+      if (data.tasks && data.tasks.length > 0) {
         tasks = data.tasks.map(t => ({
           id:      t.id,
           name:    t.name,
-          project: t.project || t.id,
-          person:  t.person,
+          project: t.project || 'อื่นๆ',
+          person:  t.person || 'ไม่ระบุ',
           entity:  t.entity || 'CC',
           due:     t.due || '',
           status:  t.status || 'todo',
-          updated: Date.now(),
+          updated: Date.now()
         }));
       } else tasks = SEED_TASKS;
 
-      if (data.people?.length) {
+      if (data.people && data.people.length > 0) {
         people = data.people.map(p => ({
           name: p.name || p.id,
-          av:   p.av || (p.name||'?').slice(0,1),
-          role: p.role || 'team',
+          av:   p.av || (p.name || '?').slice(0,1),
+          role: p.role || 'team'
         }));
       } else people = SEED_PEOPLE;
 
-      if (data.collections?.length) {
+      if (data.collections && data.collections.length > 0) {
         const grouped = {};
         data.collections.forEach(c => {
-          const key = c.collection || c.name;
+          const key = c.collection || c.name || 'Unknown';
           if (!grouped[key]) {
             grouped[key] = {
               id:          key.toLowerCase().replace(/\s/g,'-'),
               name:        key,
-              sub:         c.category || '',
+              sub:         c.category || c.sub || 'คอลเลกชันสินค้า',
               emoji:       '👗',
               status:      c.status || 'Draft',
               platforms:   c.platform || 'IG',
               copyIG:      c.copyIG || '',
               copyShopee:  c.copyShopee || '',
               icloudLink:  c.icloudLink || '#',
-              nasLink:     c.nasLink || '#',
+              nasLink:     c.nasLink || '#'
             };
           }
         });
         collections = Object.values(grouped);
       } else collections = SEED_COLLECTIONS;
 
-      if (data.projects?.length) {
-        projects = [...new Set(data.projects.map(p => p.name).filter(Boolean))];
+      if (data.projects && data.projects.length > 0) {
+        projects = [...new Set(data.projects.map(p => p.name || p).filter(Boolean))];
       } else projects = SEED_PROJECTS;
 
       if (data.briefs) { briefs = data.briefs; renderBriefFromSheet(briefs[currentEntity]); }
 
       renderAll();
-      showToast('📊 โหลดข้อมูลจาก Sheet แล้วแก');
+      showToast('📊 โหลดข้อมูลจาก Google Sheet สำเร็จแก');
     })
     .catch(err => {
       console.error('Sheet load failed:', err);
@@ -490,7 +554,7 @@ function useSeedData() {
 }
 
 // ════════════════════════════════════════
-// ENGINE RUNNERS & LOGICS
+// CORE RUNNERS
 // ════════════════════════════════════════
 const TODAY = new Date();
 const TSTR  = TODAY.toISOString().slice(0,10);
@@ -504,7 +568,7 @@ function getWeek(){
 const WEEK = getWeek();
 function fmt(s){if(!s)return'';const d=new Date(s+'T00:00:00');return d.toLocaleDateString('th-TH',{day:'numeric',month:'short'});}
 function isOver(t){return t.status!=='done' && t.due && t.due < TSTR;}
-function filtered(){return tasks;}
+function filtered(){return tasks.filter(t => currentEntity === 'ALL' || t.entity === currentEntity);}
 
 function goTab(name, title, eyebrow, el) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -560,9 +624,19 @@ function renderTasks() {
   document.getElementById('task-list').innerHTML = ft.length===0
     ?`<div class="empty"><span class="empty-icon">🎉</span><span class="empty-text">ไม่มีงานค้าง</span></div>`
     :ft.map(t=>{
-      const over=isOver(t), si=over?{cls:'sb-blocked',l:'เกิน'}:SI[t.status]||SI.todo;
-      return`<div class="task-row"><div class="task-icon" style="background:${PC[t.project]||'rgba(0,0,0,.04)'}">${PI[t.project]||'📎'}</div><div class="task-main"><div class="task-name">${t.name}</div><div class="task-sub">${t.person} · ${t.project}</div></div><div class="task-right"><div class="task-due ${over?'over':''}">${fmt(t.due)}</div><div class="sbadge ${si.cls}">${si.l}</div></div></div>`;
+      const over=isOver(t), si=over?{cls:'sb-blocked',l:'เกิน'} : SI[t.status]||SI.todo;
+      return`<div class="task-row" onclick="cycleStatus(${t.id})"><div class="task-icon" style="background:${PC[t.project]||'rgba(0,0,0,.04)'}">${PI[t.project]||'📎'}</div><div class="task-main"><div class="task-name">${t.name}</div><div class="task-sub">${t.person} · ${t.project}</div></div><div class="task-right"><div class="task-due ${over?'over':''}">${fmt(t.due)}</div><div class="sbadge ${si.cls}">${si.l}</div></div></div>`;
     }).join('');
+}
+
+function cycleStatus(id) {
+  if(!isAdmin) { toast("🔐 สิทธิ์จัดการล็อกเฉพาะระบบแอดมินแก!"); return; }
+  const t=tasks.find(t=>t.id==id); if(!t)return;
+  const c=['todo','inprogress','done','blocked']; t.status=c[(c.indexOf(t.status)+1)%c.length];
+  renderAll(); showToast(`→ อัปเดตงานแล้วแก!`);
+  if (WEB_APP_URL) {
+    fetch(WEB_APP_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "updateStatus", id: id, status: t.status }) }).catch(err => console.error(err));
+  }
 }
 
 function renderCollections() {
@@ -638,30 +712,57 @@ function renderTeam() {
   }).join('');
 }
 function togglePerson(name){document.getElementById('pt-'+name).classList.toggle('open');}
-function updateFormSelects() {}
 
-// ── REDIRECT TO GOOGLE SHEETS FOR WORK ──
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/1DvHaLrMzl6h120Acl90PRtUhU6MktwUuTRaDXtPrOUo/edit";
+function updateFormSelects() {
+  const fp=document.getElementById('fp'), fper=document.getElementById('fper');
+  if(fp) fp.innerHTML=projects.map(p=>`<option value="${p}">${p}</option>`).join('');
+  if(fper) fper.innerHTML=people.map(p=>`<option value="${p.name}">${p.name}</option>`).join('');
+}
 
-function openSheetAdmin() {
-  if (!isAdmin) { showPasswordModal(() => { window.open(SHEET_URL, '_blank'); }); return; }
-  window.open(SHEET_URL, '_blank');
+function approveCollection(){if(currentColl){currentColl.status='Approved';showToast('✅ Approved! โพสได้เลย');closeDetail();renderCollections();}}
+function reviseCollection(){if(currentColl){currentColl.status='Draft';showToast('✏️ ส่งกลับให้แก้ไข');closeDetail();renderCollections();}}
+
+// ── ADMIN GATE FOR FORM SHEET ──
+function openAddSheet() {
+  if (!isAdmin) {
+    showPasswordModal(() => { document.getElementById('sheet-ovl').classList.add('open'); });
+    return;
+  }
+  document.getElementById('sheet-ovl').classList.add('open');
+}
+function closeSheet(){document.getElementById('sheet-ovl').classList.remove('open');}
+
+function addTask() {
+  const name=document.getElementById('fn').value.trim(); if(!name) return;
+  const id = Date.now();
+  const newTask = { id, name, project:document.getElementById('fp').value, person:document.getElementById('fper').value, entity:document.getElementById('fent').value, due:document.getElementById('fd').value, status:document.getElementById('fs').value, updated:Date.now() };
+  tasks.push(newTask); closeSheet(); renderAll(); showToast('✅ ส่งคำสั่งเข้า Google Sheet แล้วแก!');
+  if (WEB_APP_URL) {
+    fetch(WEB_APP_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "addTask", ...newTask }) }).catch(err => console.error(err));
+  }
 }
 
 function showPasswordModal(cb) { _pwCallback=cb||null; document.getElementById('pw-overlay').classList.add('show'); document.getElementById('pw-input').value=''; document.getElementById('pw-error').textContent=''; setTimeout(()=>document.getElementById('pw-input').focus(),100); }
 function closePW(){document.getElementById('pw-overlay').classList.remove('show');}
 function confirmPW(){
   const v=document.getElementById('pw-input').value;
-  if(v===ADMIN_PW){ isAdmin=true; closePW(); showToast('🔓 Admin mode เปิดแล้วแก'); if(_pwCallback)_pwCallback(); } 
+  if(v===ADMIN_PW){ isAdmin=true; closePW(); showToast('🔓 ปลดล็อกโหมดแก้ไขงานแล้ว'); if(_pwCallback)_pwCallback(); } 
   else { const inp=document.getElementById('pw-input'); inp.className='pw-input shake'; document.getElementById('pw-error').textContent='รหัสไม่ถูกต้อง 🔒'; inp.value=''; setTimeout(()=>{inp.className='pw-input';inp.focus();},400); }
 }
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2500);}
 
-// RUN DIRECT INTERFACE
+// ════════════════════════════════════════
+// RUN CORES
+// ════════════════════════════════════════
+const STATUS_DOT = {'Approved':'#34C759','Pending Proof':'#FF9500','Published 🚀':'#007AFF','Draft':'#AEAEB2','blocked':'#FF3B30'};
+const EC = { CC:{av:'#0A0A0A',avBg:'#F0F0F0'}, BT:{av:'#B8860B',avBg:'#1A3328'}, TR:{av:'#FFD600',avBg:'#C2185B'} };
+const PI = {'Collection A':'👗','Collection B':'✂️','Collection C':'🎨','จันทบุรี':'📸','Marketing':'📣','Boonta Gallery Session':'🪟','อื่นๆ':'📎'};
+const PC = {'Collection A':'rgba(233,30,140,.08)','Collection B':'rgba(156,39,176,.08)','Collection C':'rgba(0,188,212,.08)','จันทบุรี':'rgba(52,199,89,.08)','Marketing':'rgba(255,149,0,.08)','Boonta Gallery Session':'rgba(184,134,11,.08)','อื่นๆ':'rgba(0,0,0,.04)'};
+
 liff.init({liffId:LIFF_ID})
-  .then(()=>{console.log('LIFF Connected');})
-  .catch(err=>console.log('Browser Sandbox Enabled:', err));
+  .then(()=>{ console.log('LIFF OK'); })
+  .catch(err=>console.log('Browser Mode Sandbox Active', err));
 
 closeDetail();
 loadData();
