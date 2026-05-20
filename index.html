@@ -144,7 +144,7 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 .tab-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
 
 /* ── DETAIL SCREEN ── */
-.detail-screen{position:absolute;inset:0;background:var(--a-bg);z-index:200;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
+.detail-screen{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--a-bg);z-index:200;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
 .detail-screen.open{transform:none}
 .detail-nav{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--a-line)}
 .detail-back{background:none;border:none;color:var(--a-acc);font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:'DM Sans',sans-serif;padding:0}
@@ -152,7 +152,7 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 .plat-btns{display:flex;gap:5px}
 .plat-btn{padding:5px 10px;border-radius:8px;border:1.5px solid var(--a-line);font-size:11px;font-weight:700;cursor:pointer;background:var(--a-soft);color:var(--a-mid);font-family:'DM Sans',sans-serif;transition:all .12s}
 .plat-btn.active{background:var(--a-ink);color:var(--a-bg);border-color:var(--a-ink)}
-.detail-scroll{flex:1;overflow-y:auto;padding:16px;padding-bottom:32px}
+.detail-scroll{flex:1;overflow-y:auto;padding:16px;padding-bottom:calc(32px + env(safe-area-inset-bottom,0px))}
 .detail-scroll::-webkit-scrollbar{display:none}
 
 /* carousel */
@@ -206,7 +206,7 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 .btn-revise{background:var(--a-soft);color:var(--a-ink);border:1.5px solid var(--a-line)}
 
 /* ── ADD SHEET ── */
-.sheet-ovl{position:absolute;inset:0;background:rgba(0,0,0,.4);z-index:300;display:none;align-items:flex-end;justify-content:center}
+.sheet-ovl{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:300;display:none;align-items:flex-end;justify-content:center}
 .sheet-ovl.open{display:flex}
 .sheet{width:100%;background:var(--a-bg);border-radius:20px 20px 0 0;padding:0 0 calc(20px + env(safe-area-inset-bottom,0px));animation:shup .3s cubic-bezier(.32,.72,0,1);max-height:90vh;overflow-y:auto;transition:background .3s}
 @keyframes shup{from{transform:translateY(100%)}to{transform:none}}
@@ -224,7 +224,7 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 select.f-in{cursor:pointer}
 
 /* ── PASSWORD MODAL ── */
-.pw-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:400;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.pw-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:400;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 .pw-overlay.show{display:flex}
 .pw-box{background:#1C1C1E;border-radius:18px;padding:28px 24px;width:280px;animation:popIn .2s cubic-bezier(.34,1.56,.64,1)}
 @keyframes popIn{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
@@ -444,6 +444,7 @@ const ADMIN_PW    = "admin";
 // STATE
 // ════════════════════════════════════════
 let tasks = [], people = [], collections = [], projects = [];
+let briefs = { CC: null, BT: null, TR: null };
 let currentEntity = 'CC';
 let currentColl = null, currentPlatform = 'ig';
 let isAdmin = false;
@@ -535,8 +536,8 @@ function loadData() {
         projects = [...new Set(data.projects.map(p => p.name).filter(Boolean))];
       } else projects = SEED_PROJECTS;
 
-      // brief จาก Sheet
-      if (data.brief) renderBriefFromSheet(data.brief);
+      // briefs แยกตาม entity
+      if (data.briefs) { briefs = data.briefs; renderBriefFromSheet(briefs[currentEntity]); }
 
       renderAll();
       showToast('📊 โหลดข้อมูลจาก Sheet แล้ว');
@@ -631,6 +632,8 @@ function setEntity(e) {
   currentEntity = e;
   document.body.className = e.toLowerCase();
   document.querySelectorAll('.ent-btn').forEach(b=>b.classList.toggle('active',b.dataset.e===e));
+  // อัพเดท brief ตาม entity
+  if (briefs[e]) renderBriefFromSheet(briefs[e]);
   renderAll();
 }
 
@@ -650,19 +653,25 @@ function renderAll() {
 
 // ── BRIEF FROM SHEET ─────────────────────────────────
 function renderBriefFromSheet(brief) {
-  const dateEl = document.getElementById('brief-date');
-  const needEl = document.getElementById('brief-need');
+  if (!brief) return;
+  // reset date fromSheet flag เมื่อเปลี่ยน entity
+  document.getElementById('brief-date').dataset.fromSheet = '';
+  const dateEl  = document.getElementById('brief-date');
+  const needEl  = document.getElementById('brief-need');
   const tasksEl = document.getElementById('brief-tasks');
-  const warnEl = document.getElementById('brief-warn');
+  const warnEl  = document.getElementById('brief-warn');
 
-  if (brief.date) {
-    dateEl.textContent = brief.date;
-    dateEl.dataset.fromSheet = '1';
-  }
-  if (brief.need)  needEl.textContent = brief.need;
-  if (brief.warn)  warnEl.textContent = brief.warn;
-  if (brief.tasks) {
-    const lines = brief.tasks.split(/[·\n\r]/).map(t=>t.trim()).filter(Boolean);
+  // รองรับทั้ง key-value format และ column format
+  const date  = brief.date  || brief.Date  || '';
+  const need  = brief.need  || brief.Need  || '';
+  const tasks = brief.tasks || brief.Tasks || '';
+  const warn  = brief.warn  || brief.Warn  || '';
+
+  if (date)  { dateEl.textContent = date; dateEl.dataset.fromSheet = '1'; }
+  if (need)  needEl.textContent = need;
+  if (warn)  warnEl.textContent = warn;
+  if (tasks) {
+    const lines = tasks.split(/[·\n\r,]/).map(t=>t.trim()).filter(Boolean);
     tasksEl.innerHTML = '<ul style="padding-left:16px;line-height:2">' +
       lines.map(t=>`<li>${t}</li>`).join('') + '</ul>';
   }
