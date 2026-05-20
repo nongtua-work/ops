@@ -626,7 +626,13 @@ function renderAll() {
 
 // ── BRIEF FROM SHEET ─────────────────────────────────
 function renderBriefFromSheet(brief) {
-  if (!brief) return;
+  const briefCard = document.querySelector('.brief-card');
+  if (!brief || (!brief.need && !brief.tasks && !brief.warn && !brief.Need && !brief.Tasks)) {
+    // ซ่อน brief card ถ้าไม่มีข้อมูล
+    if (briefCard) briefCard.style.display = 'none';
+    return;
+  }
+  if (briefCard) briefCard.style.display = '';
   // reset date fromSheet flag เมื่อเปลี่ยน entity
   document.getElementById('brief-date').dataset.fromSheet = '';
   const dateEl  = document.getElementById('brief-date');
