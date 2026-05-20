@@ -35,7 +35,7 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 .header-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
 .header-left .eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.45;margin-bottom:3px}
 .header-left .page-title{font-size:22px;font-weight:700;letter-spacing:-.4px;line-height:1}
-.add-btn{width:34px;height:34px;border-radius:50%;background:var(--a-ink);color:var(--a-bg);border:none;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .3s,color .3s}
+.add-btn{width:34px;height:34px;border-radius:50%;background:var(--a-ink);color:var(--a-bg);border:none;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .3s,color .3s;text-decoration:none}
 .add-btn:active{opacity:.7}
 
 /* entity strip */
@@ -200,9 +200,7 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 .link-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .link-name{flex:1;font-size:13px;font-weight:600}
 .link-sub{font-size:11px;opacity:.4;margin-top:1px}
-.link-chev">›</div>
-</a>
-.link-row:active{opacity:.7}
+.link-chev{font-size:16px;opacity:.3}
 .approve-strip{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
 .approve-btn{padding:12px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .12s}
 .approve-btn:active{opacity:.7}
@@ -272,7 +270,7 @@ select.f-in{cursor:pointer}
         <div class="eyebrow" id="page-eyebrow">OPS Dashboard</div>
         <div class="page-title" id="page-title">สรุปงาน</div>
       </div>
-      <button class="add-btn" onclick="openAddSheet()">+</button>
+      <a class="add-btn" id="header-sheet-link" href="https://docs.google.com/spreadsheets/d/1DqYx8kLg7Dk9xIuX2oK8W-u7Ew8t_Y5T2S_02_j3I08/edit" target="_blank">＋</a>
     </div>
     <div class="entity-strip">
       <button class="ent-btn active" data-e="CC" onclick="setEntity('CC')">Chardchakaj</button>
@@ -466,41 +464,32 @@ const SEED_TASKS = [
   {id:'T-004',name:'ตัดคลิป fashion Collection B',project:'Collection B',person:'พี่พีท',entity:'TR',due:'2026-05-21',status:'todo',updated:Date.now()},
   {id:'T-005',name:'ประสาน location จันทบุรี',project:'จันทบุรี',person:'พี่จิน',entity:'CC',due:'2026-05-18',status:'done',updated:Date.now()}
 ];
-const SEED_PEOPLE = [
-  {name:'ถั่ว',av:'ถ',role:'admin'},
-  {name:'พี่อาร์ม',av:'อ',role:'team'},
-  {name:'พี่จิน',av:'จ',role:'team'},
-  {name:'พี่เฟียน',av:'ฟ',role:'team'},
-  {name:'พี่พีท',av:'พ',role:'team'},
-  {name:'พี่คิวซี',av:'ค',role:'team'}
-];
-const SEED_COLLECTIONS = [
-  {id:'col-a',name:'Collection A',sub:'Thai Mart · TR',emoji:'👗',status:'Pending Proof',platforms:'IG+Shopee',copyIG:'✨ NEW COLLECTION A ✨',copyShopee:'Collection A — ผ้าคุณภาพสูง',icloudLink:'#',nasLink:'#'}
-];
+const SEED_PEOPLE = [{name:'ถั่ว',av:'ถ',role:'admin'},{name:'พี่อาร์ม',av:'อ',role:'team'},{name:'พี่จิน',av:'จ',role:'team'},{name:'พี่เฟียน',av:'ฟ',role:'team'},{name:'พี่พีท',av:'พ',role:'team'},{name:'พี่คิวซี',av:'ค',role:'team'}];
+const SEED_COLLECTIONS = [{id:'col-a',name:'Collection A',sub:'Thai Mart · TR',emoji:'👗',status:'Pending Proof',platforms:'IG+Shopee',copyIG:'✨ NEW COLLECTION A ✨',copyShopee:'Collection A — ผ้าคุณภาพสูง',icloudLink:'#',nasLink:'#'}];
 const SEED_PROJECTS = ['Collection A','Collection B','Collection C','จันทบุรี','Marketing','Boonta Gallery Session','อื่นๆ'];
 
 // ════════════════════════════════════════
-// FLOW SYNC CONNECTIONS (แก้ไขหัวคอลัมน์ดึงซิงค์ Sheets ได้จริง)
+// FLOW SYNC CONNECTIONS (ข้ามแถว Merge / แถวข้อมูลตัวอย่างตามบรีฟ)
 // ════════════════════════════════════════
 function loadData() {
-  if (!WEB_APP_URL || WEB_APP_URL.includes('YOUR_')) {
-    useSeedData(); return;
-  }
+  if (!WEB_APP_URL || WEB_APP_URL.includes('YOUR_')) { useSeedData(); return; }
   fetch(WEB_APP_URL + '?action=all')
     .then(r => r.json())
     .then(data => {
-      // ซิงค์ตารางสเตตัสงานค้างให้ทำงานร่วมกันตรงช่องเป๊ะ ๆแก
+      // 📌 กรองเฉพาะแถวที่ใช้งานจริง: ข้ามแถวที่เป็นหัวตารางซ้อน หรือ ข้อมูลตัวอย่างแถมแรก ๆ
       if (data.tasks && data.tasks.length > 0) {
-        tasks = data.tasks.map(t => ({
-          id:      t.id,
-          name:    t.name,
-          project: t.project || 'อื่นๆ',
-          person:  t.person || 'ไม่ระบุ',
-          entity:  t.entity || 'CC',
-          due:     t.due || '',
-          status:  t.status || 'todo',
-          updated: Date.now()
-        }));
+        tasks = data.tasks
+          .filter(t => t.id && String(t.id).trim() !== '' && !String(t.name).includes('ข้อมูลตัวอย่าง') && !String(t.id).includes('EXAMPLE'))
+          .map(t => ({
+            id:      t.id,
+            name:    t.name,
+            project: t.project || 'อื่นๆ',
+            person:  t.person || 'ไม่ระบุ',
+            entity:  t.entity || 'CC',
+            due:     t.due || '',
+            status:  t.status || 'todo',
+            updated: Date.now()
+          }));
       } else tasks = SEED_TASKS;
 
       if (data.people && data.people.length > 0) {
@@ -513,23 +502,25 @@ function loadData() {
 
       if (data.collections && data.collections.length > 0) {
         const grouped = {};
-        data.collections.forEach(c => {
-          const key = c.collection || c.name || 'Unknown';
-          if (!grouped[key]) {
-            grouped[key] = {
-              id:          key.toLowerCase().replace(/\s/g,'-'),
-              name:        key,
-              sub:         c.category || c.sub || 'คอลเลกชันสินค้า',
-              emoji:       '👗',
-              status:      c.status || 'Draft',
-              platforms:   c.platform || 'IG',
-              copyIG:      c.copyIG || '',
-              copyShopee:  c.copyShopee || '',
-              icloudLink:  c.icloudLink || '#',
-              nasLink:     c.nasLink || '#'
-            };
-          }
-        });
+        data.collections
+          .filter(c => c.collection || c.name)
+          .forEach(c => {
+            const key = c.collection || c.name;
+            if (!grouped[key]) {
+              grouped[key] = {
+                id:          key.toLowerCase().replace(/\s/g,'-'),
+                name:        key,
+                sub:         c.category || c.sub || 'คอลเลกชันสินค้า',
+                emoji:       '👗',
+                status:      c.status || 'Draft',
+                platforms:   c.platform || 'IG',
+                copyIG:      c.copyIG || '',
+                copyShopee:  c.copyShopee || '',
+                icloudLink:  c.icloudLink || '#',
+                nasLink:     c.nasLink || '#'
+              };
+            }
+          });
         collections = Object.values(grouped);
       } else collections = SEED_COLLECTIONS;
 
@@ -540,7 +531,7 @@ function loadData() {
       if (data.briefs) { briefs = data.briefs; renderBriefFromSheet(briefs[currentEntity]); }
 
       renderAll();
-      showToast('📊 โหลดข้อมูลจาก Google Sheet สำเร็จแก');
+      showToast('📊 ข้ามแถวตัวอย่าง & ซิงค์งานปัจจุบันสำเร็จแก');
     })
     .catch(err => {
       console.error('Sheet load failed:', err);
@@ -548,24 +539,18 @@ function loadData() {
     });
 }
 
-function useSeedData() {
-  tasks = SEED_TASKS; people = SEED_PEOPLE; collections = SEED_COLLECTIONS; projects = SEED_PROJECTS;
-  renderAll();
-}
+function useSeedData() { tasks = SEED_TASKS; people = SEED_PEOPLE; collections = SEED_COLLECTIONS; projects = SEED_PROJECTS; renderAll(); }
 
 // ════════════════════════════════════════
 // CORE RUNNERS
 // ════════════════════════════════════════
-const TODAY = new Date();
-const TSTR  = TODAY.toISOString().slice(0,10);
+const TODAY = new Date(); const TSTR = TODAY.toISOString().slice(0,10);
 const DAYS  = ['อา','จ','อ','พ','พฤ','ศ','ส'];
-const MONTHS= ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-
-function getWeek(){
+const WEEK  = (()=>{
   const d=[], m=new Date(TODAY), dow=m.getDay(), diff=dow===0?-6:1-dow; m.setDate(m.getDate()+diff);
   for(let i=0;i<5;i++){const x=new Date(m);x.setDate(m.getDate()+i);d.push(x);} return d;
-}
-const WEEK = getWeek();
+})();
+
 function fmt(s){if(!s)return'';const d=new Date(s+'T00:00:00');return d.toLocaleDateString('th-TH',{day:'numeric',month:'short'});}
 function isOver(t){return t.status!=='done' && t.due && t.due < TSTR;}
 function filtered(){return tasks.filter(t => currentEntity === 'ALL' || t.entity === currentEntity);}
@@ -573,29 +558,24 @@ function filtered(){return tasks.filter(t => currentEntity === 'ALL' || t.entity
 function goTab(name, title, eyebrow, el) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  el.classList.add('active');
-  document.getElementById('page-title').textContent = title;
-  document.getElementById('page-eyebrow').textContent = eyebrow;
+  document.getElementById('page-'+name).classList.add('active'); el.classList.add('active');
+  document.getElementById('page-title').textContent = title; document.getElementById('page-eyebrow').textContent = eyebrow;
   if(name==='collections') renderCollections();
   if(name==='more'){renderTimeline();renderTeam();}
 }
 
 function setEntity(e) {
-  currentEntity = e;
-  document.body.className = e.toLowerCase();
+  currentEntity = e; document.body.className = e.toLowerCase();
   document.querySelectorAll('.ent-btn').forEach(b=>b.classList.toggle('active',b.dataset.e===e));
-  if (briefs[e]) renderBriefFromSheet(briefs[e]);
-  renderAll();
+  if (briefs[e]) renderBriefFromSheet(briefs[e]); renderAll();
 }
 
 function renderBriefFromSheet(brief) {
   const briefCard = document.querySelector('.brief-card');
   if (!brief || (!brief.need && !brief.tasks && !brief.warn)) { if (briefCard) briefCard.style.display = 'none'; return; }
   if (briefCard) briefCard.style.display = '';
-  document.getElementById('brief-date').dataset.fromSheet = '';
   const dateEl=document.getElementById('brief-date'), needEl=document.getElementById('brief-need'), tasksEl=document.getElementById('brief-tasks'), warnEl=document.getElementById('brief-warn');
-  if (brief.date) { dateEl.textContent = brief.date; dateEl.dataset.fromSheet = '1'; }
+  if (brief.date) dateEl.textContent = brief.date;
   if (brief.need) needEl.textContent = brief.need;
   if (brief.warn) warnEl.textContent = brief.warn;
   if (brief.tasks) {
@@ -609,57 +589,44 @@ function renderAll() { renderBoss(); renderTasks(); updateFormSelects(); }
 function renderBoss() {
   const ft = filtered();
   const done = ft.filter(t=>t.status==='done').length, doing = ft.filter(t=>t.status==='inprogress').length, stuck = ft.filter(t=>t.status==='blocked'||isOver(t)).length;
-  document.getElementById('s-total').textContent = ft.length;
-  document.getElementById('s-done').textContent  = done;
-  document.getElementById('s-doing').textContent = doing;
-  document.getElementById('s-stuck').textContent = stuck;
+  document.getElementById('s-total').textContent = ft.length; document.getElementById('s-done').textContent = done; document.getElementById('s-doing').textContent = doing; document.getElementById('s-stuck').textContent = stuck;
   const urgents = ft.filter(t=>t.status==='blocked'||isOver(t));
-  document.getElementById('urgent-zone').innerHTML = urgents.length===0?'':
-    `<div class="alert-box"><span style="font-size:18px;flex-shrink:0">🚨</span><div><div class="alert-title">ต้องติดตามด่วน (${urgents.length})</div>${urgents.map(t=>`<div class="alert-body">· ${t.name} — <strong>${t.person}</strong></div>`).join('')}</div></div>`;
+  document.getElementById('urgent-zone').innerHTML = urgents.length===0?'': `<div class="alert-box"><span style="font-size:18px;flex-shrink:0">🚨</span><div><div class="alert-title">ต้องติดตามด่วน (${urgents.length})</div>${urgents.map(t=>`<div class="alert-body">· ${t.name} — <strong>${t.person}</strong></div>`).join('')}</div></div>`;
 }
 
 function renderTasks() {
   const ft=[...filtered()].filter(t=>t.status!=='done').sort((a,b)=>(b.updated||0)-(a.updated||0));
   const SI={done:{cls:'sb-done',l:'เสร็จ'},inprogress:{cls:'sb-inprogress',l:'กำลังทำ'},todo:{cls:'sb-todo',l:'รอทำ'},blocked:{cls:'sb-blocked',l:'ติดปัญหา'}};
-  document.getElementById('task-list').innerHTML = ft.length===0
-    ?`<div class="empty"><span class="empty-icon">🎉</span><span class="empty-text">ไม่มีงานค้าง</span></div>`
-    :ft.map(t=>{
+  document.getElementById('task-list').innerHTML = ft.length===0 ?`<div class="empty"><span class="empty-icon">🎉</span><span class="empty-text">ไม่มีงานค้าง</span></div>` :ft.map(t=>{
       const over=isOver(t), si=over?{cls:'sb-blocked',l:'เกิน'} : SI[t.status]||SI.todo;
       return`<div class="task-row" onclick="cycleStatus(${t.id})"><div class="task-icon" style="background:${PC[t.project]||'rgba(0,0,0,.04)'}">${PI[t.project]||'📎'}</div><div class="task-main"><div class="task-name">${t.name}</div><div class="task-sub">${t.person} · ${t.project}</div></div><div class="task-right"><div class="task-due ${over?'over':''}">${fmt(t.due)}</div><div class="sbadge ${si.cls}">${si.l}</div></div></div>`;
     }).join('');
 }
 
 function cycleStatus(id) {
-  if(!isAdmin) { toast("🔐 สิทธิ์จัดการล็อกเฉพาะระบบแอดมินแก!"); return; }
+  if(!isAdmin) { showToast("🔐 สิทธิ์จัดการล็อกเฉพาะระบบแอดมินแก!"); return; }
   const t=tasks.find(t=>t.id==id); if(!t)return;
   const c=['todo','inprogress','done','blocked']; t.status=c[(c.indexOf(t.status)+1)%c.length];
   renderAll(); showToast(`→ อัปเดตงานแล้วแก!`);
-  if (WEB_APP_URL) {
-    fetch(WEB_APP_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "updateStatus", id: id, status: t.status }) }).catch(err => console.error(err));
-  }
+  if (WEB_APP_URL) { fetch(WEB_APP_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "updateStatus", id: id, status: t.status }) }).catch(err => console.error(err)); }
 }
 
 function renderCollections() {
   if(!collections.length){document.getElementById('coll-grid').innerHTML='<div class="loading"><div class="loading-spinner"></div></div>';return;}
-  document.getElementById('coll-grid').innerHTML = collections.map(c=>`
-    <div class="coll-card" onclick="openDetail('${c.id}')"><div class="coll-thumb" style="background:var(--a-soft)"><span style="font-size:38px">${c.emoji||'👗'}</span><div class="coll-pip" style="background:${STATUS_DOT[c.status]||'#AEAEB2'}"></div></div><div class="coll-info"><div class="coll-name">${c.name}</div><div class="coll-sub">${c.sub||c.status}</div><div class="coll-tags">${(c.platforms||'IG').split('+').map(p=>`<div class="coll-tag" style="background:var(--a-soft);border:1px solid var(--a-line);color:var(--a-mid)">${p.trim()}</div>`).join('')}</div></div></div>`).join('');
+  document.getElementById('coll-grid').innerHTML = collections.map(c=>`<div class="coll-card" onclick="openDetail('${c.id}')"><div class="coll-thumb" style="background:var(--a-soft)"><span style="font-size:38px">${c.emoji||'👗'}</span><div class="coll-pip" style="background:${STATUS_DOT[c.status]||'#AEAEB2'}"></div></div><div class="coll-info"><div class="coll-name">${c.name}</div><div class="coll-sub">${c.sub||c.status}</div><div class="coll-tags">${(c.platforms||'IG').split('+').map(p=>`<div class="coll-tag" style="background:var(--a-soft);border:1px solid var(--a-line);color:var(--a-mid)">${p.trim()}</div>`).join('')}</div></div></div>`).join('');
 }
 
 function openDetail(id) {
   currentColl = collections.find(c=>c.id===id); if(!currentColl)return;
-  currentPlatform = 'ig';
-  document.getElementById('detail-title').textContent = currentColl.name;
-  document.getElementById('link-icloud').href = currentColl.icloudLink||'#';
-  document.getElementById('link-nas').href = currentColl.nasLink||'#';
+  currentPlatform = 'ig'; document.getElementById('detail-title').textContent = currentColl.name;
+  document.getElementById('link-icloud').href = currentColl.icloudLink||'#'; document.getElementById('link-nas').href = currentColl.nasLink||'#';
   document.querySelectorAll('.plat-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
-  renderCarousel(); renderPlatformPreview(); renderCopy();
-  document.getElementById('detail-screen').classList.add('open');
+  renderCarousel(); renderPlatformPreview(); renderCopy(); document.getElementById('detail-screen').classList.add('open');
 }
-function closeDetail(){document.getElementById('detail-screen').classList.remove('open');}
+function closeDetail()){document.getElementById('detail-screen').classList.remove('open');}
 
 function renderCarousel() {
-  const inner=document.getElementById('carousel-inner'), dots=document.getElementById('carousel-dots');
-  inner.innerHTML=''; dots.innerHTML='';
+  const inner=document.getElementById('carousel-inner'), dots=document.getElementById('carousel-dots'); inner.innerHTML=''; dots.innerHTML='';
   for(let i=0;i<3;i++){
     const slide=document.createElement('div'); slide.className='carousel-slide'; slide.innerHTML=`<div class="carousel-placeholder"><div class="carousel-placeholder-icon">${currentColl.emoji||'👗'}</div><div class="carousel-placeholder-text">รูปที่ ${i+1}</div></div>`; inner.appendChild(slide);
     const dot=document.createElement('div'); dot.className='cdot'+(i===0?' active':''); dots.appendChild(dot);
@@ -670,11 +637,8 @@ function setPlatform(p,el) { currentPlatform=p; document.querySelectorAll('.plat
 
 function renderPlatformPreview() {
   const c=currentColl, el=document.getElementById('plat-preview'), thumb=`<div style="width:100%;aspect-ratio:1;background:var(--a-soft);display:flex;align-items:center;justify-content:center;font-size:64px">${c.emoji||'👗'}</div>`;
-  if(currentPlatform==='ig'){
-    el.innerHTML=`<div class="plat-frame"><div class="ig-hdr"><div class="ig-av">T</div><div class="ig-name">truly_official</div><div class="ig-more">···</div></div>${thumb}<div class="ig-actions">❤️ 💬 ✈️</div><div class="ig-caption"><strong>truly_official</strong> ${(c.copyIG||'').slice(0,80)}...</div></div>`;
-  } else {
-    el.innerHTML=`<div class="plat-frame"><div class="shopee-hdr"><div class="shopee-logo">Shopee</div></div>${thumb}<div class="shopee-body"><div class="shopee-name">${c.name}</div><div class="shopee-price">฿XXX</div><div class="shopee-desc">${(c.copyShopee||'').slice(0,120)}</div></div></div>`;
-  }
+  if(currentPlatform==='ig'){ el.innerHTML=`<div class="plat-frame"><div class="ig-hdr"><div class="ig-av">T</div><div class="ig-name">truly_official</div><div class="ig-more">···</div></div>${thumb}<div class="ig-actions">❤️ 💬 ✈️</div><div class="ig-caption"><strong>truly_official</strong> ${(c.copyIG||'').slice(0,80)}...</div></div>`; } 
+  else { el.innerHTML=`<div class="plat-frame"><div class="shopee-hdr"><div class="shopee-logo">Shopee</div></div>${thumb}<div class="shopee-body"><div class="shopee-name">${c.name}</div><div class="shopee-price">฿XXX</div><div class="shopee-desc">${(c.copyShopee||'').slice(0,120)}</div></div></div>`; }
 }
 
 function renderCopy() {
@@ -722,7 +686,8 @@ function updateFormSelects() {
 function approveCollection(){if(currentColl){currentColl.status='Approved';showToast('✅ Approved! โพสได้เลย');closeDetail();renderCollections();}}
 function reviseCollection(){if(currentColl){currentColl.status='Draft';showToast('✏️ ส่งกลับให้แก้ไข');closeDetail();renderCollections();}}
 
-// ── ADMIN GATE FOR FORM SHEET ──
+// ── ฟังก์ชันเปิดฟอร์มจากแอปโดยตรงด้วยปุ่มด้านล่าง ──
+let _pwCallback = null;
 function openAddSheet() {
   if (!isAdmin) {
     showPasswordModal(() => { document.getElementById('sheet-ovl').classList.add('open'); });
@@ -737,9 +702,7 @@ function addTask() {
   const id = Date.now();
   const newTask = { id, name, project:document.getElementById('fp').value, person:document.getElementById('fper').value, entity:document.getElementById('fent').value, due:document.getElementById('fd').value, status:document.getElementById('fs').value, updated:Date.now() };
   tasks.push(newTask); closeSheet(); renderAll(); showToast('✅ ส่งคำสั่งเข้า Google Sheet แล้วแก!');
-  if (WEB_APP_URL) {
-    fetch(WEB_APP_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "addTask", ...newTask }) }).catch(err => console.error(err));
-  }
+  if (WEB_APP_URL) { fetch(WEB_APP_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "addTask", ...newTask }) }).catch(err => console.error(err)); }
 }
 
 function showPasswordModal(cb) { _pwCallback=cb||null; document.getElementById('pw-overlay').classList.add('show'); document.getElementById('pw-input').value=''; document.getElementById('pw-error').textContent=''; setTimeout(()=>document.getElementById('pw-input').focus(),100); }
@@ -760,12 +723,8 @@ const EC = { CC:{av:'#0A0A0A',avBg:'#F0F0F0'}, BT:{av:'#B8860B',avBg:'#1A3328'},
 const PI = {'Collection A':'👗','Collection B':'✂️','Collection C':'🎨','จันทบุรี':'📸','Marketing':'📣','Boonta Gallery Session':'🪟','อื่นๆ':'📎'};
 const PC = {'Collection A':'rgba(233,30,140,.08)','Collection B':'rgba(156,39,176,.08)','Collection C':'rgba(0,188,212,.08)','จันทบุรี':'rgba(52,199,89,.08)','Marketing':'rgba(255,149,0,.08)','Boonta Gallery Session':'rgba(184,134,11,.08)','อื่นๆ':'rgba(0,0,0,.04)'};
 
-liff.init({liffId:LIFF_ID})
-  .then(()=>{ console.log('LIFF OK'); })
-  .catch(err=>console.log('Browser Mode Sandbox Active', err));
-
-closeDetail();
-loadData();
+liff.init({liffId:LIFF_ID}).then(()=>{ console.log('LIFF OK'); }).catch(err=>console.log('Sandbox Mode Active', err));
+closeDetail(); loadData();
 </script>
 </body>
 </html>
