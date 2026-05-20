@@ -4,304 +4,429 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>OPS — Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 <style>
-/* ══════════════════════════════════════
-   RESET + ROOT STYLE
-══════════════════════════════════════ */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;-webkit-font-smoothing:antialiased}
 
 :root{
-  --cc-bg:#FAFAFA; --cc-ink:#0A0A0A; --cc-mid:#4A4A4A; --cc-soft:#F0F0F0; --cc-line:#E0E0E0; --cc-acc:#0A0A0A;
-  --bg-bg:#F4F7F4; --bg-ink:#1A3328; --bg-mid:#2D6A4F; --bg-soft:#E8F3EC; --bg-line:#C8DDD0; --bg-gold:#B8860B; --bg-acc:#B8860B;
-  --tr-bg:#FFFDE7; --tr-ink:#1A1A1A; --tr-mid:#C2185B; --tr-soft:#FCE4EC; --tr-line:#F48FB1; --tr-neon:#FFD600; --tr-pink:#E91E8C; --tr-acc:#E91E8C;
-  --g-red:#FF3B30; --g-green:#34C759; --g-orange:#FF9500; --g-blue:#007AFF;
-  --font-sans:'DM Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
-  --font-mono:'DM Mono',monospace;
-  --font-serif:'Playfair Display',serif;
+  /* CC — monochrome */
+  --cc-bg:#FAFAFA;--cc-ink:#0A0A0A;--cc-mid:#5A5A5A;--cc-soft:#F0F0F0;--cc-line:#E0E0E0;--cc-acc:#0A0A0A;
+  /* BT — forest+gold */
+  --bt-bg:#F4F7F4;--bt-ink:#1A3328;--bt-mid:#2D6A4F;--bt-soft:#E8F3EC;--bt-line:#C8DDD0;--bt-gold:#B8860B;--bt-acc:#B8860B;
+  /* TR — pink+yellow */
+  --tr-bg:#FFF5F9;--tr-ink:#1A1A1A;--tr-mid:#C2185B;--tr-soft:#FCE4EC;--tr-line:#F48FB1;--tr-yel:#FFD600;--tr-acc:#C2185B;
+  /* system */
+  --g-green:#34C759;--g-orange:#FF9500;--g-red:#FF3B30;--g-blue:#007AFF;
 }
 
-.cc{--a-bg:var(--cc-bg);--a-ink:var(--cc-ink);--a-mid:var(--cc-mid);--a-soft:var(--cc-soft);--a-line:var(--cc-line);--a-acc:var(--cc-acc);font-family:var(--font-sans)}
-.bg{--a-bg:var(--bg-bg);--a-ink:var(--bg-ink);--a-mid:var(--bg-mid);--a-soft:var(--bg-soft);--a-line:var(--bg-line);--a-acc:var(--bg-acc);font-family:var(--font-sans)}
-.tr{--a-bg:var(--tr-bg);--a-ink:var(--tr-ink);--a-mid:var(--tr-mid);--a-soft:var(--tr-soft);--a-line:var(--tr-line);--a-acc:var(--tr-acc);font-family:var(--font-sans)}
+/* ENTITY THEMES */
+body.cc{--a-bg:var(--cc-bg);--a-ink:var(--cc-ink);--a-mid:var(--cc-mid);--a-soft:var(--cc-soft);--a-line:var(--cc-line);--a-acc:var(--cc-acc)}
+body.bt{--a-bg:var(--bt-bg);--a-ink:var(--bt-ink);--a-mid:var(--bt-mid);--a-soft:var(--bt-soft);--a-line:var(--bt-line);--a-acc:var(--bt-acc)}
+body.tr{--a-bg:var(--tr-bg);--a-ink:var(--tr-ink);--a-mid:var(--tr-mid);--a-soft:var(--tr-soft);--a-line:var(--tr-line);--a-acc:var(--tr-acc)}
 
-body{background:var(--a-bg);color:var(--a-ink);transition:background .4s ease,color .4s ease}
-.app-container{max-width:480px;margin:0 auto;height:100%;background:var(--a-bg);position:relative;box-shadow:0 0 40px rgba(0,0,0,.03);display:flex;flex-direction:column}
+body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;transition:background .3s,color .3s}
 
-/* Top Navigation */
-.top-nav{padding:18px 20px 14px;background:var(--a-bg);border-bottom:1px solid var(--a-line);z-index:100;flex-shrink:0}
-.nav-row{display:flex;justify-content:space-between;align-items:flex-end}
-.eyebrow{font-family:var(--font-mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:1px;opacity:.5}
-.title-main{font-size:24px;font-weight:700;letter-spacing:-.5px}
-.bg .title-main{font-family:var(--font-serif);font-weight:700;font-style:italic}
-.tr .title-main{text-transform:uppercase;font-style:italic;font-weight:900}
+.app{max-width:480px;margin:0 auto;height:100vh;display:flex;flex-direction:column;position:relative;overflow:hidden}
 
-.brand-strip{display:flex;gap:6px;margin-top:14px;overflow-x:auto;padding-bottom:2px}
-.brand-strip::-webkit-scrollbar{display:none}
-.ent-btn{padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;border:1px solid var(--a-line);background:var(--a-soft);color:var(--a-ink);cursor:pointer;white-space:nowrap}
+/* ── HEADER ── */
+.header{flex-shrink:0;padding:16px 16px 0;background:var(--a-bg);border-bottom:1px solid var(--a-line);transition:background .3s,border-color .3s}
+.header-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.header-left .eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.45;margin-bottom:3px}
+.header-left .page-title{font-size:22px;font-weight:700;letter-spacing:-.4px;line-height:1}
+.add-btn{width:34px;height:34px;border-radius:50%;background:var(--a-ink);color:var(--a-bg);border:none;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .3s,color .3s}
+.add-btn:active{opacity:.7}
+
+/* entity strip */
+.entity-strip{display:flex;gap:6px;overflow-x:auto;padding-bottom:12px}
+.entity-strip::-webkit-scrollbar{display:none}
+.ent-btn{padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;border:1.5px solid var(--a-line);background:transparent;color:var(--a-mid);cursor:pointer;white-space:nowrap;transition:all .15s;font-family:'DM Sans',sans-serif}
 .ent-btn.active{background:var(--a-ink);color:var(--a-bg);border-color:var(--a-ink)}
+.ent-btn:active{opacity:.7}
 
-.scroll-viewport{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:85px}
+/* ── SCROLL ── */
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:80px}
+.scroll::-webkit-scrollbar{display:none}
 
-/* Bottom Tab Bar */
-.bottom-tabs{position:absolute;bottom:0;left:0;right:0;height:75px;border-top:1px solid var(--a-line);display:flex;justify-content:space-around;align-items:center;padding:0 4px 15px;z-index:100}
-.cc .bottom-tabs{background:rgba(250,250,250,.96)}
-.bg .bottom-tabs{background:rgba(244,247,244,.96)}
-.tr .bottom-tabs{background:rgba(255,253,231,.96)}
+/* ── PAGES ── */
+.page{display:none;padding:16px}
+.page.active{display:block;animation:fadeIn .18s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
-.tab-item{display:flex;flex-direction:column;align-items:center;justify-content:center;background:none;border:none;color:var(--a-ink);opacity:.4;cursor:pointer;flex:1;height:100%;padding:4px 0}
-.tab-item.active{opacity:1;color:var(--a-acc)}
-.tab-icon{font-size:18px;display:block;line-height:1;margin-bottom:3px}
-.tab-label{font-size:10px;font-weight:600;white-space:nowrap;display:block;line-height:1}
+/* ── STATS ── */
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
+.stat-card{background:var(--a-soft);border:1px solid var(--a-line);border-radius:14px;padding:16px;transition:background .3s,border-color .3s}
+.stat-n{font-family:'DM Mono',monospace;font-size:32px;font-weight:500;line-height:1;margin-bottom:4px}
+.stat-l{font-size:12px;font-weight:500;opacity:.5;text-transform:uppercase;letter-spacing:.04em}
+.sn-blue{color:var(--g-blue)}.sn-green{color:var(--g-green)}.sn-orange{color:var(--g-orange)}.sn-red{color:var(--g-red)}
 
-.tab-item.action-center{opacity:1}
-.tab-item.action-center .tab-icon{background:var(--a-ink);color:var(--a-bg);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,.15);margin-bottom:0}
+/* alert */
+.alert-box{background:rgba(255,59,48,.08);border:1px solid rgba(255,59,48,.2);border-radius:12px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:16px}
+.alert-title{font-size:13px;font-weight:700;color:var(--g-red);margin-bottom:3px}
+.alert-body{font-size:12px;opacity:.7;line-height:1.5}
 
-.page{display:none;padding:20px;animation:pageIn .3s ease forwards}
-.page.active{display:block}
-@keyframes pageIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+/* brief card */
+.brief-card{background:var(--a-soft);border:1px solid var(--a-line);border-radius:14px;overflow:hidden;margin-bottom:16px;transition:background .3s,border-color .3s}
+.brief-hdr{padding:12px 16px;border-bottom:1px solid var(--a-line);display:flex;justify-content:space-between;align-items:center}
+.brief-hdr-title{font-size:15px;font-weight:700}
+.brief-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--a-bg);border:1px solid var(--a-line)}
+.brief-row{padding:10px 16px;border-bottom:1px solid rgba(0,0,0,.04);display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.6;color:var(--a-mid)}
+.brief-row:last-child{border-bottom:none}
+.brief-row-icon{flex-shrink:0;font-size:15px;margin-top:1px}
 
-.section-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;margin-top:10px}
-.section-title{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--a-mid);font-family:var(--font-mono)}
-
-/* Summary & Stat Box UI */
-.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
-.stat-card{background:var(--a-soft);border:1px solid var(--a-line);border-radius:12px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;height:95px}
-.stat-n{font-size:32px;font-weight:700;line-height:1;font-family:var(--font-mono)}
-.stat-l{font-size:12px;font-weight:500;opacity:.6}
-
-.alert-strip{background:var(--tr-soft);border:1px solid var(--tr-line);border-radius:12px;padding:14px;display:flex;gap:12px;margin-bottom:24px}
-.alert-title{font-size:13px;font-weight:700;color:var(--g-red);margin-bottom:4px}
-.alert-body{font-size:12px;line-height:1.5;opacity:.8}
-
-/* Tasks UI */
-.task-row{background:var(--a-soft);border:1px solid var(--a-line);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;cursor:pointer}
-.task-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+/* ── TASKS ── */
+.task-row{background:var(--a-soft);border:1px solid var(--a-line);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;cursor:pointer;transition:all .12s}
+.task-row:active{opacity:.7;transform:scale(.99)}
+.task-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
 .task-main{flex:1;min-width:0}
 .task-name{font-size:14px;font-weight:600;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.task-sub{font-size:11px;opacity:.5;margin-top:2px}
+.task-sub{font-size:11px;opacity:.45;margin-top:2px;font-family:'DM Mono',monospace}
 .task-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
-.task-due{font-family:var(--font-mono);font-size:11px;opacity:.6}
-.task-due.over{color:var(--g-red);font-weight:700}
-
-.sbadge{padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase;text-align:center}
-.sb-todo{background:#E5E5EA;color:#8E8E93}
-.sb-inprogress{background:#FFE5CC;color:var(--g-orange)}
+.task-due{font-family:'DM Mono',monospace;font-size:11px;opacity:.5}
+.task-due.over{color:var(--g-red);opacity:1;font-weight:600}
+.sbadge{padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase}
+.sb-todo{background:#EFEFEF;color:#888}
+.sb-inprogress{background:#FFF3CC;color:var(--g-orange)}
 .sb-done{background:#E6F9ED;color:var(--g-green)}
-.sb-blocked{background:#FFE6E6;color:var(--g-red)}
+.sb-blocked{background:#FFE8E8;color:var(--g-red)}
 
-/* Collections UI */
-.coll-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.coll-card{background:var(--a-soft);border:1px solid var(--a-line);border-radius:16px;overflow:hidden;cursor:pointer}
-.coll-thumb{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;position:relative;border-bottom:1px solid var(--a-line)}
-.coll-status-pip{position:absolute;top:10px;right:10px;width:8px;height:8px;border-radius:50%}
-.coll-info{padding:12px}
-.coll-name{font-size:14px;font-weight:700}
-.coll-sub{font-size:11px;opacity:.5;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* ── COLLECTIONS ── */
+.coll-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.coll-card{background:var(--a-soft);border:1px solid var(--a-line);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.coll-card:active{transform:scale(.97)}
+.coll-thumb{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:40px;position:relative;border-bottom:1px solid var(--a-line)}
+.coll-pip{position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:50%;border:2px solid white}
+.coll-info{padding:10px 12px}
+.coll-name{font-size:13px;font-weight:700}
+.coll-sub{font-size:11px;opacity:.45;margin-top:2px}
+.coll-tags{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+.coll-tag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px}
 
-/* Timeline & Team UI */
-.tl-container{background:var(--a-soft);border:1px solid var(--a-line);border-radius:14px;padding:14px;overflow-x:auto;margin-bottom:24px}
-.tl-header-row{display:grid;grid-template-columns:80px repeat(5,1fr);gap:6px;align-items:center;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--a-line)}
-.tl-day-lbl{text-align:center;font-size:10px;opacity:.4}
-.tl-day-lbl.today{opacity:1;color:var(--a-acc);font-weight:700}
-.tl-proj-row{display:grid;grid-template-columns:80px repeat(5,1fr);gap:6px;align-items:center;padding:6px 0}
-.tl-proj-name{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tl-cells{display:contents}
-.tl-cell{height:24px;border-radius:6px;background:var(--a-bg);display:flex;align-items:center;justify-content:center;padding:0 2px;border:1px dashed var(--a-line)}
-.tl-cell.doing{background:#FFF3CD;border-style:solid;border-color:#FFEBAA}
-.tl-cell-lbl{font-size:8px;font-weight:600;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
-.tl-sep{height:1px;background:var(--a-line);opacity:.5}
+/* ── TIMELINE ── */
+.tl-wrap{background:var(--a-soft);border:1px solid var(--a-line);border-radius:14px;padding:14px;margin-bottom:16px;overflow-x:auto;transition:background .3s,border-color .3s}
+.tl-hdr{display:grid;grid-template-columns:80px repeat(5,1fr);gap:4px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--a-line)}
+.tl-day{text-align:center;font-size:10px;opacity:.4;font-family:'DM Mono',monospace}
+.tl-day.today{opacity:1;color:var(--a-acc);font-weight:700}
+.tl-proj-row{display:grid;grid-template-columns:80px repeat(5,1fr);gap:4px;margin-bottom:4px;align-items:center}
+.tl-proj-name{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:6px}
+.tl-cell{height:24px;border-radius:5px;background:rgba(0,0,0,.04);border:1px dashed rgba(0,0,0,.08)}
+.tl-cell.has-task{background:#FFF3CC;border-style:solid;border-color:#FFDF80}
+.tl-cell.done{background:#E6F9ED;border-color:#A8E6B8}
+.tl-cell.stuck{background:#FFE8E8;border-color:#FFBABA}
+.tl-cell-lbl{font-size:7px;font-weight:700;text-align:center;overflow:hidden;white-space:nowrap;width:100%;padding:0 2px}
+.tl-sep{height:1px;background:var(--a-line);margin:2px 0;grid-column:1/-1}
 
-.person-block{background:var(--a-soft);border:1px solid var(--a-line);border-radius:14px;margin-bottom:8px;overflow:hidden}
-.person-hdr{padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer}
-.person-name{font-size:13px;font-weight:700}
-.person-tasks{max-height:0;overflow:hidden;transition:max-height .3s ease;background:rgba(0,0,0,.01)}
-.person-tasks.open{max-height:300px;overflow-y:auto;border-top:1px solid var(--a-line)}
-.pt-row{padding:10px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--a-line);font-size:12px}
+/* ── TEAM ── */
+.person-block{background:var(--a-soft);border:1px solid var(--a-line);border-radius:12px;margin-bottom:8px;overflow:hidden;transition:background .3s,border-color .3s}
+.person-hdr{padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer}
+.person-av{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.person-info{flex:1}
+.person-name{font-size:14px;font-weight:700}
+.person-role{font-size:11px;opacity:.4;margin-top:1px}
+.person-prog{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.prog-txt{font-family:'DM Mono',monospace;font-size:11px;opacity:.4}
+.prog-bar-bg{width:48px;height:3px;background:var(--a-line);border-radius:2px}
+.prog-bar-fill{height:100%;border-radius:2px;background:var(--a-acc);transition:width .4s,background .3s}
+.person-tasks-wrap{display:none;border-top:1px solid var(--a-line)}
+.person-tasks-wrap.open{display:block}
+.pt-row{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid rgba(0,0,0,.04);font-size:12px}
+.pt-row:last-child{border-bottom:none}
+.pt-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 .pt-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pt-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px}
 
-/* Overlay Screen Elements */
-.detail-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--a-bg);z-index:500;transform:translateY(100%);transition:transform .4s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column}
-.detail-overlay.open{transform:translateY(0)}
-.detail-hdr{padding:16px 20px;border-bottom:1px solid var(--a-line);display:flex;justify-content:space-between;align-items:center}
-.detail-close{background:none;border:none;font-size:20px;cursor:pointer}
-.detail-scroll{flex:1;overflow-y:auto;padding:20px}
+/* ── BOTTOM TABS ── */
+.tabbar{position:absolute;bottom:0;left:0;right:0;background:var(--a-bg);border-top:1px solid var(--a-line);display:grid;grid-template-columns:repeat(4,1fr);padding-bottom:env(safe-area-inset-bottom,8px);z-index:100;transition:background .3s,border-color .3s}
+.tab-item{display:flex;flex-direction:column;align-items:center;padding:8px 4px 4px;cursor:pointer;border:none;background:none;color:var(--a-ink);opacity:.35;transition:opacity .15s}
+.tab-item:active{opacity:.6}
+.tab-item.active{opacity:1}
+.tab-icon{font-size:20px;margin-bottom:2px}
+.tab-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
 
-.plat-tabs{display:flex;background:var(--a-soft);padding:3px;border-radius:8px;margin-bottom:12px;border:1px solid var(--a-line)}
-.plat-btn{flex:1;background:none;border:none;padding:6px;font-size:11px;font-weight:700;border-radius:6px;cursor:pointer}
-.plat-btn.active{background:var(--a-bg);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+/* ── DETAIL SCREEN ── */
+.detail-screen{position:absolute;inset:0;background:var(--a-bg);z-index:200;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
+.detail-screen.open{transform:none}
+.detail-nav{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--a-line)}
+.detail-back{background:none;border:none;color:var(--a-acc);font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:'DM Sans',sans-serif;padding:0}
+.detail-title{font-size:17px;font-weight:700}
+.plat-btns{display:flex;gap:5px}
+.plat-btn{padding:5px 10px;border-radius:8px;border:1.5px solid var(--a-line);font-size:11px;font-weight:700;cursor:pointer;background:var(--a-soft);color:var(--a-mid);font-family:'DM Sans',sans-serif;transition:all .12s}
+.plat-btn.active{background:var(--a-ink);color:var(--a-bg);border-color:var(--a-ink)}
+.detail-scroll{flex:1;overflow-y:auto;padding:16px;padding-bottom:32px}
+.detail-scroll::-webkit-scrollbar{display:none}
 
-.plat-frame{background:#FFFFFF;border:1px solid var(--a-line);border-radius:12px;overflow:hidden;margin-bottom:20px}
-.ig-hdr{padding:10px;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700}
-.ig-av{width:20px;height:20px;border-radius:50%;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px}
-.ig-actions{padding:10px 10px 4px;font-size:14px;display:flex;gap:12px}
-.ig-caption{padding:0 10px 12px;font-size:11px;line-height:1.4}
+/* carousel */
+.carousel-wrap{border-radius:14px;overflow:hidden;background:#000;margin-bottom:14px;position:relative}
+.carousel-inner{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.carousel-inner::-webkit-scrollbar{display:none}
+.carousel-slide{flex:none;width:100%;scroll-snap-align:start;aspect-ratio:1;display:flex;align-items:center;justify-content:center}
+.carousel-slide img{width:100%;height:100%;object-fit:cover}
+.carousel-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:var(--a-soft)}
+.carousel-placeholder-icon{font-size:48px;opacity:.3}
+.carousel-placeholder-text{font-size:12px;opacity:.3;font-weight:500}
+.carousel-dots{display:flex;justify-content:center;gap:5px;padding:10px}
+.cdot{width:5px;height:5px;border-radius:50%;background:var(--a-line);transition:all .2s}
+.cdot.active{background:var(--a-acc);width:14px;border-radius:3px}
 
-.copy-box{background:var(--a-soft);border:1px solid var(--a-line);border-radius:12px;padding:14px;margin-bottom:24px;position:relative}
-.copy-lbl{font-family:var(--font-mono);font-size:10px;font-weight:700;opacity:.4;margin-bottom:6px}
-.copy-text{font-size:12px;line-height:1.5;white-space:pre-wrap}
-.copy-btn{position:absolute;top:10px;right:10px;background:var(--a-bg);border:1px solid var(--a-line);padding:4px 8px;border-radius:6px;font-size:10px;cursor:pointer}
+/* platform preview */
+.plat-frame{border:1px solid var(--a-line);border-radius:12px;overflow:hidden;margin-bottom:14px;background:#fff}
+.ig-hdr{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid #F0F0F0}
+.ig-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700}
+.ig-name{font-size:12px;font-weight:700;color:#1C1C1E}
+.ig-more{margin-left:auto;font-size:16px;color:#8E8E93}
+.ig-actions{display:flex;gap:12px;padding:8px 12px 4px;font-size:18px}
+.ig-caption{padding:0 12px 12px;font-size:12px;line-height:1.5;color:#1C1C1E}
+.shopee-hdr{background:#EE4D2D;padding:9px 12px}
+.shopee-logo{color:#fff;font-size:13px;font-weight:800}
+.shopee-body{padding:12px}
+.shopee-name{font-size:13px;font-weight:700;margin-bottom:4px;line-height:1.4;color:#1C1C1E}
+.shopee-price{font-size:18px;font-weight:700;color:#EE4D2D;margin-bottom:4px}
+.shopee-desc{font-size:11px;color:#8E8E93;line-height:1.6}
 
-.action-bar{display:flex;gap:10px;margin-top:20px}
-.ab-btn{flex:1;padding:12px;border-radius:10px;font-size:13px;font-weight:700;border:none;cursor:pointer}
-.ab-rev{background:var(--a-soft);color:var(--a-ink);border:1px solid var(--a-line)}
-.ab-app{background:var(--a-ink);color:var(--a-bg)}
+/* copy */
+.copy-wrap{background:var(--a-soft);border:1px solid var(--a-line);border-radius:12px;padding:14px;margin-bottom:14px;position:relative;transition:background .3s,border-color .3s}
+.copy-lbl{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;opacity:.4;margin-bottom:6px}
+.copy-text{font-size:13px;line-height:1.7;white-space:pre-wrap;color:var(--a-ink)}
+.copy-btn{position:absolute;top:10px;right:10px;background:var(--a-bg);border:1px solid var(--a-line);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--a-acc);cursor:pointer;font-family:'DM Sans',sans-serif}
+.copy-btn:active{opacity:.7}
 
-.sheet-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.3);z-index:600;opacity:0;pointer-events:none;transition:opacity .3s ease;display:flex;flex-direction:column}
-.sheet-overlay.open{opacity:1;pointer-events:auto}
-.sheet-content{width:100%;max-width:480px;background:var(--a-bg);border-radius:20px 20px 0 0;padding:20px 20px 34px;transform:translateY(100%);transition:transform .3s ease;margin-top:auto;display:flex;flex-direction:column;gap:14px}
-.sheet-overlay.open .sheet-content{transform:translateY(0)}
-.sheet-hdr{display:flex;justify-content:space-between;align-items:center}
-.sheet-title{font-size:16px;font-weight:700}
-.sheet-close{background:none;border:none;font-size:18px;cursor:pointer}
+/* file links */
+.link-row{display:flex;align-items:center;gap:10px;padding:12px;background:var(--a-soft);border:1px solid var(--a-line);border-radius:10px;cursor:pointer;text-decoration:none;color:inherit;margin-bottom:8px;transition:background .12s}
+.link-row:active{opacity:.7}
+.link-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.link-name{flex:1;font-size:13px;font-weight:600}
+.link-sub{font-size:11px;opacity:.4;margin-top:1px}
+.link-chev{font-size:14px;opacity:.25}
 
-.form-group{display:flex;flex-direction:column;gap:5px}
-.form-lbl{font-family:var(--font-mono);font-size:10px;font-weight:700;opacity:.5}
-.form-input{background:var(--a-soft);border:1px solid var(--a-line);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--a-ink);outline:none}
-.form-row-2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+/* approve */
+.approve-strip{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.approve-btn{padding:12px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .12s}
+.approve-btn:active{opacity:.7}
+.btn-approve{background:var(--g-green);color:#fff}
+.btn-revise{background:var(--a-soft);color:var(--a-ink);border:1.5px solid var(--a-line)}
 
-.toast{position:absolute;bottom:90px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(0,0,0,.85);color:#fff;padding:8px 16px;border-radius:100px;font-size:12px;font-weight:600;z-index:999;opacity:0;transition:all .25s ease;white-space:nowrap}
+/* ── ADD SHEET ── */
+.sheet-ovl{position:absolute;inset:0;background:rgba(0,0,0,.4);z-index:300;display:none;align-items:flex-end;justify-content:center}
+.sheet-ovl.open{display:flex}
+.sheet{width:100%;background:var(--a-bg);border-radius:20px 20px 0 0;padding:0 0 calc(20px + env(safe-area-inset-bottom,0px));animation:shup .3s cubic-bezier(.32,.72,0,1);max-height:90vh;overflow-y:auto;transition:background .3s}
+@keyframes shup{from{transform:translateY(100%)}to{transform:none}}
+.sheet-handle-wrap{display:flex;justify-content:center;padding:10px 0 6px}
+.sheet-handle{width:36px;height:4px;border-radius:2px;background:var(--a-line)}
+.sheet-nav{display:flex;align-items:center;justify-content:space-between;padding:4px 16px 14px;border-bottom:1px solid var(--a-line)}
+.sheet-cancel{font-size:15px;color:var(--a-mid);cursor:pointer;padding:4px}
+.sheet-title{font-size:17px;font-weight:700}
+.sheet-save{font-size:15px;font-weight:700;color:var(--a-acc);cursor:pointer;padding:4px;transition:color .3s}
+.sheet-body{padding:0 16px}
+.f-grp{margin-top:14px}
+.f-lbl{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;opacity:.4;margin-bottom:6px;display:block}
+.f-in{width:100%;padding:11px 13px;background:var(--a-soft);border:1.5px solid var(--a-line);border-radius:10px;color:var(--a-ink);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;-webkit-appearance:none;transition:border-color .15s,background .3s}
+.f-in:focus{border-color:var(--a-acc)}
+select.f-in{cursor:pointer}
+
+/* ── PASSWORD MODAL ── */
+.pw-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:400;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.pw-overlay.show{display:flex}
+.pw-box{background:#1C1C1E;border-radius:18px;padding:28px 24px;width:280px;animation:popIn .2s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
+.pw-icon{font-size:36px;text-align:center;margin-bottom:12px}
+.pw-title{font-size:17px;font-weight:700;color:#fff;text-align:center;margin-bottom:4px}
+.pw-sub{font-size:13px;color:rgba(255,255,255,.4);text-align:center;margin-bottom:18px}
+.pw-input{width:100%;padding:12px;border-radius:10px;background:#2C2C2E;border:1.5px solid #3A3A3C;color:#fff;font-family:'DM Sans',sans-serif;font-size:16px;outline:none;text-align:center;letter-spacing:.1em;transition:border-color .15s}
+.pw-input:focus{border-color:var(--g-blue)}
+.pw-input.shake{animation:shake .3s ease}
+@keyframes shake{0%,100%{transform:none}25%,75%{transform:translateX(-8px)}50%{transform:translateX(8px)}}
+.pw-error{font-size:12px;color:#FF6B6B;text-align:center;margin-top:8px;min-height:16px}
+.pw-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.pw-btn{padding:11px;border-radius:10px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;transition:opacity .12s}
+.pw-btn:active{opacity:.8}
+.pw-confirm{background:var(--g-blue);color:#fff}
+.pw-cancel{background:#2C2C2E;color:rgba(255,255,255,.6);border:1px solid #3A3A3C}
+
+/* ── LOADING ── */
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;gap:12px;opacity:.4}
+.loading-spinner{width:24px;height:24px;border:2px solid var(--a-line);border-top-color:var(--a-acc);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:13px;font-weight:500}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:48px 20px;opacity:.3}
+.empty-icon{font-size:40px;display:block;margin-bottom:8px}
+.empty-text{font-size:14px;font-weight:600}
+
+/* ── TOAST ── */
+.toast{position:absolute;bottom:90px;left:50%;transform:translateX(-50%) translateY(6px);background:rgba(0,0,0,.78);color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;font-weight:500;z-index:999;opacity:0;transition:all .2s;backdrop-filter:blur(10px);white-space:nowrap;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;color:var(--a-mid);opacity:.4}
-.empty-big{font-size:40px;margin-bottom:8px}
 </style>
 </head>
 <body class="cc">
 
-<div class="app-container">
-  <nav class="top-nav">
-    <div class="nav-row">
-      <div class="nav-left-meta">
-        <span class="eyebrow" id="page-eyebrow">อัปเดตระบบ</span>
-        <h1 class="title-main" id="page-title">สรุปงาน</h1>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <div class="header-left">
+        <div class="eyebrow" id="page-eyebrow">OPS Dashboard</div>
+        <div class="page-title" id="page-title">สรุปงาน</div>
       </div>
+      <button class="add-btn" onclick="openAddSheet()">+</button>
     </div>
-    <div class="brand-strip">
+    <div class="entity-strip">
       <button class="ent-btn active" data-e="CC" onclick="setEntity('CC')">Chardchakaj</button>
-      <button class="ent-btn" data-e="BG" onclick="setEntity('BG')">Boonta Gallery</button>
+      <button class="ent-btn" data-e="BT" onclick="setEntity('BT')">Boonta Gallery</button>
       <button class="ent-btn" data-e="TR" onclick="setEntity('TR')">Truly</button>
     </div>
-  </nav>
+  </div>
 
-  <div class="scroll-viewport" id="scroll">
-    
+  <!-- SCROLL -->
+  <div class="scroll" id="scroll">
+
+    <!-- PAGE: BOSS -->
     <div class="page active" id="page-boss">
-      <div class="section-hdr"><span class="section-title">📊 สเตตัสภาพรวม</span></div>
-      <div class="stat-grid" id="stat-strip"></div>
+      <div class="stat-grid" id="stat-strip">
+        <div class="stat-card"><div class="stat-n sn-blue" id="s-total">—</div><div class="stat-l">ทั้งหมด</div></div>
+        <div class="stat-card"><div class="stat-n sn-green" id="s-done">—</div><div class="stat-l">เสร็จ</div></div>
+        <div class="stat-card"><div class="stat-n sn-orange" id="s-doing">—</div><div class="stat-l">กำลังทำ</div></div>
+        <div class="stat-card"><div class="stat-n sn-red" id="s-stuck">—</div><div class="stat-l">ติดปัญหา</div></div>
+      </div>
       <div id="urgent-zone"></div>
+      <div class="brief-card">
+        <div class="brief-hdr">
+          <div class="brief-hdr-title">Brief เจ้านาย</div>
+          <div class="brief-badge" id="brief-date">—</div>
+        </div>
+        <div class="brief-row"><div class="brief-row-icon">🎯</div><div id="brief-need">—</div></div>
+        <div class="brief-row"><div class="brief-row-icon">📌</div><div id="brief-tasks">—</div></div>
+        <div class="brief-row"><div class="brief-row-icon">⚠️</div><div id="brief-warn">—</div></div>
+      </div>
     </div>
 
+    <!-- PAGE: TASKS -->
     <div class="page" id="page-tasks">
-      <div class="section-hdr"><span class="section-title">📋 รายการงานค้าง</span></div>
-      <div id="task-list"></div>
+      <div id="task-list"><div class="loading"><div class="loading-spinner"></div><div class="loading-text">โหลดข้อมูล...</div></div></div>
     </div>
 
+    <!-- PAGE: COLLECTIONS -->
     <div class="page" id="page-collections">
-      <div class="section-hdr"><span class="section-title">👗 คอลเลกชันสินค้า</span></div>
-      <div class="coll-grid" id="coll-grid"></div>
+      <div class="coll-grid" id="coll-grid"><div class="loading"><div class="loading-spinner"></div></div></div>
     </div>
 
+    <!-- PAGE: MORE (Timeline + Team) -->
     <div class="page" id="page-more">
-      <div class="section-hdr"><span class="section-title">📅 สัปดาห์นี้ (จ.-ศ.)</span></div>
-      <div class="tl-container">
-        <div class="tl-header-row" id="tl-days"></div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;opacity:.4;margin-bottom:10px">📅 Timeline สัปดาห์นี้</div>
+      <div class="tl-wrap">
+        <div class="tl-hdr" id="tl-hdr"></div>
         <div id="tl-body"></div>
       </div>
-      <div class="section-hdr"><span class="section-title">👥 ความคืบหน้ารายคน</span></div>
-      <div id="team-list"></div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;opacity:.4;margin-bottom:10px">👥 สถานะทีม</div>
+      <div id="team-list"><div class="loading"><div class="loading-spinner"></div></div></div>
     </div>
-    
-  </div>
 
-  <div class="bottom-tabs">
+  </div><!-- /scroll -->
+
+  <!-- BOTTOM TABS -->
+  <nav class="tabbar">
     <button class="tab-item active" onclick="goTab('boss','สรุปงาน','OPS Dashboard',this)">
-      <span class="tab-icon">📊</span><span class="tab-label">สรุป</span>
+      <span class="tab-icon">📋</span><span class="tab-label">สรุป</span>
     </button>
-    <button class="tab-item" onclick="goTab('tasks','งานล่าสุด','งานที่ต้องทำ',this)">
-      <span class="tab-icon">📋</span><span class="tab-label">งานค้าง</span>
+    <button class="tab-item" onclick="goTab('tasks','งานล่าสุด','Tasks',this)">
+      <span class="tab-icon">✅</span><span class="tab-label">งาน</span>
     </button>
-    <button class="tab-item action-center" id="admin-menu-btn" onclick="checkPasswordToOpen()">
-      <span class="tab-icon">＋</span><span class="tab-label">เพิ่มงาน</span>
+    <button class="tab-item" onclick="goTab('collections','Collections','Collections',this)">
+      <span class="tab-icon">🗂</span><span class="tab-label">สินค้า</span>
     </button>
-    <button class="tab-item" onclick="goTab('collections','Collections','แบรนด์เสื้อผ้า',this)">
-      <span class="tab-icon">👗</span><span class="tab-label">สินค้า</span>
+    <button class="tab-item" onclick="goTab('more','Timeline · ทีม','More',this)">
+      <span class="tab-icon">📅</span><span class="tab-label">ทีม</span>
     </button>
-    <button class="tab-item" onclick="goTab('more','Timeline · ทีม','ทรัพยากรบุคคล',this)">
-      <span class="tab-icon">👥</span><span class="tab-label">ทีม & แผน</span>
-    </button>
-  </div>
-</div>
+  </nav>
 
-<div class="detail-overlay" id="detail-screen">
-  <div class="detail-hdr">
-    <h2 class="title-main" id="detail-title" style="font-size:18px">Collection Detail</h2>
-    <button class="detail-close" onclick="closeDetail()">✕</button>
+</div><!-- /app -->
+
+<!-- DETAIL SCREEN -->
+<div class="detail-screen" id="detail-screen">
+  <div class="detail-nav">
+    <button class="detail-back" onclick="closeDetail()">‹ กลับ</button>
+    <div class="detail-title" id="detail-title">Collection</div>
+    <div class="plat-btns">
+      <button class="plat-btn active" onclick="setPlatform('ig',this)">IG</button>
+      <button class="plat-btn" onclick="setPlatform('shopee',this)">Shopee</button>
+    </div>
   </div>
   <div class="detail-scroll">
-    <div class="plat-tabs">
-      <button class="plat-btn active" onclick="setPlatform('ig',this)">Instagram</button>
+    <div class="carousel-wrap">
+      <div class="carousel-inner" id="carousel-inner"></div>
+      <div class="carousel-dots" id="carousel-dots"></div>
     </div>
-    <div id="platform-preview"></div>
-    <div class="copy-box">
-      <div class="copy-lbl" id="copy-platform-lbl">IG Caption</div>
-      <div class="copy-text" id="copy-text-el"></div>
+    <div id="plat-preview"></div>
+    <div class="copy-wrap">
+      <div class="copy-lbl" id="copy-lbl">IG Caption</div>
+      <div class="copy-text" id="copy-text"></div>
       <button class="copy-btn" onclick="copyCopy()">Copy</button>
     </div>
-    <div class="section-hdr"><span class="section-title" style="font-size:11px">📍 สเตตัสงานโปรดักชันที่ผูกไว้</span></div>
-    <div id="detail-tasks" style="background:var(--a-soft);border:1px solid var(--a-line);border-radius:12px;padding:4px 14px;margin-bottom:20px"></div>
-    
-    <div class="action-bar" id="admin-action-bar">
-      <button class="ab-btn ab-rev" onclick="reviseCollection()">✏️ สั่งแก้ไขงาน</button>
-      <button class="ab-btn ab-app" onclick="approveCollection()">✅ อนุมัติผ่านบรูฟ</button>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;opacity:.4;margin-bottom:8px">📁 ไฟล์งาน</div>
+    <a class="link-row" id="link-icloud" href="#" target="_blank">
+      <div class="link-icon" style="background:#EBF3FF">☁️</div>
+      <div><div class="link-name">iCloud Shared Album</div><div class="link-sub">รูปตัวอย่าง / proof</div></div>
+      <div class="link-chev">›</div>
+    </a>
+    <a class="link-row" id="link-nas" href="#" target="_blank">
+      <div class="link-icon" style="background:#FFF4E6">🗄</div>
+      <div><div class="link-name">NAS — ต้นฉบับ</div><div class="link-sub">ใช้ในออฟฟิศ</div></div>
+      <div class="link-chev">›</div>
+    </a>
+    <div class="approve-strip">
+      <button class="approve-btn btn-revise" onclick="reviseCollection()">✏️ ขอแก้ไข</button>
+      <button class="approve-btn btn-approve" onclick="approveCollection()">✅ Approve</button>
     </div>
   </div>
 </div>
 
-<div class="sheet-overlay" id="sheet-ovl" onclick="closeSheet()">
-  <div class="sheet-content" onclick="event.stopPropagation()">
-    <div class="sheet-hdr">
-      <h3 class="sheet-title">➕ สั่งการ / เพิ่มงานใหม่</h3>
-      <button class="sheet-close" onclick="closeSheet()">✕</button>
+<!-- ADD SHEET -->
+<div class="sheet-ovl" id="sheet-ovl" onclick="if(event.target===this)closeSheet()">
+  <div class="sheet">
+    <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
+    <div class="sheet-nav">
+      <div class="sheet-cancel" onclick="closeSheet()">ยกเลิก</div>
+      <div class="sheet-title">เพิ่มงานใหม่</div>
+      <div class="sheet-save" onclick="addTask()">บันทึก</div>
     </div>
-    <div class="form-group">
-      <label class="form-lbl">ชิ้นงาน / สิ่งที่ต้องทำ</label>
-      <input type="text" class="form-input" id="fn" placeholder="เช่น ถ่ายแบบคอล A, ตัดต่อ Teaser">
-    </div>
-    <div class="form-row-2">
-      <div class="form-group">
-        <label class="form-lbl">โปรเจกต์งาน</label>
-        <select class="form-input" id="fp"></select>
-      </div>
-      <div class="form-group">
-        <label class="form-lbl">คนรับผิดชอบ</label>
-        <select class="form-input" id="fper"></select>
-      </div>
-    </div>
-    <div class="form-row-2">
-      <div class="form-group">
-        <label class="form-lbl">สังกัดค่ายแบรนด์</label>
-        <select class="form-input" id="fent">
-          <option value="CC">Chardchakaj</option>
-          <option value="BG">Boonta Gallery</option>
-          <option value="TR">Truly</option>
+    <div class="sheet-body">
+      <div class="f-grp"><label class="f-lbl">ชื่องาน</label><input class="f-in" id="fn" placeholder="เช่น ตัด rough cut Collection A"></div>
+      <div class="f-grp"><label class="f-lbl">Project</label><select class="f-in" id="fp"></select></div>
+      <div class="f-grp"><label class="f-lbl">ผู้รับผิดชอบ</label><select class="f-in" id="fper"></select></div>
+      <div class="f-grp"><label class="f-lbl">Entity</label>
+        <select class="f-in" id="fent">
+          <option value="CC">CC — Chardchakaj</option>
+          <option value="BT">BT — Boonta Gallery</option>
+          <option value="TR">TR — Truly</option>
         </select>
       </div>
-      <div class="form-group">
-        <label class="form-lbl">กำหนดส่งมอบงาน</label>
-        <input type="date" class="form-input" id="fd">
+      <div class="f-grp"><label class="f-lbl">Deadline</label><input class="f-in" id="fd" type="date"></div>
+      <div class="f-grp" style="margin-bottom:8px"><label class="f-lbl">สถานะ</label>
+        <select class="f-in" id="fs">
+          <option value="todo">รอทำ</option>
+          <option value="inprogress">กำลังทำ</option>
+          <option value="done">เสร็จแล้ว</option>
+          <option value="blocked">ติดปัญหา</option>
+        </select>
       </div>
     </div>
-    <div class="form-group">
-      <label class="form-lbl">สเตตัสตั้งต้น</label>
-      <select class="form-input" id="fs">
-        <option value="todo">📋 รอทำ</option>
-        <option value="inprogress">🟡 กำลังทำ</option>
-        <option value="blocked">🔴 ติดปัญหา</option>
-        <option value="done">✅ เสร็จแล้ว</option>
-      </select>
+  </div>
+</div>
+
+<!-- PASSWORD MODAL -->
+<div class="pw-overlay" id="pw-overlay">
+  <div class="pw-box">
+    <div class="pw-icon">🔒</div>
+    <div class="pw-title">รหัสผ่าน Admin</div>
+    <div class="pw-sub">สำหรับ Operate Lead เท่านั้น</div>
+    <input class="pw-input" id="pw-input" type="password" placeholder="••••••"
+      onkeydown="if(event.key==='Enter')confirmPW()">
+    <div class="pw-error" id="pw-error"></div>
+    <div class="pw-btns">
+      <button class="pw-btn pw-cancel" onclick="closePW()">ยกเลิก</button>
+      <button class="pw-btn pw-confirm" onclick="confirmPW()">เข้าสู่ระบบ</button>
     </div>
-    <button class="ab-btn ab-app" onclick="addTask()" style="margin-top:10px">💾 บันทึกและซิงค์ข้อมูล</button>
   </div>
 </div>
 
@@ -309,225 +434,514 @@ body{background:var(--a-bg);color:var(--a-ink);transition:background .4s ease,co
 
 <script>
 // ════════════════════════════════════════
-// CONFIGURATION
+// CONFIG — แก้ 2 บรรทัดนี้เท่านั้น
 // ════════════════════════════════════════
-const WEB_APP_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL"; 
-const LIFF_ID = "YOUR_LINE_LIFF_ID";                       
-
-const SECRET_PASSWORD = "letmakeitpossible";
-let isVerifiedAdmin = false; 
-let tasks = [];
-
-let PEOPLE = [{id:'ถั่ว', av:'ถ'}, {id:'พี่อาร์ม', av:'อ'}, {id:'พี่จิน', av:'จ'}, {id:'พี่เฟียน', av:'ฟ'}, {id:'พี่พีท', av:'พ'}, {id:'พี่คิวซี', av:'ค'}];
-let PROJECTS_LIST = ["Collection A", "Collection B", "Collection C", "จันทบุรี", "Marketing", "Boonta Gallery", "อื่นๆ"];
-
-const COLLECTIONS = [
-  {id:'col-a',name:'Collection A',sub:'Thai Mart · TR',emoji:'👗',status:'inprogress',platforms:['ig','shopee'],images:[],icloudLink:'#',nasLink:'#',copy:{ig:'✨ NEW COLLECTION A ✨',shopee:'Collection A — ผ้าคุณภาพดี'}},
-  {id:'col-b',name:'Collection B',sub:'รอ brief ครั้งถัดไป',emoji:'✂️',status:'todo',platforms:['ig'],images:[],icloudLink:'#',nasLink:'#',copy:{ig:'ยังไม่มี copywriting',shopee:''}},
-  {id:'chan',name:'ถ่ายจันทบุรี',sub:'20–22 พ.ค. 2026 · BG/CC',emoji:'📸',status:'inprogress',platforms:['ig'],images:[],icloudLink:'#',nasLink:'#',copy:{ig:'Behind the scenes จันทบุรี',shopee:''}}
-];
-
-const SEED = [
-  {id:1,name:'เช็ค status โรงงาน collection A',project:'Collection A',person:'พี่อาร์ม',entity:'TR',due:'2026-05-18',status:'todo',updated:Date.now()},
-  {id:2,name:'ส่ง rough cut คลิป collection A',project:'Collection A',person:'พี่เฟียน',entity:'TR',due:'2026-05-20',status:'inprogress',updated:Date.now()},
-  {id:3,name:'ตัดคลิป fashion Collection B',project:'Collection B',person:'พี่พีท',entity:'TR',due:'2026-05-21',status:'todo',updated:Date.now()},
-  {id:4,name:'QC เสื้อตัวอย่างทุก SKU',project:'Collection A',person:'พี่คิวซี',entity:'TR',due:'2026-05-19',status:'inprogress',updated:Date.now()},
-  {id:5,name:'ประสาน location จันทบุรี',project:'จันทบุรี',person:'พี่จิน',entity:'CC',due:'2026-05-18',status:'done',updated:Date.now()}
-];
-tasks = SEED;
-
-function loadDataFromSheets() {
-  if (WEB_APP_URL && WEB_APP_URL !== "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL") {
-    fetch(WEB_APP_URL)
-      .then(res => res.json())
-      .then(data => {
-        if (data) {
-          if (data.tasks && data.tasks.length > 0) tasks = data.tasks;
-          if (data.people && data.people.length > 0) PEOPLE = data.people;
-          if (data.projects && data.projects.length > 0) PROJECTS_LIST = data.projects;
-          renderAll();
-        }
-      })
-      .catch(err => {
-        console.error("Fetch error, using SEED:", err);
-        renderAll();
-      });
-  } else {
-    renderAll();
-  }
-}
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwvMMHDZdaYUGPaZeAfwCCnlyuDaUVxDXatKzDBeaNwPrl8p98Xs9xaLJtN-mE6tQYq/exec";
+const LIFF_ID     = "2010125903-hSMEChl3";
+const ADMIN_PW    = "admin";
 
 // ════════════════════════════════════════
-// CORE FUNCTIONS
+// STATE
 // ════════════════════════════════════════
-function renderAll(){
-  renderBoss();
-  renderTasks();
-  updateFormSelects();
-  if(document.getElementById('page-more').classList.contains('active')){renderTimeline();renderTeam();}
-}
-
-function updateFormSelects() {
-  const fp = document.getElementById('fp');
-  const fper = document.getElementById('fper');
-  if(fp) fp.innerHTML = PROJECTS_LIST.map(p => `<option value="${p}">${p}</option>`).join('');
-  if(fper) fper.innerHTML = PEOPLE.map(p => `<option value="${p.id}">${p.id}</option>`).join('');
-}
-
+let tasks = [], people = [], collections = [], projects = [];
 let currentEntity = 'CC';
-const ENTITY_COLORS = { CC: { av:'#0A0A0A', avBg:'#F0F0F0', bar:'#0A0A0A' }, BG: { av:'#B8860B', avBg:'#1A3328', bar:'#C9A227' }, TR: { av:'#FFD600', avBg:'#C2185B', bar:'#E91E8C' }};
-const PROJ_ICONS = {'Collection A':'👗','Collection B':'✂️','Collection C':'🎨','จันทบุรี':'📸','Marketing':'📣','Boonta Gallery':'🪟','อื่นๆ':'📎'};
-const PROJ_COLORS = {'Collection A':'rgba(233,30,140,.1)','Collection B':'rgba(156,39,176,.1)','Collection C':'rgba(0,188,212,.1)','จันทบุรี':'rgba(52,199,89,.1)','Marketing':'rgba(255,149,0,.1)','Boonta Gallery':'rgba(184,134,11,.1)','อื่นๆ':'rgba(0,0,0,.04)'};
+let currentColl = null, currentPlatform = 'ig';
+let isAdmin = false;
 
-function setEntity(e) {
-  currentEntity = e;
-  document.body.className = e.toLowerCase();
-  document.querySelectorAll('.ent-btn').forEach(b => b.classList.toggle('active', b.dataset.e===e));
+// FALLBACK DATA (ใช้ถ้า Sheet โหลดไม่ได้)
+const SEED_TASKS = [
+  {id:'T-001',name:'เช็ค status โรงงาน collection A',project:'Collection A',person:'พี่อาร์ม',entity:'TR',due:'2026-05-18',status:'todo',updated:Date.now()},
+  {id:'T-002',name:'ส่ง rough cut คลิป collection A',project:'Collection A',person:'พี่เฟียน',entity:'TR',due:'2026-05-20',status:'inprogress',updated:Date.now()},
+  {id:'T-003',name:'QC เสื้อตัวอย่างทุก SKU',project:'Collection A',person:'พี่คิวซี',entity:'TR',due:'2026-05-19',status:'inprogress',updated:Date.now()},
+  {id:'T-004',name:'ตัดคลิป fashion Collection B',project:'Collection B',person:'พี่พีท',entity:'TR',due:'2026-05-21',status:'todo',updated:Date.now()},
+  {id:'T-005',name:'ประสาน location จันทบุรี',project:'จันทบุรี',person:'พี่จิน',entity:'CC',due:'2026-05-18',status:'done',updated:Date.now()},
+  {id:'T-006',name:'วางแผนถ่ายจันทบุรี 20-22 พ.ค.',project:'จันทบุรี',person:'ถั่ว',entity:'CC',due:'2026-05-18',status:'inprogress',updated:Date.now()},
+  {id:'T-007',name:'จองตั๋วเชียงใหม่',project:'Marketing',person:'พี่อาร์ม',entity:'CC',due:'2026-05-19',status:'blocked',updated:Date.now()},
+];
+const SEED_PEOPLE = [
+  {name:'ถั่ว',av:'ถ',role:'admin'},
+  {name:'พี่อาร์ม',av:'อ',role:'team'},
+  {name:'พี่จิน',av:'จ',role:'team'},
+  {name:'พี่เฟียน',av:'ฟ',role:'team'},
+  {name:'พี่พีท',av:'พ',role:'team'},
+  {name:'พี่คิวซี',av:'ค',role:'team'},
+];
+const SEED_COLLECTIONS = [
+  {id:'col-a',name:'Collection A',sub:'Thai Mart · TR',emoji:'👗',status:'Pending Proof',platforms:'IG+Shopee',copyIG:'✨ NEW COLLECTION A ✨\n\n#ThaiMart #Collection2026 #แฟชั่นไทย',copyShopee:'Collection A — ผ้าคุณภาพสูง ทรงสวย ✅',icloudLink:'#',nasLink:'#'},
+  {id:'col-b',name:'Collection B',sub:'รอ brief ครั้งถัดไป',emoji:'✂️',status:'Draft',platforms:'IG',copyIG:'ยังไม่มี copywriting',copyShopee:'',icloudLink:'#',nasLink:'#'},
+  {id:'chan',name:'ถ่ายจันทบุรี',sub:'20–22 พ.ค. 2026',emoji:'📸',status:'Draft',platforms:'IG',copyIG:'Behind the scenes จันทบุรี 📸\n#BehindTheScenes #จันทบุรี',copyShopee:'',icloudLink:'#',nasLink:'#'},
+];
+const SEED_PROJECTS = ['Collection A','Collection B','Collection C','จันทบุรี','Marketing','Boonta Gallery Session','อื่นๆ'];
+
+// ════════════════════════════════════════
+// LOAD DATA FROM SHEET
+// ════════════════════════════════════════
+function loadData() {
+  if (!WEB_APP_URL || WEB_APP_URL.includes('YOUR_')) {
+    useSeedData(); return;
+  }
+  fetch(WEB_APP_URL + '?action=all')
+    .then(r => r.json())
+    .then(data => {
+      // tasks
+      if (data.tasks?.length) {
+        tasks = data.tasks.map(t => ({
+          id:      t.id,
+          name:    t.name,
+          project: t.project || t.id,
+          person:  t.person,
+          entity:  t.entity || 'CC',
+          due:     t.due || '',
+          status:  t.status || 'todo',
+          updated: Date.now(),
+        }));
+      } else tasks = SEED_TASKS;
+
+      // people
+      if (data.people?.length) {
+        people = data.people.map(p => ({
+          name: p.name || p.id,
+          av:   p.av || (p.name||'?').slice(0,1),
+          role: p.role || 'team',
+        }));
+      } else people = SEED_PEOPLE;
+
+      // collections — ดึงจาก Sheet แล้วจัดกลุ่ม
+      if (data.collections?.length) {
+        // จัดกลุ่มตาม collection name
+        const grouped = {};
+        data.collections.forEach(c => {
+          const key = c.collection || c.name;
+          if (!grouped[key]) {
+            grouped[key] = {
+              id:          key.toLowerCase().replace(/\s/g,'-'),
+              name:        key,
+              sub:         c.category || '',
+              emoji:       '👗',
+              status:      c.status || 'Draft',
+              platforms:   c.platform || 'IG',
+              copyIG:      c.copyIG || '',
+              copyShopee:  c.copyShopee || '',
+              icloudLink:  c.icloudLink || '#',
+              nasLink:     c.nasLink || '#',
+            };
+          }
+        });
+        collections = Object.values(grouped);
+      } else collections = SEED_COLLECTIONS;
+
+      // projects
+      if (data.projects?.length) {
+        projects = [...new Set(data.projects.map(p => p.name).filter(Boolean))];
+      } else projects = SEED_PROJECTS;
+
+      // brief จาก Sheet
+      if (data.brief) renderBriefFromSheet(data.brief);
+
+      renderAll();
+      showToast('📊 โหลดข้อมูลจาก Sheet แล้ว');
+    })
+    .catch(err => {
+      console.error('Sheet load failed:', err);
+      useSeedData();
+    });
+}
+
+function useSeedData() {
+  tasks = SEED_TASKS; people = SEED_PEOPLE;
+  collections = SEED_COLLECTIONS; projects = SEED_PROJECTS;
   renderAll();
 }
 
+// ════════════════════════════════════════
+// DATE UTILS
+// ════════════════════════════════════════
 const TODAY = new Date();
-const TSTR = TODAY.toISOString().slice(0,10);
-const DAYS = ['อา','จ','อ','พ','พฤ','ศ','ส'];
-const MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const TSTR  = TODAY.toISOString().slice(0,10);
+const DAYS  = ['อา','จ','อ','พ','พฤ','ศ','ส'];
+const MONTHS= ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 
-function getWeek() {
-  const d=[], m=new Date(TODAY), dow=m.getDay(), diff=dow===0?-6:1-dow; m.setDate(m.getDate()+diff);
-  for(let i=0;i<5;i++){const x=new Date(m);x.setDate(m.getDate()+i);d.push(x);} return d;
+function getWeek(){
+  const d=[], m=new Date(TODAY), dow=m.getDay(), diff=dow===0?-6:1-dow;
+  m.setDate(m.getDate()+diff);
+  for(let i=0;i<5;i++){const x=new Date(m);x.setDate(m.getDate()+i);d.push(x);}
+  return d;
 }
 const WEEK = getWeek();
 function fmt(s){if(!s)return'';const d=new Date(s+'T00:00:00');return d.toLocaleDateString('th-TH',{day:'numeric',month:'short'});}
 function fmtRel(ts){const d=Date.now()-ts;if(d<60000)return'เมื่อกี้';if(d<3600000)return`${Math.floor(d/60000)} นาที`;if(d<86400000)return`${Math.floor(d/3600000)} ชม.`;return`${Math.floor(d/86400000)} วัน`;}
-function isOver(t){return t.status!=='done' && t.due < TSTR;}
-function filtered() { return tasks.filter(t => !t.entity || t.entity===currentEntity || currentEntity==='ALL'); }
+function isOver(t){return t.status!=='done' && t.due && t.due < TSTR;}
+function filtered(){return tasks;}
 
+// ════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════
 function goTab(name, title, eyebrow, el) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
   el.classList.add('active');
   document.getElementById('page-title').textContent = title;
+  document.getElementById('page-eyebrow').textContent = eyebrow;
+  document.getElementById('scroll').scrollTop = 0;
+  if(name==='collections') renderCollections();
+  if(name==='more'){renderTimeline();renderTeam();}
+}
+
+function goToPageFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  const page = params.get('page');
+  const tabs = document.querySelectorAll('.tab-item');
+  const map = {
+    'boss':        [0,'สรุปงาน','OPS Dashboard'],
+    'tasks':       [1,'งานล่าสุด','Tasks'],
+    'collections': [2,'Collections','Collections'],
+    'more':        [3,'Timeline · ทีม','More'],
+  };
+  if(page && map[page]) {
+    const [idx,title,eyebrow] = map[page];
+    goTab(page,title,eyebrow,tabs[idx]);
+  }
+  if(page==='add') openAddSheet();
+}
+
+// swipe
+let _sx=0;
+document.getElementById('scroll').addEventListener('touchstart',e=>{_sx=e.touches[0].clientX;},{passive:true});
+document.getElementById('scroll').addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-_sx; if(Math.abs(dx)<60)return;
+  const pages=['boss','tasks','collections','more'];
+  const cur=pages.findIndex(p=>document.getElementById('page-'+p).classList.contains('active'));
+  const nxt=dx<0?Math.min(cur+1,3):Math.max(cur-1,0);
+  if(nxt!==cur){const tabs=document.querySelectorAll('.tab-item');const titles=['สรุปงาน','งานล่าสุด','Collections','Timeline · ทีม'];const eyebrows=['OPS Dashboard','Tasks','Collections','More'];goTab(pages[nxt],titles[nxt],eyebrows[nxt],tabs[nxt]);}
+},{passive:true});
+
+// ════════════════════════════════════════
+// ENTITY
+// ════════════════════════════════════════
+const EC = {
+  CC:{av:'#0A0A0A',avBg:'#F0F0F0'},
+  BT:{av:'#B8860B',avBg:'#1A3328'},
+  TR:{av:'#FFD600',avBg:'#C2185B'},
+};
+const PI = {'Collection A':'👗','Collection B':'✂️','Collection C':'🎨','จันทบุรี':'📸','Marketing':'📣','Boonta Gallery Session':'🪟','อื่นๆ':'📎'};
+const PC = {'Collection A':'rgba(233,30,140,.08)','Collection B':'rgba(156,39,176,.08)','Collection C':'rgba(0,188,212,.08)','จันทบุรี':'rgba(52,199,89,.08)','Marketing':'rgba(255,149,0,.08)','Boonta Gallery Session':'rgba(184,134,11,.08)','อื่นๆ':'rgba(0,0,0,.04)'};
+
+function setEntity(e) {
+  currentEntity = e;
+  document.body.className = e.toLowerCase();
+  document.querySelectorAll('.ent-btn').forEach(b=>b.classList.toggle('active',b.dataset.e===e));
   renderAll();
 }
 
-function renderBoss(){
-  const ft = filtered();
-  const done=ft.filter(t=>t.status==='done').length;
-  const doing=ft.filter(t=>t.status==='inprogress').length;
-  const stuck=ft.filter(t=>t.status==='blocked'||isOver(t)).length;
-  document.getElementById('stat-strip').innerHTML=`
-    <div class="stat-card"><div class="stat-n sn-blue">${ft.length}</div><div class="stat-l">ทั้งหมด</div></div>
-    <div class="stat-card"><div class="stat-n sn-green">${done}</div><div class="stat-l">เสร็จ</div></div>
-    <div class="stat-card"><div class="stat-n sn-orange">${doing}</div><div class="stat-l">กำลังทำ</div></div>
-    <div class="stat-card"><div class="stat-n sn-red">${stuck}</div><div class="stat-l">ติดปัญหา</div></div>`;
-  const urgents=ft.filter(t=>t.status==='blocked'||isOver(t));
-  document.getElementById('urgent-zone').innerHTML=urgents.length===0?'':
-    `<div class="alert-strip"><span style="font-size:18px">🚨</span><div><div class="alert-title">ต้องติดตามด่วน (${urgents.length})</div>
-      ${urgents.map(t=>`<div class="alert-body">· ${t.name} — <strong>${t.person}</strong></div>`).join('')}</div></div>`;
+// ════════════════════════════════════════
+// RENDER
+// ════════════════════════════════════════
+function renderAll() {
+  renderBoss();
+  renderTasks();
+  updateFormSelects();
+  // brief date (เฉพาะวันที่ — content มาจาก Sheet)
+  if (!document.getElementById('brief-date').dataset.fromSheet) {
+    document.getElementById('brief-date').textContent = `${DAYS[TODAY.getDay()]} ${TODAY.getDate()} ${MONTHS[TODAY.getMonth()]}`;
+  }
 }
 
-function renderTasks(){
+
+// ── BRIEF FROM SHEET ─────────────────────────────────
+function renderBriefFromSheet(brief) {
+  const dateEl = document.getElementById('brief-date');
+  const needEl = document.getElementById('brief-need');
+  const tasksEl = document.getElementById('brief-tasks');
+  const warnEl = document.getElementById('brief-warn');
+
+  if (brief.date) {
+    dateEl.textContent = brief.date;
+    dateEl.dataset.fromSheet = '1';
+  }
+  if (brief.need)  needEl.textContent = brief.need;
+  if (brief.warn)  warnEl.textContent = brief.warn;
+  if (brief.tasks) {
+    const lines = brief.tasks.split(/[·\n\r]/).map(t=>t.trim()).filter(Boolean);
+    tasksEl.innerHTML = '<ul style="padding-left:16px;line-height:2">' +
+      lines.map(t=>`<li>${t}</li>`).join('') + '</ul>';
+  }
+}
+
+function renderBoss() {
+  const ft = filtered();
+  const done  = ft.filter(t=>t.status==='done').length;
+  const doing = ft.filter(t=>t.status==='inprogress').length;
+  const stuck = ft.filter(t=>t.status==='blocked'||isOver(t)).length;
+  document.getElementById('s-total').textContent = ft.length;
+  document.getElementById('s-done').textContent  = done;
+  document.getElementById('s-doing').textContent = doing;
+  document.getElementById('s-stuck').textContent = stuck;
+  const urgents = ft.filter(t=>t.status==='blocked'||isOver(t));
+  document.getElementById('urgent-zone').innerHTML = urgents.length===0?'':
+    `<div class="alert-box"><span style="font-size:18px;flex-shrink:0">🚨</span><div>
+      <div class="alert-title">ต้องติดตามด่วน (${urgents.length})</div>
+      ${urgents.map(t=>`<div class="alert-body">· ${t.name} — <strong>${t.person}</strong></div>`).join('')}
+    </div></div>`;
+}
+
+function renderTasks() {
   const ft=[...filtered()].filter(t=>t.status!=='done').sort((a,b)=>(b.updated||0)-(a.updated||0));
   const SI={done:{cls:'sb-done',l:'เสร็จ'},inprogress:{cls:'sb-inprogress',l:'กำลังทำ'},todo:{cls:'sb-todo',l:'รอทำ'},blocked:{cls:'sb-blocked',l:'ติดปัญหา'}};
-  document.getElementById('task-list').innerHTML=ft.length===0
-    ?`<div class="empty"><span class="empty-big">✓</span>ไม่มีงานค้าง</div>`
+  document.getElementById('task-list').innerHTML = ft.length===0
+    ?`<div class="empty"><span class="empty-icon">🎉</span><span class="empty-text">ไม่มีงานค้าง</span></div>`
     :ft.map(t=>{
-      const over=isOver(t); 
-      const si=over?{cls:'sb-blocked',l:'เกินกำหนด'}:SI[t.status]||SI.todo;
-      return`<div class="task-row" onclick="cycleStatus(${t.id})">
-        <div class="task-icon" style="background:${PROJ_COLORS[t.project]||'rgba(0,0,0,.04)'}">${PROJ_ICONS[t.project]||'📎'}</div>
-        <div class="task-main"><div class="task-name">${t.name}</div><div class="task-sub">${t.person} · ${t.project}</div></div>
-        <div class="task-right"><div class="task-due ${over?'over':''}">${fmt(t.due)}</div><div class="sbadge ${si.cls}">${si.l}</div></div>
+      const over=isOver(t), si=over?{cls:'sb-blocked',l:'เกิน'}:SI[t.status]||SI.todo;
+      return`<div class="task-row" onclick="cycleStatus('${t.id}')">
+        <div class="task-icon" style="background:${PC[t.project]||'rgba(0,0,0,.04)'}">${PI[t.project]||'📎'}</div>
+        <div class="task-main">
+          <div class="task-name">${t.name}</div>
+          <div class="task-sub">${t.person} · ${t.project}</div>
+        </div>
+        <div class="task-right">
+          <div class="task-due ${over?'over':''}">${fmt(t.due)}</div>
+          <div class="sbadge ${si.cls}">${si.l}</div>
+        </div>
       </div>`;
     }).join('');
 }
 
-function cycleStatus(id){
-  if(!isVerifiedAdmin) {
-    toast("🔐 ฟังก์ชันล็อกสิทธิ์เฉพาะแอดมินแก!");
-    return;
-  }
-  const t=tasks.find(t=>t.id===id);if(!t)return;
-  const c=['todo','inprogress','done','blocked']; t.status=c[(c.indexOf(t.status)+1)%c.length]; t.updated=Date.now();
-  renderAll(); toast(`→ อัปเดตงานแล้วแก!`);
-  if (WEB_APP_URL && WEB_APP_URL !== "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL") {
-    fetch(WEB_APP_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "updateStatus", id: id, status: t.status }) }).catch(err => console.error(err));
+function cycleStatus(id) {
+  const t = tasks.find(t=>t.id===id); if(!t)return;
+  const c=['todo','inprogress','done','blocked'];
+  t.status = c[(c.indexOf(t.status)+1)%c.length]; t.updated = Date.now();
+  renderAll();
+  showToast(`→ ${t.status==='done'?'✅ เสร็จ':t.status==='inprogress'?'🟡 กำลังทำ':t.status==='blocked'?'🔴 ติดปัญหา':'📋 รอทำ'}`);
+  // sync to sheet
+  if(WEB_APP_URL && !WEB_APP_URL.includes('YOUR_')) {
+    fetch(WEB_APP_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'updateStatus',id,status:t.status})}).catch(()=>{});
   }
 }
 
-function renderCollections(){
-  document.getElementById('coll-grid').innerHTML=COLLECTIONS.map(c=>`
+// ── COLLECTIONS ──────────────────────────────────────
+const STATUS_DOT = {'Approved':'#34C759','Pending Proof':'#FF9500','Published 🚀':'#007AFF','Draft':'#AEAEB2','blocked':'#FF3B30'};
+
+function renderCollections() {
+  if(!collections.length){document.getElementById('coll-grid').innerHTML='<div class="loading"><div class="loading-spinner"></div></div>';return;}
+  document.getElementById('coll-grid').innerHTML = collections.map(c=>`
     <div class="coll-card" onclick="openDetail('${c.id}')">
-      <div class="coll-thumb"><span style="font-size:38px">${c.emoji}</span></div>
-      <div class="coll-info"><div class="coll-name">${c.name}</div><div class="coll-sub">${c.sub}</div></div>
+      <div class="coll-thumb" style="background:var(--a-soft)">
+        <span style="font-size:38px">${c.emoji||'👗'}</span>
+        <div class="coll-pip" style="background:${STATUS_DOT[c.status]||'#AEAEB2'}"></div>
+      </div>
+      <div class="coll-info">
+        <div class="coll-name">${c.name}</div>
+        <div class="coll-sub">${c.sub||c.status}</div>
+        <div class="coll-tags">
+          ${(c.platforms||'IG').split('+').map(p=>
+            `<div class="coll-tag" style="background:var(--a-soft);border:1px solid var(--a-line);color:var(--a-mid)">${p.trim()}</div>`
+          ).join('')}
+        </div>
+      </div>
     </div>`).join('');
 }
 
-function openDetail(id){
-  currentColl=COLLECTIONS.find(c=>c.id===id); if(!currentColl)return;
-  document.getElementById('detail-title').textContent=currentColl.name;
-  document.getElementById('copy-text-el').textContent=currentColl.copy.ig;
+// ── DETAIL ───────────────────────────────────────────
+function openDetail(id) {
+  currentColl = collections.find(c=>c.id===id); if(!currentColl)return;
+  currentPlatform = 'ig';
+  document.getElementById('detail-title').textContent = currentColl.name;
+  document.getElementById('link-icloud').href = currentColl.icloudLink||'#';
+  document.getElementById('link-nas').href = currentColl.nasLink||'#';
+  document.querySelectorAll('.plat-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+  renderCarousel(); renderPlatformPreview(); renderCopy();
   document.getElementById('detail-screen').classList.add('open');
 }
 function closeDetail(){document.getElementById('detail-screen').classList.remove('open');}
-function copyCopy(){navigator.clipboard.writeText(document.getElementById('copy-text-el').textContent).then(()=>toast('📋 Copy แล้ว!'));}
 
-function renderTimeline(){
-  document.getElementById('tl-days').innerHTML=WEEK.map(d=>`<div class="tl-day-lbl ${d.toISOString().slice(0,10)===TSTR?'today':''}">วัน<br><b>${d.getDate()}</b></div>`).join('');
-  const projs=[...new Set(filtered().map(t=>t.project))];
-  document.getElementById('tl-body').innerHTML=projs.map(proj=>{
-    const pt=filtered().filter(t=>t.project===proj);
-    const cells=WEEK.map(day=>{
-      const match=pt.filter(t=>t.due===day.toISOString().slice(0,10)); if(!match.length)return`<div class="tl-cell"></div>`;
-      return`<div class="tl-cell doing"><div class="tl-cell-lbl">${match[0].name.slice(0,6)}</div></div>`;
-    }).join('');
-    return`<div class="tl-proj-row"><div class="tl-proj-name">${proj}</div><div class="tl-cells">${cells}</div></div>`;
-  }).join('');
+function renderCarousel() {
+  const inner=document.getElementById('carousel-inner'), dots=document.getElementById('carousel-dots');
+  inner.innerHTML=''; dots.innerHTML='';
+  for(let i=0;i<3;i++){
+    const slide=document.createElement('div'); slide.className='carousel-slide';
+    slide.innerHTML=`<div class="carousel-placeholder"><div class="carousel-placeholder-icon">${currentColl.emoji||'👗'}</div><div class="carousel-placeholder-text">รูปที่ ${i+1}</div></div>`;
+    inner.appendChild(slide);
+    const dot=document.createElement('div'); dot.className='cdot'+(i===0?' active':''); dots.appendChild(dot);
+  }
+  inner.addEventListener('scroll',()=>{
+    const idx=Math.round(inner.scrollLeft/inner.offsetWidth);
+    document.querySelectorAll('.cdot').forEach((d,i)=>d.classList.toggle('active',i===idx));
+  },{passive:true});
 }
 
-function renderTeam(){
-  document.getElementById('team-list').innerHTML=PEOPLE.map(p=>{
-    const pt=filtered().filter(t=>t.person===p.id);
-    const rows=pt.length===0?`<div class="pt-row" style="opacity:.4">ไม่มีงานค้าง</div>`:pt.map(t=>`<div class="pt-row"><div class="pt-name">${t.name}</div></div>`).join('');
-    return`<div class="person-block"><div class="person-hdr" onclick="togglePerson('${p.id}')"><div class="person-name">${p.name}</div></div><div class="person-tasks" id="pt-${p.id}">${rows}</div></div>`;
-  }).join('');
+function setPlatform(p,el) {
+  currentPlatform=p;
+  document.querySelectorAll('.plat-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderPlatformPreview(); renderCopy();
 }
-function togglePerson(id){document.getElementById('pt-'+id).classList.toggle('open');}
 
-function checkPasswordToOpen() {
-  const inputPassword = prompt("🔐 กรุณากรอกรหัสผ่านเพื่อยืนยันตัวตนแอดมิน:");
-  if (inputPassword === SECRET_PASSWORD) {
-    isVerifiedAdmin = true; 
-    document.getElementById('sheet-ovl').classList.add('open');
-    toast("🔓 ยืนยันสิทธิ์แอดมินสำเร็จแก!");
-  } else if (inputPassword !== null) {
-    alert("❌ รหัสผ่านไม่ถูกต้องแก! ไม่ได้รับสิทธิ์สั่งการ");
+function renderPlatformPreview() {
+  const c=currentColl, el=document.getElementById('plat-preview');
+  const thumb=`<div style="width:100%;aspect-ratio:1;background:var(--a-soft);display:flex;align-items:center;justify-content:center;font-size:64px">${c.emoji||'👗'}</div>`;
+  if(currentPlatform==='ig'){
+    el.innerHTML=`<div class="plat-frame">
+      <div class="ig-hdr"><div class="ig-av">T</div><div class="ig-name">truly_official</div><div class="ig-more">···</div></div>
+      ${thumb}<div class="ig-actions">❤️ 💬 ✈️</div>
+      <div class="ig-caption"><strong>truly_official</strong> ${(c.copyIG||'').slice(0,80)}...</div>
+    </div>`;
+  } else {
+    el.innerHTML=`<div class="plat-frame">
+      <div class="shopee-hdr"><div class="shopee-logo">Shopee</div></div>
+      ${thumb}
+      <div class="shopee-body">
+        <div class="shopee-name">${c.name}</div>
+        <div class="shopee-price">฿XXX</div>
+        <div class="shopee-desc">${(c.copyShopee||'').slice(0,120)}</div>
+      </div>
+    </div>`;
   }
 }
 
+function renderCopy() {
+  const c=currentColl;
+  const text=currentPlatform==='ig'?(c.copyIG||'ยังไม่มี copywriting'):(c.copyShopee||'ยังไม่มี copywriting');
+  document.getElementById('copy-lbl').textContent=currentPlatform==='ig'?'IG Caption':'Shopee Description';
+  document.getElementById('copy-text').textContent=text;
+}
+
+function copyCopy(){
+  navigator.clipboard.writeText(document.getElementById('copy-text').textContent)
+    .then(()=>showToast('📋 Copy แล้ว!'));
+}
+
+function approveCollection(){if(currentColl){currentColl.status='Approved';showToast('✅ Approved! โพสได้เลย');closeDetail();renderCollections();}}
+function reviseCollection(){if(currentColl){currentColl.status='Draft';showToast('✏️ ส่งกลับให้แก้ไข');closeDetail();renderCollections();}}
+
+// ── TIMELINE ─────────────────────────────────────────
+function renderTimeline() {
+  document.getElementById('tl-hdr').innerHTML = `<div></div>` + WEEK.map(d=>`
+    <div class="tl-day ${d.toISOString().slice(0,10)===TSTR?'today':''}">
+      ${DAYS[d.getDay()]}<br><strong>${d.getDate()}</strong>
+    </div>`).join('');
+  const projs=[...new Set(filtered().map(t=>t.project))];
+  document.getElementById('tl-body').innerHTML = projs.map(proj=>{
+    const pt=filtered().filter(t=>t.project===proj);
+    const done=pt.filter(t=>t.status==='done').length;
+    const cells=WEEK.map(day=>{
+      const ds=day.toISOString().slice(0,10), match=pt.filter(t=>t.due===ds);
+      if(!match.length)return`<div class="tl-cell"></div>`;
+      const t=match[0];
+      const cls=t.status==='done'?'done':isOver(t)||t.status==='blocked'?'stuck':'has-task';
+      return`<div class="tl-cell ${cls}" style="display:flex;align-items:center;justify-content:center"><div class="tl-cell-lbl">${t.name.slice(0,6)}</div></div>`;
+    }).join('');
+    return`<div class="tl-proj-row">
+      <div><div class="tl-proj-name">${proj}</div><div style="font-size:10px;opacity:.35;font-family:'DM Mono',monospace">${done}/${pt.length}</div></div>
+      ${cells}
+    </div><div class="tl-sep" style="display:block;grid-column:unset;margin:2px 0"></div>`;
+  }).join('');
+}
+
+// ── TEAM ─────────────────────────────────────────────
+function renderTeam() {
+  const ec=EC[currentEntity]||EC.CC;
+  document.getElementById('team-list').innerHTML = people.map(p=>{
+    const pt=filtered().filter(t=>t.person===p.name);
+    const done=pt.filter(t=>t.status==='done').length;
+    const pct=pt.length?Math.round(done/pt.length*100):0;
+    const stuck=pt.filter(t=>t.status==='blocked'||isOver(t)).length;
+    const barColor=stuck>0?'var(--g-red)':pct===100&&pt.length>0?'var(--g-green)':'var(--a-acc)';
+    const rows=pt.length===0
+      ?`<div class="pt-row" style="opacity:.3;font-size:12px">ไม่มีงาน</div>`
+      :pt.map(t=>{
+        const dot=t.status==='done'?'var(--g-green)':isOver(t)||t.status==='blocked'?'var(--g-red)':t.status==='inprogress'?'var(--g-orange)':'#C7C7CC';
+        const si={done:'sb-done',inprogress:'sb-inprogress',todo:'sb-todo',blocked:'sb-blocked'}[t.status]||'sb-todo';
+        const sl={done:'เสร็จ',inprogress:'กำลังทำ',todo:'รอทำ',blocked:'ติดปัญหา'}[t.status]||'รอทำ';
+        return`<div class="pt-row">
+          <div class="pt-dot" style="background:${dot}"></div>
+          <div class="pt-name">${t.name}</div>
+          <div class="pt-badge sbadge ${si}">${sl}</div>
+        </div>`;
+      }).join('');
+    return`<div class="person-block">
+      <div class="person-hdr" onclick="togglePerson('${p.name}')">
+        <div class="person-av" style="background:${ec.avBg};color:${ec.av}">${p.av||p.name.slice(0,1)}</div>
+        <div class="person-info"><div class="person-name">${p.name}</div><div class="person-role">${p.role==='admin'?'Operate Lead':'ทีมงาน'}</div></div>
+        <div class="person-prog">
+          <div class="prog-txt">${done}/${pt.length}</div>
+          <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${pct}%;background:${barColor}"></div></div>
+        </div>
+      </div>
+      <div class="person-tasks-wrap" id="pt-${p.name}">${rows}</div>
+    </div>`;
+  }).join('');
+}
+function togglePerson(name){document.getElementById('pt-'+name).classList.toggle('open');}
+
+// ── FORM SELECTS ─────────────────────────────────────
+function updateFormSelects() {
+  const fp=document.getElementById('fp'), fper=document.getElementById('fper');
+  if(fp) fp.innerHTML=projects.map(p=>`<option value="${p}">${p}</option>`).join('');
+  if(fper) fper.innerHTML=people.map(p=>`<option value="${p.name}">${p.name}</option>`).join('');
+}
+
+// ── SHEET ─────────────────────────────────────────────
+function openAddSheet() {
+  if(!isAdmin){showPasswordModal(()=>document.getElementById('sheet-ovl').classList.add('open'));return;}
+  document.getElementById('fd').value=TSTR;
+  document.getElementById('fent').value=currentEntity;
+  document.getElementById('sheet-ovl').classList.add('open');
+}
 function closeSheet(){document.getElementById('sheet-ovl').classList.remove('open');}
 
 function addTask() {
-  if(!isVerifiedAdmin) return;
-  const name=document.getElementById('fn').value.trim(); if(!name) return;
-  const id = Math.max(...tasks.map(t=>t.id), 0) + 1;
-  const newTask = { id, name, project:document.getElementById('fp').value, person:document.getElementById('fper').value, entity:document.getElementById('fent').value, due:document.getElementById('fd').value, status:document.getElementById('fs').value, updated:Date.now() };
-  tasks.push(newTask); closeSheet(); renderAll(); toast('✅ เพิ่มงานเข้าคลังแล้ว!');
-  if (WEB_APP_URL && WEB_APP_URL !== "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL") {
-    fetch(WEB_APP_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "addTask", ...newTask }) }).catch(err => console.error(err));
+  const name=document.getElementById('fn').value.trim(); if(!name){document.getElementById('fn').focus();return;}
+  const id='T-'+Date.now();
+  const newTask={id,name,project:document.getElementById('fp').value,person:document.getElementById('fper').value,entity:document.getElementById('fent').value,due:document.getElementById('fd').value,status:document.getElementById('fs').value,updated:Date.now()};
+  tasks.push(newTask); closeSheet(); document.getElementById('fn').value='';
+  renderAll(); showToast('✅ เพิ่มงานแล้ว');
+  if(WEB_APP_URL&&!WEB_APP_URL.includes('YOUR_')){
+    fetch(WEB_APP_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'addTask',...newTask})}).catch(()=>{});
   }
 }
 
-liff.init({ liffId: LIFF_ID })
-  .then(() => {
-    loadDataFromSheets();
-  })
-  .catch(err => {
-    console.error("LIFF ล่ม ใช้ระบบจำลองอัตโนมัติ:", err);
-    loadDataFromSheets();
-  });
+// ── PASSWORD ──────────────────────────────────────────
+let _pwCallback = null;
+function showPasswordModal(cb) {
+  _pwCallback=cb||null;
+  document.getElementById('pw-overlay').classList.add('show');
+  document.getElementById('pw-input').value='';
+  document.getElementById('pw-error').textContent='';
+  setTimeout(()=>document.getElementById('pw-input').focus(),100);
+}
+function closePW(){document.getElementById('pw-overlay').classList.remove('show');}
+function confirmPW(){
+  const v=document.getElementById('pw-input').value;
+  if(v===ADMIN_PW){
+    isAdmin=true; closePW(); showToast('🔓 Admin mode เปิดแล้ว');
+    if(_pwCallback)_pwCallback();
+  } else {
+    const inp=document.getElementById('pw-input');
+    inp.classList.add('shake'); document.getElementById('pw-error').textContent='รหัสไม่ถูกต้อง 🔒';
+    inp.value=''; setTimeout(()=>{inp.classList.remove('shake');inp.focus();},400);
+  }
+}
+document.getElementById('pw-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('pw-overlay'))closePW();});
 
-renderCollections();
+// ── TOAST ─────────────────────────────────────────────
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2500);}
+
+// ════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════
+// LIFF init
+liff.init({liffId:LIFF_ID})
+  .then(()=>{console.log('LIFF ok');})
+  .catch(err=>console.log('LIFF failed (ok on browser):', err));
+
+// โหลดข้อมูล
+loadData();
+
+// อ่าน URL params
+goToPageFromURL();
 </script>
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </body>
 </html>
