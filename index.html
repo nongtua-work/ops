@@ -136,7 +136,10 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 .pt-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px}
 
 /* ── BOTTOM TABS ── */
-.tabbar{position:absolute;bottom:0;left:0;right:0;background:var(--a-bg);border-top:1px solid var(--a-line);display:grid;grid-template-columns:repeat(4,1fr);padding-bottom:env(safe-area-inset-bottom,8px);z-index:100;transition:background .3s,border-color .3s}
+.tabbar{position:absolute;bottom:0;left:0;right:0;background:var(--a-bg);border-top:1px solid var(--a-line);display:grid;grid-template-columns:repeat(2,1fr) 56px repeat(2,1fr);padding-bottom:env(safe-area-inset-bottom,8px);z-index:100;transition:background .3s,border-color .3s;align-items:center}
+.tab-add{display:flex;align-items:center;justify-content:center;padding:4px 0;border:none;background:none;cursor:pointer}
+.tab-icon-add{width:40px;height:40px;border-radius:50%;background:var(--a-ink);color:var(--a-bg);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:300;transition:background .3s,color .3s;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.tab-add:active .tab-icon-add{opacity:.7}
 .tab-item{display:flex;flex-direction:column;align-items:center;padding:8px 4px 4px;cursor:pointer;border:none;background:none;color:var(--a-ink);opacity:.35;transition:opacity .15s}
 .tab-item:active{opacity:.6}
 .tab-item.active{opacity:1}
@@ -269,7 +272,7 @@ select.f-in{cursor:pointer}
         <div class="eyebrow" id="page-eyebrow">OPS Dashboard</div>
         <div class="page-title" id="page-title">สรุปงาน</div>
       </div>
-      <button class="add-btn" onclick="openAddSheet()">+</button>
+      <button class="add-btn" onclick="openSheetAdmin()">+</button>
     </div>
     <div class="entity-strip">
       <button class="ent-btn active" data-e="CC" onclick="setEntity('CC')">Chardchakaj</button>
@@ -332,6 +335,9 @@ select.f-in{cursor:pointer}
     <button class="tab-item" onclick="goTab('tasks','งานล่าสุด','Tasks',this)">
       <span class="tab-icon">✅</span><span class="tab-label">งาน</span>
     </button>
+    <button class="tab-item tab-add" onclick="openSheetAdmin()">
+      <span class="tab-icon-add">＋</span>
+    </button>
     <button class="tab-item" onclick="goTab('collections','Collections','Collections',this)">
       <span class="tab-icon">🗂</span><span class="tab-label">สินค้า</span>
     </button>
@@ -377,39 +383,6 @@ select.f-in{cursor:pointer}
     <div class="approve-strip">
       <button class="approve-btn btn-revise" onclick="reviseCollection()">✏️ ขอแก้ไข</button>
       <button class="approve-btn btn-approve" onclick="approveCollection()">✅ Approve</button>
-    </div>
-  </div>
-</div>
-
-<!-- ADD SHEET -->
-<div class="sheet-ovl" id="sheet-ovl" onclick="if(event.target===this)closeSheet()">
-  <div class="sheet">
-    <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
-    <div class="sheet-nav">
-      <div class="sheet-cancel" onclick="closeSheet()">ยกเลิก</div>
-      <div class="sheet-title">เพิ่มงานใหม่</div>
-      <div class="sheet-save" onclick="addTask()">บันทึก</div>
-    </div>
-    <div class="sheet-body">
-      <div class="f-grp"><label class="f-lbl">ชื่องาน</label><input class="f-in" id="fn" placeholder="เช่น ตัด rough cut Collection A"></div>
-      <div class="f-grp"><label class="f-lbl">Project</label><select class="f-in" id="fp"></select></div>
-      <div class="f-grp"><label class="f-lbl">ผู้รับผิดชอบ</label><select class="f-in" id="fper"></select></div>
-      <div class="f-grp"><label class="f-lbl">Entity</label>
-        <select class="f-in" id="fent">
-          <option value="CC">CC — Chardchakaj</option>
-          <option value="BT">BT — Boonta Gallery</option>
-          <option value="TR">TR — Truly</option>
-        </select>
-      </div>
-      <div class="f-grp"><label class="f-lbl">Deadline</label><input class="f-in" id="fd" type="date"></div>
-      <div class="f-grp" style="margin-bottom:8px"><label class="f-lbl">สถานะ</label>
-        <select class="f-in" id="fs">
-          <option value="todo">รอทำ</option>
-          <option value="inprogress">กำลังทำ</option>
-          <option value="done">เสร็จแล้ว</option>
-          <option value="blocked">ติดปัญหา</option>
-        </select>
-      </div>
     </div>
   </div>
 </div>
@@ -701,7 +674,7 @@ function renderTasks() {
     ?`<div class="empty"><span class="empty-icon">🎉</span><span class="empty-text">ไม่มีงานค้าง</span></div>`
     :ft.map(t=>{
       const over=isOver(t), si=over?{cls:'sb-blocked',l:'เกิน'}:SI[t.status]||SI.todo;
-      return`<div class="task-row" onclick="cycleStatus('${t.id}')">
+      return`<div class="task-row" style="cursor:default">
         <div class="task-icon" style="background:${PC[t.project]||'rgba(0,0,0,.04)'}">${PI[t.project]||'📎'}</div>
         <div class="task-main">
           <div class="task-name">${t.name}</div>
@@ -715,17 +688,9 @@ function renderTasks() {
     }).join('');
 }
 
+// ทีมดูอย่างเดียว — ถั่วอัพเดทใน Sheet โดยตรง
 function cycleStatus(id) {
-  const t = tasks.find(t=>t.id===id); if(!t)return;
-  const c=['todo','inprogress','done','blocked'];
-  t.status = c[(c.indexOf(t.status)+1)%c.length]; t.updated = Date.now();
-  renderAll();
-  showToast(`→ ${t.status==='done'?'✅ เสร็จ':t.status==='inprogress'?'🟡 กำลังทำ':t.status==='blocked'?'🔴 ติดปัญหา':'📋 รอทำ'}`);
-  // sync to sheet
-  if(WEB_APP_URL && !WEB_APP_URL.includes('YOUR_')) {
-    fetch(WEB_APP_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'updateStatus',id,status:t.status})}).catch(()=>{});
-  }
+  showToast('📊 อัพเดทสถานะใน Google Sheet ได้เลย');
 }
 
 // ── COLLECTIONS ──────────────────────────────────────
@@ -891,24 +856,20 @@ function updateFormSelects() {
 }
 
 // ── SHEET ─────────────────────────────────────────────
-function openAddSheet() {
-  if(!isAdmin){showPasswordModal(()=>document.getElementById('sheet-ovl').classList.add('open'));return;}
-  document.getElementById('fd').value=TSTR;
-  document.getElementById('fent').value=currentEntity;
-  document.getElementById('sheet-ovl').classList.add('open');
-}
-function closeSheet(){document.getElementById('sheet-ovl').classList.remove('open');}
+// เปิด Google Sheet โดยตรง (Admin only)
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/17p8hbErAR_fSzUUQ-BMkBT_YQGwqYR59PHS2Kul3UQo/edit";
 
-function addTask() {
-  const name=document.getElementById('fn').value.trim(); if(!name){document.getElementById('fn').focus();return;}
-  const id='T-'+Date.now();
-  const newTask={id,name,project:document.getElementById('fp').value,person:document.getElementById('fper').value,entity:document.getElementById('fent').value,due:document.getElementById('fd').value,status:document.getElementById('fs').value,updated:Date.now()};
-  tasks.push(newTask); closeSheet(); document.getElementById('fn').value='';
-  renderAll(); showToast('✅ เพิ่มงานแล้ว');
-  if(WEB_APP_URL&&!WEB_APP_URL.includes('YOUR_')){
-    fetch(WEB_APP_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'addTask',...newTask})}).catch(()=>{});
+function openSheetAdmin() {
+  if (!isAdmin) {
+    showPasswordModal(() => {
+      window.open(SHEET_URL, '_blank');
+    });
+    return;
   }
+  window.open(SHEET_URL, '_blank');
 }
+
+function closeSheet(){} // legacy compat
 
 // ── PASSWORD ──────────────────────────────────────────
 let _pwCallback = null;
