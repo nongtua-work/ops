@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>OPS — Dashboard</title>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -123,7 +124,7 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 .person-info{flex:1}
 .person-name{font-size:14px;font-weight:700}
 .person-role{font-size:11px;opacity:.4;margin-top:1px}
-.person-prog{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.person-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
 .prog-txt{font-family:'DM Mono',monospace;font-size:11px;opacity:.4}
 .prog-bar-bg{width:48px;height:3px;background:var(--a-line);border-radius:2px}
 .prog-bar-fill{height:100%;border-radius:2px;background:var(--a-acc);transition:width .4s,background .3s}
@@ -147,7 +148,7 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 .tab-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
 
 /* ── DETAIL SCREEN ── */
-.detail-screen{position:fixed;top:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:480px;height:100%;background:var(--a-bg);z-index:200;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);visibility:hidden;pointer-events:none}
+.detail-screen{position:fixed;top:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:480px;height:100%;background:var(--a-bg);z-index:200;display:flex;flex-direction:column;transition:transform .3s cubic-bezier(.32,.72,0,1);visibility:hidden;pointer-events:none}
 .detail-screen.open{transform:translateX(-50%) translateY(0);visibility:visible;pointer-events:auto}
 .detail-nav{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--a-line)}
 .detail-back{background:none;border:none;color:var(--a-acc);font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:'DM Sans',sans-serif;padding:0}
@@ -208,24 +209,6 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 .btn-approve{background:var(--g-green);color:#fff}
 .btn-revise{background:var(--a-soft);color:var(--a-ink);border:1.5px solid var(--a-line)}
 
-/* ── ADD SHEET ── */
-.sheet-ovl{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;display:none;align-items:flex-end;justify-content:center}
-.sheet-ovl.open{display:flex}
-.sheet{width:100%;background:var(--a-bg);border-radius:20px 20px 0 0;padding:0 0 calc(20px + env(safe-area-inset-bottom,0px));animation:shup .3s cubic-bezier(.32,.72,0,1);max-height:90vh;overflow-y:auto;transition:background .3s}
-@keyframes shup{from{transform:translateY(100%)}to{transform:none}}
-.sheet-handle-wrap{display:flex;justify-content:center;padding:10px 0 6px}
-.sheet-handle{width:36px;height:4px;border-radius:2px;background:var(--a-line)}
-.sheet-nav{display:flex;align-items:center;justify-content:space-between;padding:4px 16px 14px;border-bottom:1px solid var(--a-line)}
-.sheet-cancel{font-size:15px;color:var(--a-mid);cursor:pointer;padding:4px}
-.sheet-title{font-size:17px;font-weight:700}
-.sheet-save{font-size:15px;font-weight:700;color:var(--a-acc);cursor:pointer;padding:4px;transition:color .3s}
-.sheet-body{padding:0 16px}
-.f-grp{margin-top:14px}
-.f-lbl{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;opacity:.4;margin-bottom:6px;display:block}
-.f-in{width:100%;padding:11px 13px;background:var(--a-soft);border:1.5px solid var(--a-line);border-radius:10px;color:var(--a-ink);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;-webkit-appearance:none;transition:border-color .15s,background .3s}
-.f-in:focus{border-color:var(--a-acc)}
-select.f-in{cursor:pointer}
-
 /* ── PASSWORD MODAL ── */
 .pw-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 .pw-overlay.show{display:flex}
@@ -246,7 +229,7 @@ select.f-in{cursor:pointer}
 .pw-cancel{background:#2C2C2E;color:rgba(255,255,255,.6);border:1px solid #3A3A3C}
 
 /* ── LOADING ── */
-.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;gap:12px;opacity:.4}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:12px;opacity:.4}
 .loading-spinner{width:24px;height:24px;border:2px solid var(--a-line);border-top-color:var(--a-acc);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-text{font-size:13px;font-weight:500}
@@ -257,7 +240,7 @@ select.f-in{cursor:pointer}
 .empty-text{font-size:14px;font-weight:600}
 
 /* ── TOAST ── */
-.toast{position:absolute;bottom:90px;left:50%;transform:translateX(-50%) translateY(6px);background:rgba(0,0,0,.78);color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;font-weight:500;z-index:999;opacity:0;transition:all .2s;backdrop-filter:blur(10px);white-space:nowrap;pointer-events:none}
+.toast{position:absolute;bottom:90px;left:50%;transform:translateX(-50%) translateY(6px);background:rgba(0,0,0,.78);color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;font-weight:500;z-index:999;opacity:0;transition:all .25s ease;backdrop-filter:blur(10px);white-space:nowrap;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
@@ -265,7 +248,6 @@ select.f-in{cursor:pointer}
 
 <div class="app">
 
-  <!-- HEADER -->
   <div class="header">
     <div class="header-top">
       <div class="header-left">
@@ -281,10 +263,8 @@ select.f-in{cursor:pointer}
     </div>
   </div>
 
-  <!-- SCROLL -->
   <div class="scroll" id="scroll">
 
-    <!-- PAGE: BOSS -->
     <div class="page active" id="page-boss">
       <div class="stat-grid" id="stat-strip">
         <div class="stat-card"><div class="stat-n sn-blue" id="s-total">—</div><div class="stat-l">ทั้งหมด</div></div>
@@ -304,17 +284,14 @@ select.f-in{cursor:pointer}
       </div>
     </div>
 
-    <!-- PAGE: TASKS -->
     <div class="page" id="page-tasks">
       <div id="task-list"><div class="loading"><div class="loading-spinner"></div><div class="loading-text">โหลดข้อมูล...</div></div></div>
     </div>
 
-    <!-- PAGE: COLLECTIONS -->
     <div class="page" id="page-collections">
       <div class="coll-grid" id="coll-grid"><div class="loading"><div class="loading-spinner"></div></div></div>
     </div>
 
-    <!-- PAGE: MORE (Timeline + Team) -->
     <div class="page" id="page-more">
       <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;opacity:.4;margin-bottom:10px">📅 Timeline สัปดาห์นี้</div>
       <div class="tl-wrap">
@@ -325,9 +302,8 @@ select.f-in{cursor:pointer}
       <div id="team-list"><div class="loading"><div class="loading-spinner"></div></div></div>
     </div>
 
-  </div><!-- /scroll -->
+  </div>
 
-  <!-- BOTTOM TABS -->
   <nav class="tabbar">
     <button class="tab-item active" onclick="goTab('boss','สรุปงาน','OPS Dashboard',this)">
       <span class="tab-icon">📋</span><span class="tab-label">สรุป</span>
@@ -346,9 +322,8 @@ select.f-in{cursor:pointer}
     </button>
   </nav>
 
-</div><!-- /app -->
+</div>
 
-<!-- DETAIL SCREEN -->
 <div class="detail-screen" id="detail-screen">
   <div class="detail-nav">
     <button class="detail-back" onclick="closeDetail()">‹ กลับ</button>
@@ -387,14 +362,12 @@ select.f-in{cursor:pointer}
   </div>
 </div>
 
-<!-- PASSWORD MODAL -->
 <div class="pw-overlay" id="pw-overlay">
   <div class="pw-box">
     <div class="pw-icon">🔒</div>
     <div class="pw-title">รหัสผ่าน Admin</div>
     <div class="pw-sub">สำหรับ Operate Lead เท่านั้น</div>
-    <input class="pw-input" id="pw-input" type="password" placeholder="••••••"
-      onkeydown="if(event.key==='Enter')confirmPW()">
+    <input class="pw-input" id="pw-input" type="password" placeholder="••••••" onkeydown="if(event.key==='Enter')confirmPW()">
     <div class="pw-error" id="pw-error"></div>
     <div class="pw-btns">
       <button class="pw-btn pw-cancel" onclick="closePW()">ยกเลิก</button>
@@ -407,14 +380,14 @@ select.f-in{cursor:pointer}
 
 <script>
 // ════════════════════════════════════════
-// CONFIG — แก้ 2 บรรทัดนี้เท่านั้น
+// CONFIG — แก้ลิงก์ Web App ตรงนี้แก
 // ════════════════════════════════════════
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzscde5obYfNW29k2hZTREmUQ6-ofnMZ7EiGXWYC7ikqB-TrjBMU_JhvMzd-wQAvFsY/exec";
 const LIFF_ID     = "2010125903-hSMEChl3";
 const ADMIN_PW    = "admin";
 
 // ════════════════════════════════════════
-// STATE
+// MASTER GLOBAL STATE
 // ════════════════════════════════════════
 let tasks = [], people = [], collections = [], projects = [];
 let briefs = { CC: null, BT: null, TR: null };
@@ -422,15 +395,13 @@ let currentEntity = 'CC';
 let currentColl = null, currentPlatform = 'ig';
 let isAdmin = false;
 
-// FALLBACK DATA (ใช้ถ้า Sheet โหลดไม่ได้)
+// FALLBACK RECOVERY SEED DATA
 const SEED_TASKS = [
   {id:'T-001',name:'เช็ค status โรงงาน collection A',project:'Collection A',person:'พี่อาร์ม',entity:'TR',due:'2026-05-18',status:'todo',updated:Date.now()},
   {id:'T-002',name:'ส่ง rough cut คลิป collection A',project:'Collection A',person:'พี่เฟียน',entity:'TR',due:'2026-05-20',status:'inprogress',updated:Date.now()},
   {id:'T-003',name:'QC เสื้อตัวอย่างทุก SKU',project:'Collection A',person:'พี่คิวซี',entity:'TR',due:'2026-05-19',status:'inprogress',updated:Date.now()},
   {id:'T-004',name:'ตัดคลิป fashion Collection B',project:'Collection B',person:'พี่พีท',entity:'TR',due:'2026-05-21',status:'todo',updated:Date.now()},
-  {id:'T-005',name:'ประสาน location จันทบุรี',project:'จันทบุรี',person:'พี่จิน',entity:'CC',due:'2026-05-18',status:'done',updated:Date.now()},
-  {id:'T-006',name:'วางแผนถ่ายจันทบุรี 20-22 พ.ค.',project:'จันทบุรี',person:'ถั่ว',entity:'CC',due:'2026-05-18',status:'inprogress',updated:Date.now()},
-  {id:'T-007',name:'จองตั๋วเชียงใหม่',project:'Marketing',person:'พี่อาร์ม',entity:'CC',due:'2026-05-19',status:'blocked',updated:Date.now()},
+  {id:'T-005',name:'ประสาน location จันทบุรี',project:'จันทบุรี',person:'พี่จิน',entity:'CC',due:'2026-05-18',status:'done',updated:Date.now()}
 ];
 const SEED_PEOPLE = [
   {name:'ถั่ว',av:'ถ',role:'admin'},
@@ -438,17 +409,15 @@ const SEED_PEOPLE = [
   {name:'พี่จิน',av:'จ',role:'team'},
   {name:'พี่เฟียน',av:'ฟ',role:'team'},
   {name:'พี่พีท',av:'พ',role:'team'},
-  {name:'พี่คิวซี',av:'ค',role:'team'},
+  {name:'พี่คิวซี',av:'ค',role:'team'}
 ];
 const SEED_COLLECTIONS = [
-  {id:'col-a',name:'Collection A',sub:'Thai Mart · TR',emoji:'👗',status:'Pending Proof',platforms:'IG+Shopee',copyIG:'✨ NEW COLLECTION A ✨\n\n#ThaiMart #Collection2026 #แฟชั่นไทย',copyShopee:'Collection A — ผ้าคุณภาพสูง ทรงสวย ✅',icloudLink:'#',nasLink:'#'},
-  {id:'col-b',name:'Collection B',sub:'รอ brief ครั้งถัดไป',emoji:'✂️',status:'Draft',platforms:'IG',copyIG:'ยังไม่มี copywriting',copyShopee:'',icloudLink:'#',nasLink:'#'},
-  {id:'chan',name:'ถ่ายจันทบุรี',sub:'20–22 พ.ค. 2026',emoji:'📸',status:'Draft',platforms:'IG',copyIG:'Behind the scenes จันทบุรี 📸\n#BehindTheScenes #จันทบุรี',copyShopee:'',icloudLink:'#',nasLink:'#'},
+  {id:'col-a',name:'Collection A',sub:'Thai Mart · TR',emoji:'👗',status:'Pending Proof',platforms:'IG+Shopee',copyIG:'✨ NEW COLLECTION A ✨',copyShopee:'Collection A — ผ้าคุณภาพสูง',icloudLink:'#',nasLink:'#'}
 ];
 const SEED_PROJECTS = ['Collection A','Collection B','Collection C','จันทบุรี','Marketing','Boonta Gallery Session','อื่นๆ'];
 
 // ════════════════════════════════════════
-// LOAD DATA FROM SHEET
+// FLOW CONNECTIONS
 // ════════════════════════════════════════
 function loadData() {
   if (!WEB_APP_URL || WEB_APP_URL.includes('YOUR_')) {
@@ -457,7 +426,6 @@ function loadData() {
   fetch(WEB_APP_URL + '?action=all')
     .then(r => r.json())
     .then(data => {
-      // tasks
       if (data.tasks?.length) {
         tasks = data.tasks.map(t => ({
           id:      t.id,
@@ -471,7 +439,6 @@ function loadData() {
         }));
       } else tasks = SEED_TASKS;
 
-      // people
       if (data.people?.length) {
         people = data.people.map(p => ({
           name: p.name || p.id,
@@ -480,9 +447,7 @@ function loadData() {
         }));
       } else people = SEED_PEOPLE;
 
-      // collections — ดึงจาก Sheet แล้วจัดกลุ่ม
       if (data.collections?.length) {
-        // จัดกลุ่มตาม collection name
         const grouped = {};
         data.collections.forEach(c => {
           const key = c.collection || c.name;
@@ -504,16 +469,14 @@ function loadData() {
         collections = Object.values(grouped);
       } else collections = SEED_COLLECTIONS;
 
-      // projects
       if (data.projects?.length) {
         projects = [...new Set(data.projects.map(p => p.name).filter(Boolean))];
       } else projects = SEED_PROJECTS;
 
-      // briefs แยกตาม entity
       if (data.briefs) { briefs = data.briefs; renderBriefFromSheet(briefs[currentEntity]); }
 
       renderAll();
-      showToast('📊 โหลดข้อมูลจาก Sheet แล้ว');
+      showToast('📊 โหลดข้อมูลจาก Sheet แล้วแก');
     })
     .catch(err => {
       console.error('Sheet load failed:', err);
@@ -522,13 +485,12 @@ function loadData() {
 }
 
 function useSeedData() {
-  tasks = SEED_TASKS; people = SEED_PEOPLE;
-  collections = SEED_COLLECTIONS; projects = SEED_PROJECTS;
+  tasks = SEED_TASKS; people = SEED_PEOPLE; collections = SEED_COLLECTIONS; projects = SEED_PROJECTS;
   renderAll();
 }
 
 // ════════════════════════════════════════
-// DATE UTILS
+// ENGINE RUNNERS & LOGICS
 // ════════════════════════════════════════
 const TODAY = new Date();
 const TSTR  = TODAY.toISOString().slice(0,10);
@@ -536,20 +498,14 @@ const DAYS  = ['อา','จ','อ','พ','พฤ','ศ','ส'];
 const MONTHS= ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 
 function getWeek(){
-  const d=[], m=new Date(TODAY), dow=m.getDay(), diff=dow===0?-6:1-dow;
-  m.setDate(m.getDate()+diff);
-  for(let i=0;i<5;i++){const x=new Date(m);x.setDate(m.getDate()+i);d.push(x);}
-  return d;
+  const d=[], m=new Date(TODAY), dow=m.getDay(), diff=dow===0?-6:1-dow; m.setDate(m.getDate()+diff);
+  for(let i=0;i<5;i++){const x=new Date(m);x.setDate(m.getDate()+i);d.push(x);} return d;
 }
 const WEEK = getWeek();
 function fmt(s){if(!s)return'';const d=new Date(s+'T00:00:00');return d.toLocaleDateString('th-TH',{day:'numeric',month:'short'});}
-function fmtRel(ts){const d=Date.now()-ts;if(d<60000)return'เมื่อกี้';if(d<3600000)return`${Math.floor(d/60000)} นาที`;if(d<86400000)return`${Math.floor(d/3600000)} ชม.`;return`${Math.floor(d/86400000)} วัน`;}
 function isOver(t){return t.status!=='done' && t.due && t.due < TSTR;}
 function filtered(){return tasks;}
 
-// ════════════════════════════════════════
-// NAVIGATION
-// ════════════════════════════════════════
 function goTab(name, title, eyebrow, el) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
@@ -557,120 +513,45 @@ function goTab(name, title, eyebrow, el) {
   el.classList.add('active');
   document.getElementById('page-title').textContent = title;
   document.getElementById('page-eyebrow').textContent = eyebrow;
-  document.getElementById('scroll').scrollTop = 0;
   if(name==='collections') renderCollections();
   if(name==='more'){renderTimeline();renderTeam();}
 }
-
-function goToPageFromURL() {
-  const params = new URLSearchParams(window.location.search);
-  const page = params.get('page');
-  const tabs = document.querySelectorAll('.tab-item');
-  const map = {
-    'boss':        [0,'สรุปงาน','OPS Dashboard'],
-    'tasks':       [1,'งานล่าสุด','Tasks'],
-    'collections': [2,'Collections','Collections'],
-    'more':        [3,'Timeline · ทีม','More'],
-  };
-  if(page && map[page]) {
-    const [idx,title,eyebrow] = map[page];
-    goTab(page,title,eyebrow,tabs[idx]);
-  }
-  if(page==='add') openAddSheet();
-}
-
-// swipe
-let _sx=0;
-document.getElementById('scroll').addEventListener('touchstart',e=>{_sx=e.touches[0].clientX;},{passive:true});
-document.getElementById('scroll').addEventListener('touchend',e=>{
-  const dx=e.changedTouches[0].clientX-_sx; if(Math.abs(dx)<60)return;
-  const pages=['boss','tasks','collections','more'];
-  const cur=pages.findIndex(p=>document.getElementById('page-'+p).classList.contains('active'));
-  const nxt=dx<0?Math.min(cur+1,3):Math.max(cur-1,0);
-  if(nxt!==cur){const tabs=document.querySelectorAll('.tab-item');const titles=['สรุปงาน','งานล่าสุด','Collections','Timeline · ทีม'];const eyebrows=['OPS Dashboard','Tasks','Collections','More'];goTab(pages[nxt],titles[nxt],eyebrows[nxt],tabs[nxt]);}
-},{passive:true});
-
-// ════════════════════════════════════════
-// ENTITY
-// ════════════════════════════════════════
-const EC = {
-  CC:{av:'#0A0A0A',avBg:'#F0F0F0'},
-  BT:{av:'#B8860B',avBg:'#1A3328'},
-  TR:{av:'#FFD600',avBg:'#C2185B'},
-};
-const PI = {'Collection A':'👗','Collection B':'✂️','Collection C':'🎨','จันทบุรี':'📸','Marketing':'📣','Boonta Gallery Session':'🪟','อื่นๆ':'📎'};
-const PC = {'Collection A':'rgba(233,30,140,.08)','Collection B':'rgba(156,39,176,.08)','Collection C':'rgba(0,188,212,.08)','จันทบุรี':'rgba(52,199,89,.08)','Marketing':'rgba(255,149,0,.08)','Boonta Gallery Session':'rgba(184,134,11,.08)','อื่นๆ':'rgba(0,0,0,.04)'};
 
 function setEntity(e) {
   currentEntity = e;
   document.body.className = e.toLowerCase();
   document.querySelectorAll('.ent-btn').forEach(b=>b.classList.toggle('active',b.dataset.e===e));
-  // อัพเดท brief ตาม entity
   if (briefs[e]) renderBriefFromSheet(briefs[e]);
   renderAll();
 }
 
-// ════════════════════════════════════════
-// RENDER
-// ════════════════════════════════════════
-function renderAll() {
-  renderBoss();
-  renderTasks();
-  updateFormSelects();
-  // brief date (เฉพาะวันที่ — content มาจาก Sheet)
-  if (!document.getElementById('brief-date').dataset.fromSheet) {
-    document.getElementById('brief-date').textContent = `${DAYS[TODAY.getDay()]} ${TODAY.getDate()} ${MONTHS[TODAY.getMonth()]}`;
-  }
-}
-
-
-// ── BRIEF FROM SHEET ─────────────────────────────────
 function renderBriefFromSheet(brief) {
   const briefCard = document.querySelector('.brief-card');
-  if (!brief || (!brief.need && !brief.tasks && !brief.warn && !brief.Need && !brief.Tasks)) {
-    // ซ่อน brief card ถ้าไม่มีข้อมูล
-    if (briefCard) briefCard.style.display = 'none';
-    return;
-  }
+  if (!brief || (!brief.need && !brief.tasks && !brief.warn)) { if (briefCard) briefCard.style.display = 'none'; return; }
   if (briefCard) briefCard.style.display = '';
-  // reset date fromSheet flag เมื่อเปลี่ยน entity
   document.getElementById('brief-date').dataset.fromSheet = '';
-  const dateEl  = document.getElementById('brief-date');
-  const needEl  = document.getElementById('brief-need');
-  const tasksEl = document.getElementById('brief-tasks');
-  const warnEl  = document.getElementById('brief-warn');
-
-  // รองรับทั้ง key-value format และ column format
-  const date  = brief.date  || brief.Date  || '';
-  const need  = brief.need  || brief.Need  || '';
-  const tasks = brief.tasks || brief.Tasks || '';
-  const warn  = brief.warn  || brief.Warn  || '';
-
-  if (date)  { dateEl.textContent = date; dateEl.dataset.fromSheet = '1'; }
-  if (need)  needEl.textContent = need;
-  if (warn)  warnEl.textContent = warn;
-  if (tasks) {
-    const lines = tasks.split(/[·\n\r,]/).map(t=>t.trim()).filter(Boolean);
-    tasksEl.innerHTML = '<ul style="padding-left:16px;line-height:2">' +
-      lines.map(t=>`<li>${t}</li>`).join('') + '</ul>';
+  const dateEl=document.getElementById('brief-date'), needEl=document.getElementById('brief-need'), tasksEl=document.getElementById('brief-tasks'), warnEl=document.getElementById('brief-warn');
+  if (brief.date) { dateEl.textContent = brief.date; dateEl.dataset.fromSheet = '1'; }
+  if (brief.need) needEl.textContent = brief.need;
+  if (brief.warn) warnEl.textContent = brief.warn;
+  if (brief.tasks) {
+    const lines = brief.tasks.split(/[·\n\r,]/).map(t=>t.trim()).filter(Boolean);
+    tasksEl.innerHTML = '<ul style="padding-left:16px;line-height:2">' + lines.map(t=>`<li>${t}</li>`).join('') + '</ul>';
   }
 }
+
+function renderAll() { renderBoss(); renderTasks(); updateFormSelects(); }
 
 function renderBoss() {
   const ft = filtered();
-  const done  = ft.filter(t=>t.status==='done').length;
-  const doing = ft.filter(t=>t.status==='inprogress').length;
-  const stuck = ft.filter(t=>t.status==='blocked'||isOver(t)).length;
+  const done = ft.filter(t=>t.status==='done').length, doing = ft.filter(t=>t.status==='inprogress').length, stuck = ft.filter(t=>t.status==='blocked'||isOver(t)).length;
   document.getElementById('s-total').textContent = ft.length;
   document.getElementById('s-done').textContent  = done;
   document.getElementById('s-doing').textContent = doing;
   document.getElementById('s-stuck').textContent = stuck;
   const urgents = ft.filter(t=>t.status==='blocked'||isOver(t));
   document.getElementById('urgent-zone').innerHTML = urgents.length===0?'':
-    `<div class="alert-box"><span style="font-size:18px;flex-shrink:0">🚨</span><div>
-      <div class="alert-title">ต้องติดตามด่วน (${urgents.length})</div>
-      ${urgents.map(t=>`<div class="alert-body">· ${t.name} — <strong>${t.person}</strong></div>`).join('')}
-    </div></div>`;
+    `<div class="alert-box"><span style="font-size:18px;flex-shrink:0">🚨</span><div><div class="alert-title">ต้องติดตามด่วน (${urgents.length})</div>${urgents.map(t=>`<div class="alert-body">· ${t.name} — <strong>${t.person}</strong></div>`).join('')}</div></div>`;
 }
 
 function renderTasks() {
@@ -680,49 +561,16 @@ function renderTasks() {
     ?`<div class="empty"><span class="empty-icon">🎉</span><span class="empty-text">ไม่มีงานค้าง</span></div>`
     :ft.map(t=>{
       const over=isOver(t), si=over?{cls:'sb-blocked',l:'เกิน'}:SI[t.status]||SI.todo;
-      return`<div class="task-row" style="cursor:default">
-        <div class="task-icon" style="background:${PC[t.project]||'rgba(0,0,0,.04)'}">${PI[t.project]||'📎'}</div>
-        <div class="task-main">
-          <div class="task-name">${t.name}</div>
-          <div class="task-sub">${t.person} · ${t.project}</div>
-        </div>
-        <div class="task-right">
-          <div class="task-due ${over?'over':''}">${fmt(t.due)}</div>
-          <div class="sbadge ${si.cls}">${si.l}</div>
-        </div>
-      </div>`;
+      return`<div class="task-row"><div class="task-icon" style="background:${PC[t.project]||'rgba(0,0,0,.04)'}">${PI[t.project]||'📎'}</div><div class="task-main"><div class="task-name">${t.name}</div><div class="task-sub">${t.person} · ${t.project}</div></div><div class="task-right"><div class="task-due ${over?'over':''}">${fmt(t.due)}</div><div class="sbadge ${si.cls}">${si.l}</div></div></div>`;
     }).join('');
 }
-
-// ทีมดูอย่างเดียว — ถั่วอัพเดทใน Sheet โดยตรง
-function cycleStatus(id) {
-  showToast('📊 อัพเดทสถานะใน Google Sheet ได้เลย');
-}
-
-// ── COLLECTIONS ──────────────────────────────────────
-const STATUS_DOT = {'Approved':'#34C759','Pending Proof':'#FF9500','Published 🚀':'#007AFF','Draft':'#AEAEB2','blocked':'#FF3B30'};
 
 function renderCollections() {
   if(!collections.length){document.getElementById('coll-grid').innerHTML='<div class="loading"><div class="loading-spinner"></div></div>';return;}
   document.getElementById('coll-grid').innerHTML = collections.map(c=>`
-    <div class="coll-card" onclick="openDetail('${c.id}')">
-      <div class="coll-thumb" style="background:var(--a-soft)">
-        <span style="font-size:38px">${c.emoji||'👗'}</span>
-        <div class="coll-pip" style="background:${STATUS_DOT[c.status]||'#AEAEB2'}"></div>
-      </div>
-      <div class="coll-info">
-        <div class="coll-name">${c.name}</div>
-        <div class="coll-sub">${c.sub||c.status}</div>
-        <div class="coll-tags">
-          ${(c.platforms||'IG').split('+').map(p=>
-            `<div class="coll-tag" style="background:var(--a-soft);border:1px solid var(--a-line);color:var(--a-mid)">${p.trim()}</div>`
-          ).join('')}
-        </div>
-      </div>
-    </div>`).join('');
+    <div class="coll-card" onclick="openDetail('${c.id}')"><div class="coll-thumb" style="background:var(--a-soft)"><span style="font-size:38px">${c.emoji||'👗'}</span><div class="coll-pip" style="background:${STATUS_DOT[c.status]||'#AEAEB2'}"></div></div><div class="coll-info"><div class="coll-name">${c.name}</div><div class="coll-sub">${c.sub||c.status}</div><div class="coll-tags">${(c.platforms||'IG').split('+').map(p=>`<div class="coll-tag" style="background:var(--a-soft);border:1px solid var(--a-line);color:var(--a-mid)">${p.trim()}</div>`).join('')}</div></div></div>`).join('');
 }
 
-// ── DETAIL ───────────────────────────────────────────
 function openDetail(id) {
   currentColl = collections.find(c=>c.id===id); if(!currentColl)return;
   currentPlatform = 'ig';
@@ -739,187 +587,84 @@ function renderCarousel() {
   const inner=document.getElementById('carousel-inner'), dots=document.getElementById('carousel-dots');
   inner.innerHTML=''; dots.innerHTML='';
   for(let i=0;i<3;i++){
-    const slide=document.createElement('div'); slide.className='carousel-slide';
-    slide.innerHTML=`<div class="carousel-placeholder"><div class="carousel-placeholder-icon">${currentColl.emoji||'👗'}</div><div class="carousel-placeholder-text">รูปที่ ${i+1}</div></div>`;
-    inner.appendChild(slide);
+    const slide=document.createElement('div'); slide.className='carousel-slide'; slide.innerHTML=`<div class="carousel-placeholder"><div class="carousel-placeholder-icon">${currentColl.emoji||'👗'}</div><div class="carousel-placeholder-text">รูปที่ ${i+1}</div></div>`; inner.appendChild(slide);
     const dot=document.createElement('div'); dot.className='cdot'+(i===0?' active':''); dots.appendChild(dot);
   }
-  inner.addEventListener('scroll',()=>{
-    const idx=Math.round(inner.scrollLeft/inner.offsetWidth);
-    document.querySelectorAll('.cdot').forEach((d,i)=>d.classList.toggle('active',i===idx));
-  },{passive:true});
 }
 
-function setPlatform(p,el) {
-  currentPlatform=p;
-  document.querySelectorAll('.plat-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  renderPlatformPreview(); renderCopy();
-}
+function setPlatform(p,el) { currentPlatform=p; document.querySelectorAll('.plat-btn').forEach(b=>b.classList.remove('active')); el.classList.add('active'); renderPlatformPreview(); renderCopy(); }
 
 function renderPlatformPreview() {
-  const c=currentColl, el=document.getElementById('plat-preview');
-  const thumb=`<div style="width:100%;aspect-ratio:1;background:var(--a-soft);display:flex;align-items:center;justify-content:center;font-size:64px">${c.emoji||'👗'}</div>`;
+  const c=currentColl, el=document.getElementById('plat-preview'), thumb=`<div style="width:100%;aspect-ratio:1;background:var(--a-soft);display:flex;align-items:center;justify-content:center;font-size:64px">${c.emoji||'👗'}</div>`;
   if(currentPlatform==='ig'){
-    el.innerHTML=`<div class="plat-frame">
-      <div class="ig-hdr"><div class="ig-av">T</div><div class="ig-name">truly_official</div><div class="ig-more">···</div></div>
-      ${thumb}<div class="ig-actions">❤️ 💬 ✈️</div>
-      <div class="ig-caption"><strong>truly_official</strong> ${(c.copyIG||'').slice(0,80)}...</div>
-    </div>`;
+    el.innerHTML=`<div class="plat-frame"><div class="ig-hdr"><div class="ig-av">T</div><div class="ig-name">truly_official</div><div class="ig-more">···</div></div>${thumb}<div class="ig-actions">❤️ 💬 ✈️</div><div class="ig-caption"><strong>truly_official</strong> ${(c.copyIG||'').slice(0,80)}...</div></div>`;
   } else {
-    el.innerHTML=`<div class="plat-frame">
-      <div class="shopee-hdr"><div class="shopee-logo">Shopee</div></div>
-      ${thumb}
-      <div class="shopee-body">
-        <div class="shopee-name">${c.name}</div>
-        <div class="shopee-price">฿XXX</div>
-        <div class="shopee-desc">${(c.copyShopee||'').slice(0,120)}</div>
-      </div>
-    </div>`;
+    el.innerHTML=`<div class="plat-frame"><div class="shopee-hdr"><div class="shopee-logo">Shopee</div></div>${thumb}<div class="shopee-body"><div class="shopee-name">${c.name}</div><div class="shopee-price">฿XXX</div><div class="shopee-desc">${(c.copyShopee||'').slice(0,120)}</div></div></div>`;
   }
 }
 
 function renderCopy() {
-  const c=currentColl;
-  const text=currentPlatform==='ig'?(c.copyIG||'ยังไม่มี copywriting'):(c.copyShopee||'ยังไม่มี copywriting');
-  document.getElementById('copy-lbl').textContent=currentPlatform==='ig'?'IG Caption':'Shopee Description';
-  document.getElementById('copy-text').textContent=text;
+  const c=currentColl, text=currentPlatform==='ig'?(c.copyIG||'ยังไม่มี copywriting'):(c.copyShopee||'ยังไม่มี copywriting');
+  document.getElementById('copy-lbl').textContent=currentPlatform==='ig'?'IG Caption':'Shopee Description'; document.getElementById('copy-text').textContent=text;
 }
+function copyCopy(){ navigator.clipboard.writeText(document.getElementById('copy-text').textContent).then(()=>showToast('📋 Copy แล้ว!')); }
 
-function copyCopy(){
-  navigator.clipboard.writeText(document.getElementById('copy-text').textContent)
-    .then(()=>showToast('📋 Copy แล้ว!'));
-}
-
-function approveCollection(){if(currentColl){currentColl.status='Approved';showToast('✅ Approved! โพสได้เลย');closeDetail();renderCollections();}}
-function reviseCollection(){if(currentColl){currentColl.status='Draft';showToast('✏️ ส่งกลับให้แก้ไข');closeDetail();renderCollections();}}
-
-// ── TIMELINE ─────────────────────────────────────────
 function renderTimeline() {
-  document.getElementById('tl-hdr').innerHTML = `<div></div>` + WEEK.map(d=>`
-    <div class="tl-day ${d.toISOString().slice(0,10)===TSTR?'today':''}">
-      ${DAYS[d.getDay()]}<br><strong>${d.getDate()}</strong>
-    </div>`).join('');
+  document.getElementById('tl-hdr').innerHTML = `<div></div>` + WEEK.map(d=>`<div class="tl-day ${d.toISOString().slice(0,10)===TSTR?'today':''}">${DAYS[d.getDay()]}<br><strong>${d.getDate()}</strong></div>`).join('');
   const projs=[...new Set(filtered().map(t=>t.project))];
   document.getElementById('tl-body').innerHTML = projs.map(proj=>{
-    const pt=filtered().filter(t=>t.project===proj);
-    const done=pt.filter(t=>t.status==='done').length;
+    const pt=filtered().filter(t=>t.project===proj), done=pt.filter(t=>t.status==='done').length;
     const cells=WEEK.map(day=>{
-      const ds=day.toISOString().slice(0,10), match=pt.filter(t=>t.due===ds);
-      if(!match.length)return`<div class="tl-cell"></div>`;
-      const t=match[0];
-      const cls=t.status==='done'?'done':isOver(t)||t.status==='blocked'?'stuck':'has-task';
+      const ds=day.toISOString().slice(0,10), match=pt.filter(t=>t.due===ds); if(!match.length)return`<div class="tl-cell"></div>`;
+      const t=match[0], cls=t.status==='done'?'done':isOver(t)||t.status==='blocked'?'stuck':'has-task';
       return`<div class="tl-cell ${cls}" style="display:flex;align-items:center;justify-content:center"><div class="tl-cell-lbl">${t.name.slice(0,6)}</div></div>`;
     }).join('');
-    return`<div class="tl-proj-row">
-      <div><div class="tl-proj-name">${proj}</div><div style="font-size:10px;opacity:.35;font-family:'DM Mono',monospace">${done}/${pt.length}</div></div>
-      ${cells}
-    </div><div class="tl-sep" style="display:block;grid-column:unset;margin:2px 0"></div>`;
+    return`<div class="tl-proj-row"><div><div class="tl-proj-name">${proj}</div><div style="font-size:10px;opacity:.35;font-family:'DM Mono',monospace">${done}/${pt.length}</div></div>${cells}</div><div class="tl-sep" style="display:block;grid-column:unset;margin:2px 0"></div>`;
   }).join('');
 }
 
-// ── TEAM ─────────────────────────────────────────────
 function renderTeam() {
   const ec=EC[currentEntity]||EC.CC;
   document.getElementById('team-list').innerHTML = people.map(p=>{
-    const pt=filtered().filter(t=>t.person===p.name);
-    const done=pt.filter(t=>t.status==='done').length;
-    const pct=pt.length?Math.round(done/pt.length*100):0;
-    const stuck=pt.filter(t=>t.status==='blocked'||isOver(t)).length;
+    const pt=filtered().filter(t=>t.person===p.name), done=pt.filter(t=>t.status==='done').length, pct=pt.length?Math.round(done/pt.length*100):0, stuck=pt.filter(t=>t.status==='blocked'||isOver(t)).length;
     const barColor=stuck>0?'var(--g-red)':pct===100&&pt.length>0?'var(--g-green)':'var(--a-acc)';
-    const rows=pt.length===0
-      ?`<div class="pt-row" style="opacity:.3;font-size:12px">ไม่มีงาน</div>`
-      :pt.map(t=>{
+    const rows=pt.length===0?`<div class="pt-row" style="opacity:.3;font-size:12px">ไม่มีงาน</div>`:pt.map(t=>{
         const dot=t.status==='done'?'var(--g-green)':isOver(t)||t.status==='blocked'?'var(--g-red)':t.status==='inprogress'?'var(--g-orange)':'#C7C7CC';
         const si={done:'sb-done',inprogress:'sb-inprogress',todo:'sb-todo',blocked:'sb-blocked'}[t.status]||'sb-todo';
         const sl={done:'เสร็จ',inprogress:'กำลังทำ',todo:'รอทำ',blocked:'ติดปัญหา'}[t.status]||'รอทำ';
-        return`<div class="pt-row">
-          <div class="pt-dot" style="background:${dot}"></div>
-          <div class="pt-name">${t.name}</div>
-          <div class="pt-badge sbadge ${si}">${sl}</div>
-        </div>`;
+        return`<div class="pt-row"><div class="pt-dot" style="background:${dot}"></div><div class="pt-name">${t.name}</div><div class="pt-badge sbadge ${si}">${sl}</div></div>`;
       }).join('');
-    return`<div class="person-block">
-      <div class="person-hdr" onclick="togglePerson('${p.name}')">
-        <div class="person-av" style="background:${ec.avBg};color:${ec.av}">${p.av||p.name.slice(0,1)}</div>
-        <div class="person-info"><div class="person-name">${p.name}</div><div class="person-role">${p.role==='admin'?'Operate Lead':'ทีมงาน'}</div></div>
-        <div class="person-prog">
-          <div class="prog-txt">${done}/${pt.length}</div>
-          <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${pct}%;background:${barColor}"></div></div>
-        </div>
-      </div>
-      <div class="person-tasks-wrap" id="pt-${p.name}">${rows}</div>
-    </div>`;
+    return`<div class="person-block"><div class="person-hdr" onclick="togglePerson('${p.name}')"><div class="person-av" style="background:${ec.avBg};color:${ec.av}">${p.av||p.name.slice(0,1)}</div><div class="person-info"><div class="person-name">${p.name}</div><div class="person-role">${p.role==='admin'?'Operate Lead':'ทีมงาน'}</div></div><div class="person-right"><div class="prog-txt">${done}/${pt.length}</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${pct}%;background:${barColor}"></div></div></div></div><div class="person-tasks-wrap" id="pt-${p.name}">${rows}</div></div>`;
   }).join('');
 }
 function togglePerson(name){document.getElementById('pt-'+name).classList.toggle('open');}
+function updateFormSelects() {}
 
-// ── FORM SELECTS ─────────────────────────────────────
-function updateFormSelects() {
-  const fp=document.getElementById('fp'), fper=document.getElementById('fper');
-  if(fp) fp.innerHTML=projects.map(p=>`<option value="${p}">${p}</option>`).join('');
-  if(fper) fper.innerHTML=people.map(p=>`<option value="${p.name}">${p.name}</option>`).join('');
-}
-
-// ── SHEET ─────────────────────────────────────────────
-// เปิด Google Sheet โดยตรง (Admin only)
+// ── REDIRECT TO GOOGLE SHEETS FOR WORK ──
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/1DvHaLrMzl6h120Acl90PRtUhU6MktwUuTRaDXtPrOUo/edit";
 
 function openSheetAdmin() {
-  if (!isAdmin) {
-    showPasswordModal(() => {
-      window.open(SHEET_URL, '_blank');
-    });
-    return;
-  }
+  if (!isAdmin) { showPasswordModal(() => { window.open(SHEET_URL, '_blank'); }); return; }
   window.open(SHEET_URL, '_blank');
 }
 
-function closeSheet(){} // legacy compat
-
-// ── PASSWORD ──────────────────────────────────────────
-let _pwCallback = null;
-function showPasswordModal(cb) {
-  _pwCallback=cb||null;
-  document.getElementById('pw-overlay').classList.add('show');
-  document.getElementById('pw-input').value='';
-  document.getElementById('pw-error').textContent='';
-  setTimeout(()=>document.getElementById('pw-input').focus(),100);
-}
+function showPasswordModal(cb) { _pwCallback=cb||null; document.getElementById('pw-overlay').classList.add('show'); document.getElementById('pw-input').value=''; document.getElementById('pw-error').textContent=''; setTimeout(()=>document.getElementById('pw-input').focus(),100); }
 function closePW(){document.getElementById('pw-overlay').classList.remove('show');}
 function confirmPW(){
   const v=document.getElementById('pw-input').value;
-  if(v===ADMIN_PW){
-    isAdmin=true; closePW(); showToast('🔓 Admin mode เปิดแล้ว');
-    if(_pwCallback)_pwCallback();
-  } else {
-    const inp=document.getElementById('pw-input');
-    inp.classList.add('shake'); document.getElementById('pw-error').textContent='รหัสไม่ถูกต้อง 🔒';
-    inp.value=''; setTimeout(()=>{inp.classList.remove('shake');inp.focus();},400);
-  }
+  if(v===ADMIN_PW){ isAdmin=true; closePW(); showToast('🔓 Admin mode เปิดแล้วแก'); if(_pwCallback)_pwCallback(); } 
+  else { const inp=document.getElementById('pw-input'); inp.className='pw-input shake'; document.getElementById('pw-error').textContent='รหัสไม่ถูกต้อง 🔒'; inp.value=''; setTimeout(()=>{inp.className='pw-input';inp.focus();},400); }
 }
-document.getElementById('pw-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('pw-overlay'))closePW();});
 
-// ── TOAST ─────────────────────────────────────────────
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2500);}
 
-// ════════════════════════════════════════
-// INIT
-// ════════════════════════════════════════
-// LIFF init
+// RUN DIRECT INTERFACE
 liff.init({liffId:LIFF_ID})
-  .then(()=>{console.log('LIFF ok');})
-  .catch(err=>console.log('LIFF failed (ok on browser):', err));
+  .then(()=>{console.log('LIFF Connected');})
+  .catch(err=>console.log('Browser Sandbox Enabled:', err));
 
-// ปิด detail screen ตอนเริ่ม
 closeDetail();
-// โหลดข้อมูล
 loadData();
-
-// อ่าน URL params
-goToPageFromURL();
 </script>
-
-<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </body>
 </html>
