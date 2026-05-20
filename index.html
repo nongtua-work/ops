@@ -45,7 +45,7 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 .ent-btn:active{opacity:.7}
 
 /* ── SCROLL ── */
-.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:80px}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))}
 .scroll::-webkit-scrollbar{display:none}
 
 /* ── PAGES ── */
@@ -136,7 +136,7 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 .pt-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px}
 
 /* ── BOTTOM TABS ── */
-.tabbar{position:absolute;bottom:0;left:0;right:0;background:var(--a-bg);border-top:1px solid var(--a-line);display:grid;grid-template-columns:repeat(2,1fr) 56px repeat(2,1fr);padding-bottom:env(safe-area-inset-bottom,8px);z-index:100;transition:background .3s,border-color .3s;align-items:center}
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--a-bg);border-top:1px solid var(--a-line);display:grid;grid-template-columns:repeat(2,1fr) 56px repeat(2,1fr);padding-bottom:env(safe-area-inset-bottom,8px);z-index:100;transition:background .3s,border-color .3s;align-items:center}
 .tab-add{display:flex;align-items:center;justify-content:center;padding:4px 0;border:none;background:none;cursor:pointer}
 .tab-icon-add{width:40px;height:40px;border-radius:50%;background:var(--a-ink);color:var(--a-bg);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:300;transition:background .3s,color .3s;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .tab-add:active .tab-icon-add{opacity:.7}
@@ -147,8 +147,8 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 .tab-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
 
 /* ── DETAIL SCREEN ── */
-.detail-screen{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--a-bg);z-index:200;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);visibility:hidden;pointer-events:none}
-.detail-screen.open{transform:none;visibility:visible;pointer-events:auto}
+.detail-screen{position:fixed;top:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:480px;height:100%;background:var(--a-bg);z-index:200;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);visibility:hidden;pointer-events:none}
+.detail-screen.open{transform:translateX(-50%) translateY(0);visibility:visible;pointer-events:auto}
 .detail-nav{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--a-line)}
 .detail-back{background:none;border:none;color:var(--a-acc);font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:'DM Sans',sans-serif;padding:0}
 .detail-title{font-size:17px;font-weight:700}
@@ -209,7 +209,7 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 .btn-revise{background:var(--a-soft);color:var(--a-ink);border:1.5px solid var(--a-line)}
 
 /* ── ADD SHEET ── */
-.sheet-ovl{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:300;display:none;align-items:flex-end;justify-content:center}
+.sheet-ovl{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;display:none;align-items:flex-end;justify-content:center}
 .sheet-ovl.open{display:flex}
 .sheet{width:100%;background:var(--a-bg);border-radius:20px 20px 0 0;padding:0 0 calc(20px + env(safe-area-inset-bottom,0px));animation:shup .3s cubic-bezier(.32,.72,0,1);max-height:90vh;overflow-y:auto;transition:background .3s}
 @keyframes shup{from{transform:translateY(100%)}to{transform:none}}
@@ -227,7 +227,7 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 select.f-in{cursor:pointer}
 
 /* ── PASSWORD MODAL ── */
-.pw-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:400;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.pw-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 .pw-overlay.show{display:flex}
 .pw-box{background:#1C1C1E;border-radius:18px;padding:28px 24px;width:280px;animation:popIn .2s cubic-bezier(.34,1.56,.64,1)}
 @keyframes popIn{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
