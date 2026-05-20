@@ -27,7 +27,7 @@ body.tr{--a-bg:var(--tr-bg);--a-ink:var(--tr-ink);--a-mid:var(--tr-mid);--a-soft
 
 body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;transition:background .3s,color .3s}
 
-.app{max-width:480px;margin:0 auto;height:100vh;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.app{max-width:480px;margin:0 auto;height:100vh;display:flex;flex-direction:column;position:relative;overflow:hidden;isolation:isolate}
 
 /* ── HEADER ── */
 .header{flex-shrink:0;padding:16px 16px 0;background:var(--a-bg);border-bottom:1px solid var(--a-line);transition:background .3s,border-color .3s}
@@ -147,8 +147,8 @@ body{background:var(--a-bg);color:var(--a-ink);font-family:'DM Sans',sans-serif;
 .tab-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
 
 /* ── DETAIL SCREEN ── */
-.detail-screen{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--a-bg);z-index:200;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
-.detail-screen.open{transform:none}
+.detail-screen{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--a-bg);z-index:200;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);visibility:hidden;pointer-events:none}
+.detail-screen.open{transform:none;visibility:visible;pointer-events:auto}
 .detail-nav{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--a-line)}
 .detail-back{background:none;border:none;color:var(--a-acc);font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:'DM Sans',sans-serif;padding:0}
 .detail-title{font-size:17px;font-weight:700}
@@ -409,7 +409,7 @@ select.f-in{cursor:pointer}
 // ════════════════════════════════════════
 // CONFIG — แก้ 2 บรรทัดนี้เท่านั้น
 // ════════════════════════════════════════
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzUnYtHWTnc8ZAHs5CbXOmNZ4udL7ksIB7HSSiW1xcr7OHR-jq-b809volc2-7hfhnY/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbypz_WDmi565c_imNtEsxpzfR74H51Z2XQ0H3x9_CMHP5m7ZmsmN5D4xSsbWown_xBl/exec";
 const LIFF_ID     = "2010125903-hSMEChl3";
 const ADMIN_PW    = "admin";
 
@@ -857,7 +857,7 @@ function updateFormSelects() {
 
 // ── SHEET ─────────────────────────────────────────────
 // เปิด Google Sheet โดยตรง (Admin only)
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/17p8hbErAR_fSzUUQ-BMkBT_YQGwqYR59PHS2Kul3UQo/edit";
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/1DvHaLrMzl6h120Acl90PRtUhU6MktwUuTRaDXtPrOUo/edit";
 
 function openSheetAdmin() {
   if (!isAdmin) {
@@ -905,6 +905,8 @@ liff.init({liffId:LIFF_ID})
   .then(()=>{console.log('LIFF ok');})
   .catch(err=>console.log('LIFF failed (ok on browser):', err));
 
+// ปิด detail screen ตอนเริ่ม
+closeDetail();
 // โหลดข้อมูล
 loadData();
 
